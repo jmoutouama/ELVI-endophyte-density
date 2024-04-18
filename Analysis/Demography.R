@@ -21,12 +21,12 @@ library(ggsci)
 # options(oo)
 # choose path for data import
 
-# tom_path<-"G:/Shared drives/Miller Lab/Endophytes - Range Limits/Elymus Data Analysis" # You need to change this because I have everything on Github
+tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
 jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density"
 
 # HOBO data ----
 ## format date and separate year-month-day
-choose_path<-jacob_path
+choose_path<-tom_path
 list.files(path = paste0(choose_path,"/Data/HOBO data/"),  
            pattern = "*.xlsx", full.names = TRUE) %>% # Identify all excel files
   lapply(read_excel) %>%                              # Store all files in list
@@ -44,29 +44,37 @@ tidyr::separate(hobo_data_raw, 'date',
 hobo_data_full %>% 
   group_by(Site) %>% 
   summarise(start=range(longdate)[1],
-            end=range(longdate)[2]) 
+            end=range(longdate)[2],
+            duration=as.Date(end)-as.Date(start))->hobo_dates 
 
 ## average over days to look at overall trend across sites
 hobo_data_full %>% 
   group_by(longdate,Site,day) %>% 
   summarise(daily_mean_moist=mean(water),daily_mean_temp=mean(temp))->HOBO_daily
 
-
 ## Plot the daily trend for temperature and soil moisture from start to end
+hobo_means<-HOBO_daily %>% 
+  group_by(Site) %>% 
+  summarise(mean_temp=mean(daily_mean_temp),
+            mean_moisture=mean(daily_mean_moist))
 
 figtempsite<-ggplot(HOBO_daily, aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_temp))+
   geom_line(aes(colour=Site))+
   ggtitle("a")+
   scale_fill_jco()+
   theme_bw()+ 
-  labs( y="Daily temperature  (°C)", x="Month") 
+  labs( y="Daily temperature  (°C)", x="Month")+
+  facet_grid(~factor(Site,levels=c('SON','KER','BFL','BAS','COL','HUN','LAF')))+
+  geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=Site))
 
 figmoistsite<-ggplot(HOBO_daily, aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_moist))+
   geom_line(aes(colour=Site))+
   ggtitle("b")+
   scale_fill_jco()+
   theme_bw()+ 
-  labs( y="Daily soil moisture (wfv)", x="Month") # Plot the raw trend from start to end
+  labs( y="Daily soil moisture (wfv)", x="Month")+
+  facet_grid(~factor(Site,levels=c('SON','KER','BFL','BAS','COL','HUN','LAF')))+
+  geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=Site))
 
 # pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density/Figure/climatesite.pdf",height =3.5,width =6,useDingbats = F)
 # (Figclimatesite<-ggpubr::ggarrange(figtempsite,figmoistsite,common.legend = TRUE,legend.position = "bottom",legend.box = "horizontal"))
@@ -79,7 +87,17 @@ HOBO_daily %>%
   summarise(water_mean = mean(daily_mean_moist),
             water_cv=sd(daily_mean_moist)/water_mean,
             temp_mean = mean(daily_mean_temp),
-            temp_cv=sd(daily_mean_temp)/temp_mean)->HOBO_summary
+            temp_cv=sd(daily_mean_temp)/temp_mean) %>% 
+  left_join(.,hobo_dates,by=c("Site"))->HOBO_summary
+
+## how strongly are these summary stats related to duration of the experimental period?
+par(mfrow=c(2,2))
+plot(HOBO_summary$duration,HOBO_summary$temp_mean,pch=16)
+plot(HOBO_summary$duration,HOBO_summary$temp_cv,pch=16)
+plot(HOBO_summary$duration,HOBO_summary$water_mean,pch=16)
+plot(HOBO_summary$duration,HOBO_summary$water_cv,pch=16)
+
+
 # summary(HOBO_summary)
 #unique(HOBO_summary$Site)
 # Correlation between temperature and soil moisture
@@ -90,7 +108,6 @@ HOBO_daily %>%
   labs (x="Water (mean)",y="Temperature (mean)") +
   ggpubr::stat_cor(aes(label=..rr.label..)) +
   theme_bw())
-dev.off()
 
 (figcorrelation_cv<-ggplot(data=HOBO_summary, aes(x=scale(temp_cv), y=scale(water_cv))) +
   geom_smooth(method="lm",color = "blue") +
@@ -112,10 +129,18 @@ dev.off()
 # Merge the demographic with the climatic data
 datini<-read_csv(paste0(choose_path,"/Data/Initialdata.csv"))
 dat23<-read_csv(paste0(choose_path,"/Data/census2023.csv"))
+## is this "dat23" data frame derived from some other file?
+## where "Spikelet" and "Spikelet_avg" come from?
+## why are there zero spikelets where there should be NA?
+
 # datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
 # head(datherbivory)
 ## Merge the initial data with the 23 data -----
 datdemo <- left_join(x = datini ,y =dat23,by=c("Tag_ID")) 
+## warning says this id in x occurs multiple times in y
+datini$Tag_ID[1441]
+dat23[dat23$Tag_ID==datini$Tag_ID[1441],] ##this needs to be fixed
+
 # names(dat)
 # unique(dat$Species)
 #demography<-left_join(x=datdemo,y=datherbivory,by=c("Site","Species","Plot"))# Merge the demographic data with the herbivory data
