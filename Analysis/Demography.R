@@ -21,13 +21,13 @@ library(ggsci)
 # options(oo)
 # choose path for data import
 
-<<<<<<< Updated upstream
+
 tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
 jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density"
-=======
+
 # tom_path<-"G:/Shared drives/Miller Lab/Endophytes - Range Limits/Elymus Data Analysis" # You need to change this because I have everything on Github
 jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endophyte-density"
->>>>>>> Stashed changes
+
 
 # HOBO data ----
 ## format date and separate year-month-day
