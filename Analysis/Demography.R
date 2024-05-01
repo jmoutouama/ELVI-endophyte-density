@@ -1,5 +1,5 @@
 ## Author: Jacob Moutouama and Tom Miller 
-## Purpose: Fit statistical models to vital rate to test the effect of demographic effects of grass-endophyte symbiosis and endophyte hyphal density 
+## Purpose: Fit vital rate models to test the effect of grass-endophyte symbiosis and endophyte hyphal density on population demography 
 
 rm(list = ls())
 
@@ -21,8 +21,13 @@ library(ggsci)
 # options(oo)
 # choose path for data import
 
+<<<<<<< Updated upstream
 tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
 jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density"
+=======
+# tom_path<-"G:/Shared drives/Miller Lab/Endophytes - Range Limits/Elymus Data Analysis" # You need to change this because I have everything on Github
+jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endophyte-density"
+>>>>>>> Stashed changes
 
 # HOBO data ----
 ## format date and separate year-month-day
@@ -116,9 +121,9 @@ plot(HOBO_summary$duration,HOBO_summary$water_cv,pch=16)
   ggpubr::stat_cor(aes(label=..rr.label..)) +
   theme_bw())
 
-pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density/Figure/correlation.pdf",height=3,width =6,useDingbats = F)
-(figcorrelation<-ggpubr::ggarrange(figcorrelation_mean,figcorrelation_cv,labels = c("A","B")))
-dev.off()
+# pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density/Figure/correlation.pdf",height=3,width =6,useDingbats = F)
+# (figcorrelation<-ggpubr::ggarrange(figcorrelation_mean,figcorrelation_cv,labels = c("A","B")))
+# dev.off()
 
 # barplot(HOBO_spring_summary$water_mean,
 #         names.arg = HOBO_spring_summary$Site)
@@ -212,25 +217,27 @@ s.iiEndo1 <-coefinf[1]$cond[2]+ s.iiEndo0	## intercept for Endo 1
 s.siEndo1 <- s.siEndo0	## slope for Endo 1
 
 # Number of spikelet 
+
+demography_climate_elvi$mean_spikelet<-round(rowMeans(demography_climate_elvi[,c(13,14,15)]),0)
 endostatus_spike_mods<-list()
-endostatus_spike_mods[[1]] <- glmmTMB(Spikelet ~ 1 + (1|Site/Plot) + (1|Population)  , data=demography_climate_elvi,ziformula = ~1,family = nbinom2)
-endostatus_spike_mods[[2]] <- glmmTMB(Spikelet ~ Endo + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[3]] <- glmmTMB(Spikelet ~ Endo + water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[4]] <- glmmTMB(Spikelet ~ Endo*water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[5]] <- glmmTMB(Spikelet ~ Endo + water_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[6]] <- glmmTMB(Spikelet ~ Endo*water_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
-endostatus_spike_mods[[7]] <- glmmTMB(Spikelet ~ Endo + temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[8]] <- glmmTMB(Spikelet ~ Endo*temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[9]] <- glmmTMB(Spikelet ~ Endo + temp_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[10]] <- glmmTMB(Spikelet ~ Endo*temp_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
+endostatus_spike_mods[[1]] <- glmmTMB(mean_spikelet ~ 1 + (1|Site/Plot) + (1|Population)  , data=demography_climate_elvi,ziformula = ~1,family = nbinom2)
+endostatus_spike_mods[[2]] <- glmmTMB(mean_spikelet ~ Endo + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[3]] <- glmmTMB(mean_spikelet ~ Endo + water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[4]] <- glmmTMB(mean_spikelet ~ Endo*water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[5]] <- glmmTMB(mean_spikelet ~ Endo + water_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[6]] <- glmmTMB(mean_spikelet ~ Endo*water_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
+endostatus_spike_mods[[7]] <- glmmTMB(mean_spikelet ~ Endo + temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[8]] <- glmmTMB(mean_spikelet ~ Endo*temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[9]] <- glmmTMB(mean_spikelet ~ Endo + temp_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
+endostatus_spike_mods[[10]] <- glmmTMB(mean_spikelet ~ Endo*temp_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
 
 
 AICtab(endostatus_spike_mods)
-summary(endostatus_spike_mods[[9]])
+summary(endostatus_spike_mods[[5]])
 
 
 
-coefspk<-fixef(endostatus_spike_mods[[9]])
+coefspk<-fixef(endostatus_spike_mods[[5]])
 s.isEndo0<-coefspk[1]$cond[1]			## intercept for Endo 0
 s.ssEndo0<-coefspk[1]$cond[3]			## slope for for Endo 0
 
@@ -247,7 +254,7 @@ temp_cv_seq<-seq(min(na.omit(demography_climate_elvi$temp_cv)),max(na.omit(demog
 temp_mean_seq<-seq(min(na.omit(demography_climate_elvi$temp_mean)),max(na.omit(demography_climate_elvi$temp_mean)),length.out=20)
 
 
-pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density/Figure/Bestmodels.pdf",height=3,width =9,useDingbats = F)
+pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Bestmodels.pdf",height=3,width =9,useDingbats = F)
 # layout(mat = layout.matrix,
 #        heights = rep(c(1, 1,1),2), # Heights of the two rows
 #        widths = c(3, 3,3))
@@ -275,11 +282,11 @@ with(demography_climate_elvi,{
 
 with(demography_climate_elvi,{
   # par(mar=c(4,4,2,4))
-  plot(temp_cv,Spikelet,cex.lab=1.5,xlab="Soil temperature (CV)",ylab="# Spikelets");box()
-  points(jitter(temp_cv),jitter(Spikelet),bg=cbPalette,pch=21,col=NA,cex=2,lwd=2)
+  plot(water_cv,mean_spikelet,cex.lab=1.5,xlab="Soil Water (CV)",ylab="# Spikelets");box()
+  points(jitter(water_cv),jitter(mean_spikelet),bg=cbPalette,pch=21,col=NA,cex=2,lwd=2)
   title("C",adj=0)
-  lines(temp_cv_seq,exp(s.isEndo0 + s.ssEndo0*temp_cv_seq),col=cbPalette[1],lwd=3,)
-  lines(temp_cv_seq,exp(s.isEndo1 + s.ssEndo1*temp_cv_seq),col=cbPalette[2],lwd=3,)
+  lines(water_cv_seq,exp(s.isEndo0 + s.ssEndo0*water_cv_seq),col=cbPalette[1],lwd=3,)
+  lines(water_cv_seq,exp(s.isEndo1 + s.ssEndo1*water_cv_seq),col=cbPalette[2],lwd=3,)
   legend("topright",legend=c("E-","E+"),lwd=2,col =cbPalette ,bty="n",cex=1)
 })
 
