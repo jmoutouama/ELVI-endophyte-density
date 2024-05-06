@@ -191,15 +191,4 @@
   publisher = {Annual Reviews 4139 El Camino Way, PO Box 10139, Palo Alto, CA 94303-0139, USA},
 }
 
-@Article{de2006fungal,
-  author    = {De Sassi, Claudio and M{\"u}ller, Christine B and Krauss, Jochen},
-  journal   = {Proceedings of the Royal Society B: Biological Sciences},
-  title     = {Fungal plant endosymbionts alter life history and reproductive success of aphid predators},
-  year      = {2006},
-  number    = {1591},
-  pages     = {1301--1306},
-  volume    = {273},
-  publisher = {The Royal Society London},
-}
-
 @Comment{jabref-meta: databaseType:bibtex;}

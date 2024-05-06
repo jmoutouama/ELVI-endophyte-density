@@ -13,6 +13,7 @@
 % my addnl packages
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage{gensymb}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{authblk}
@@ -58,6 +59,7 @@ library(xtable)
 \affil[2]{University of Miami, Department of Biology, Miami, Florida}
 
 %-------------------------------------------------------------------------
+\DeclareUnicodeCharacter{2715}{-}
 \begin{document}
 \maketitle
 \noindent{} $\ast$ Corresponding author: jmoutouama@gmail.com\\
@@ -75,33 +77,40 @@ library(xtable)
 %-------------------------------------------------------------------------
 \section*{Keywords}
 
-density-dependence, ecotones, woody encroachment, shrubs, integral projection model, dispersal, Allee effects
 
 %--------------------------------------------------------------------
 \newpage
 \section*{Introduction}
-Plant-microbe symbioses are widespread and ecologically important. 
-These interactions are famously context-dependent, where the direction and strength of the interaction outcome depends on the environment in which it occurs \textcolor{violet} {(Fowler et al. 2023)}.
-On the one hand endophyte symbiosis can benefits host plants by enhancing host resistance to abiotic stress such as drought, competitive ability, and resistance to herbivory and diseases.
-One the other hand, endophyte symbiosis can also be detrimental to host species by reducing host biomass or reproduction under nutrient poor conditions. 
+Plant-microbe interactions are widespread and ecologically important. 
+These interactions are famously context-dependent, where the direction and strength of the interaction outcome depends on the environment in which it occurs \citep{fowler2023geographic,davitt2011understanding}.
+Under abiotic stress (salinity, nutrient poor conditions or drought), endophyte symbiosis can be detrimental to host species by reducing host biomass or reproduction \citep{cui2024review}. 
+However, under biotic stress (attack by herbivores and or pathogens), endophyte symbiosis can benefits host plants by enhancing host resistance \citep{atala2022fungal,bastias2017epichloe}.
 These context-dependent costs and benefits may ultimately underlie the observed distribution of host species. 
 
-P2: Context-dependence raises the hypothesis that plant-microbe interactions are likely to vary across environmental gradients spanning range-core to range-edge. 
-If the benefits of microbial symbiosis strengthen under environmental stress then symbionts could make range-edge environments more suitable, possibly extending the host’s range limits. 
+Context-dependence raises the hypothesis that plant-microbe interactions are likely to vary across environmental gradients spanning range-core to range-edge. 
+If the benefits of microbial symbiosis strengthen under environmental stress then symbionts could make range-edge environments more suitable, possibly extending the host’s range limits \citep{allsup2023shifting,rudgers2020climate}.
+For instance, fungal endophytes improve \emph{Bromus laevipes} populations resistance to drought stress at range edge and thereby expend the species geographic range \citep{david2019soil,afkhami2014mutualist}.
+In contrast if microbial symbiosis is costly for the host at range edge, then symbionts could limit host range \citep{benning2021microbes,benning2021plant}.
+Low rhizobia density at range range edge limits range expansion in \emph{Chamaecrista fasciculata} populations \citep{stanton2011does}. 
 
-P3. Ecological studies of plant-microbe symbiosis usually study the interaction from the plant’s perspective. 
+Ecological studies of plant-microbe symbiosis usually study the interaction from the plant’s perspective. 
 Much less is known about how dynamics of the symbiont respond to environmental variation, and how this might translate to its influence on host performance. 
+Symbionts are promoting their own selfish fitness by manipulating their hosts' life history traits or resistance to stresses caused by pathogens and environmental stress \citep{kazenel2015mutualistic,giauque2019endophyte,saikkonen1998fungal}. 
+Thefore overlooking the role of symbionts and their potential cascading effects on the eco-evolutionary population dynamics of host species  could lead to inaccurate prediction of host response to current global change. 
+% For instance fungal endophyte can reduce plant vital rates (e.g survival) but increase population fitness \citep{rudgers2012there,ahlholm2002vertically}. 
 
-P4: We studied the symbiotic association between a cool-season grass species (Elymus virginicus) and its vertically transmitted fungal symbiont Epichloë elymi. [Describe ecology and natural history of grass-endophyte interactions]
+To understand how symbiotic interactions are likely to facilitate host persistence in changing environments, we need first to investigate the synergistic effects of environmental stressors and endophyte presence on individual performance (survival, growth and reproduction) and how that effect can be translated at a population level \citep{bruno2003inclusion,de2006fungal}. 
+Second, we need to use common garden experiments.
+Common gardens experiments allow the manipulation of variation of biotic and abiotic factors that are likely to change with climate change (eg. temperature, precipitation, endophyte prevalence) and measured species response of such a variation.  
 
-P5: Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
-We also quantified fungal growth in planta from range core to range edge. 
+Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
+We also asked how does fungal growth affect host demography from range core to range edge. 
+To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. [Describe ecology and natural history of grass-endophyte interactions]
 Our experiment was design to test the following hypotheses:
-
-We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
-
-We hypothesized that fungal growth in planta varied from range core to range edge. If endophyte growth is limited by host photosynthesis, then environments that are stressful for hosts may correspond to poor endophyte growth. Alternatively, if active regulation by the host is required to keep symbionts “in check”, then environments that are stressful for hosts may correspond to high endophyte growth.
-
+\begin{enumerate}
+\item We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
+\item We hypothesized that fungal growth in planta varied from range core to range edge. If endophyte growth is limited by host photosynthesis, then environments that are stressful for hosts may correspond to poor endophyte growth. Alternatively, if active regulation by the host is required to keep symbionts “in check”, then environments that are stressful for hosts may correspond to high endophyte growth.
+\end{enumerate}
 
 %--------------------------------------------------------------------
 \section*{Materials and methods}
@@ -119,9 +128,9 @@ Fungal genotyping indicated that the endophytes are capable of synthesizing pera
 \subsection*{Common garden experiment}
 \paragraph {Source material, identification of indiviudal endophyte status and experimental Design} 
 We established a common garden experiment at 7 sites across the geographic range of \emph {Elymus virginicus} (fig.\ref{fig:site}). 
-Experimental sites spanned a aridity gradient (temperature gradient in addition to the soil moisture gradient)
+Experimental sites spanned a aridity gradient (temperature gradient in addition to the soil moisture gradient).
 From the time the plants were placed on the ground to the time we collected demographic data, hourly temperature and soil moisture at each site using the HOBO MX2307 data loggers. 
-We used this hourly variable to calculate the daily mean temperature ($\deg$C) and soil moisture (\%)(fig.\ref{fig:gradient}). 
+We used this hourly variable to calculate the daily mean temperature (\degree C) and soil moisture (\%)(fig.\ref{fig:gradient}). 
 % We calculated the mean soil moisture and the coefficient of variation from the time the plants were placed on the ground to the time we collected demographic data. 
 The coefficient of variation of soil moisture was estimated to capture season variability in climatic data. 
 The common garden experiment used E. virginicus plants that were derived from natural populations throughout the native range in the south-central US (fig.\ref{fig:site}, Table X). 
@@ -181,7 +190,7 @@ In each of the mixed-effects models, we specified two random effects to account 
 \subsubsection* {Symbiont density analysis}
 For the subset of E+ plants sampled for endophyte hyphal density, we used AIC-based model selection to quantify support for genetic and environmental influences on symbiont density. We fit mixed models with a Gaussian error distribution using the natural log of endophyte density as the response variable. All sampled plants had been previously assessed as E+ but a few leaf peel samples had no detectable endophytes. We therefore added an arbitrarily small constant value to the density measurements (0.1) to avoid log(0). All models used the 10 subsamples as raw data and included the individual ID as a random effect. 
 
-We analyzed endophyte density with two complementary approaches. In the first set of four candidate models we included host-symbiont genotype, experimental site, neither, or both as explanatory fixed-effect variables (Table ##). Because we did not have consistent representation of all genotypes at all sites we were not able to fit a genotype:site interaction, as would arise if different genotypes performed better at different sites. We assessed support for the candidate models using AIC, and for the model that included both genotype and site we partitioned the variance explained by each factor by deriving the marginal R2 using package partR2 \textcolor{blue}{(cite)}. Models including site capture all possible differences across sites. To explore the specific influence of soil moisture, we fit a second set of eight candidate models that included genotype and/or mean soil moisture, and genotype and/or the CV of soil moisture, including interactions. 
+We analyzed endophyte density with two complementary approaches. In the first set of four candidate models we included host-symbiont genotype, experimental site, neither, or both as explanatory fixed-effect variables (Table ). Because we did not have consistent representation of all genotypes at all sites we were not able to fit a genotype:site interaction, as would arise if different genotypes performed better at different sites. We assessed support for the candidate models using AIC, and for the model that included both genotype and site we partitioned the variance explained by each factor by deriving the marginal R2 using package partR2 \textcolor{blue}{(cite)}. Models including site capture all possible differences across sites. To explore the specific influence of soil moisture, we fit a second set of eight candidate models that included genotype and/or mean soil moisture, and genotype and/or the CV of soil moisture, including interactions. 
 
 All  analyzes were conducted in R 4.1.3 \textcolor{blue}{(Source)}. 
 
