@@ -1,4 +1,4 @@
-\documentclass[11pt]{article}
+\documentclass[12pt,english]{article}
 \usepackage[sc]{mathpazo} %Like Palatino with extensive math support
 \usepackage{fullpage}
 \usepackage[authoryear,sectionbib,sort]{natbib}
@@ -10,7 +10,7 @@
 \titleformat{\subsection}[block]{\Large\itshape\filcenter}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}[block]{\large\itshape}{\thesubsubsection}{1em}{}
 \titleformat{\paragraph}[runin]{\itshape}{\theparagraph}{1em}{}[. ]\renewcommand{\refname}{Literature Cited}
-% my addnl packages
+% % my addnl packages
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{gensymb}
@@ -60,6 +60,7 @@ library(xtable)
 
 %-------------------------------------------------------------------------
 \DeclareUnicodeCharacter{2715}{-}
+\geometry{verbose,letterpaper,tmargin=2.54cm,bmargin=2.54cm,lmargin=2.54cm,rmargin=2.54cm}
 \begin{document}
 \maketitle
 \noindent{} $\ast$ Corresponding author: jmoutouama@gmail.com\\
@@ -80,32 +81,37 @@ library(xtable)
 
 %--------------------------------------------------------------------
 \newpage
+\begin{spacing}{1.9}
+% \begin{flushleft}
 \section*{Introduction}
-Plant-microbe interactions are widespread and ecologically important. 
+Plant-microbe symbioses are widespread and ecologically important. 
 These interactions are famously context-dependent, where the direction and strength of the interaction outcome depends on the environment in which it occurs \citep{fowler2023geographic,davitt2011understanding}.
-Under abiotic stress (salinity, nutrient poor conditions or drought), endophyte symbiosis can be detrimental to host species by reducing host biomass or reproduction \citep{cui2024review}. 
-However, under biotic stress (attack by herbivores and or pathogens), endophyte symbiosis can benefits host plants by enhancing host resistance \citep{atala2022fungal,bastias2017epichloe}.
+Under abiotic stress (drought), endophyte symbiosis can be detrimental to host species by reducing host biomass or reproduction \citep{cui2024review}. 
+However, under biotic stress (e.g. attack by herbivores), endophyte symbiosis can benefits host plants by 
+facilitating the production of secondary compounds which can have feeding deterrence effects, or cause direct toxicity reducing insect growth, survival and oviposition \citep{atala2022fungal,bastias2017epichloe,vega2008insect}.
 These context-dependent costs and benefits may ultimately underlie the observed distribution of host species. 
 
 Context-dependence raises the hypothesis that plant-microbe interactions are likely to vary across environmental gradients spanning range-core to range-edge. 
 If the benefits of microbial symbiosis strengthen under environmental stress then symbionts could make range-edge environments more suitable, possibly extending the host’s range limits \citep{allsup2023shifting,rudgers2020climate}.
 For instance, fungal endophytes improve \emph{Bromus laevipes} populations resistance to drought stress at range edge and thereby expend the species geographic range \citep{david2019soil,afkhami2014mutualist}.
-In contrast if microbial symbiosis is costly for the host at range edge, then symbionts could limit host range \citep{benning2021microbes,benning2021plant}.
-Low rhizobia density at range range edge limits range expansion in \emph{Chamaecrista fasciculata} populations \citep{stanton2011does}. 
+In contrast if microbial symbiosis is costly for the host at range edge, then symbionts could limit host range \citep{benning2021microbes,benning2021plant,bennett2022costs}.
+Mutualist limitation reduces population fitness and therefore limits range expansion in \emph{Medicago polymorpha} populations \citep{lopez2021microbial}. 
 
 Ecological studies of plant-microbe symbiosis usually study the interaction from the plant’s perspective. 
-Much less is known about how dynamics of the symbiont respond to environmental variation, and how this might translate to its influence on host performance. 
-Symbionts are promoting their own selfish fitness by manipulating their hosts' life history traits or resistance to stresses caused by pathogens and environmental stress \citep{kazenel2015mutualistic,giauque2019endophyte,saikkonen1998fungal}. 
-Thefore overlooking the role of symbionts and their potential cascading effects on the eco-evolutionary population dynamics of host species  could lead to inaccurate prediction of host response to current global change. 
+Moreover, studies of plant-microbe symbiosis relied on chemical, physical and  mechanisms of endophyte fungal exclusion, such as inoculating sterile soil, excluding endophyte fungal hyphae by using fine mesh or rotating cores, and adding fungicide \citep{bennett2022costs}. 
+Much less is known about how the symbiont respond to environmental variation, and how this might translate to its influence on host performance \citep{garcia2014symbiont}. 
+Symbionts are promoting their own selfish fitness by manipulating their hosts' life history traits or resistance to stresses caused by abiotic and biotic variation \citep{kazenel2015mutualistic,giauque2019endophyte,saikkonen1998fungal}. 
+% Plant host–promoted tolerance to these stresses by the fungi may come at a cost.  
+Therefore overlooking the role of symbionts and their potential cascading effects on the eco-evolutionary population dynamics of host species  could lead to inaccurate prediction of host response to current global change. 
 % For instance fungal endophyte can reduce plant vital rates (e.g survival) but increase population fitness \citep{rudgers2012there,ahlholm2002vertically}. 
 
-To understand how symbiotic interactions are likely to facilitate host persistence in changing environments, we need first to investigate the synergistic effects of environmental stressors and endophyte presence on individual performance (survival, growth and reproduction) and how that effect can be translated at a population level \citep{bruno2003inclusion,de2006fungal}. 
-Second, we need to use common garden experiments.
-Common gardens experiments allow the manipulation of variation of biotic and abiotic factors that are likely to change with climate change (eg. temperature, precipitation, endophyte prevalence) and measured species response of such a variation.  
+Understanding how symbiotic interactions are likely to facilitate host persistence in changing environments requires an investigation of the synergistic effects of biotic, abiotic stressors and endophyte presence on individual demographic performance (survival, growth and reproduction) and how that effect can be translated at a population level \citep{bruno2003inclusion,de2006fungal}. 
+One of the best ways to perform that investigation is to use common garden experiments along climatic gradient \citep{schwinning2022common}.
+These common gardens experiments allow the manipulation of variation of biotic and abiotic factors that are likely to change with climate change (eg. temperature, precipitation, endophyte prevalence) and measured species response of such a variation.  
 
 Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
 We also asked how does fungal growth affect host demography from range core to range edge. 
-To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. [Describe ecology and natural history of grass-endophyte interactions]
+To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \textcolor{blue}{[Describe ecology and natural history of grass-endophyte interactions]}.
 Our experiment was design to test the following hypotheses:
 \begin{enumerate}
 \item We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
@@ -116,18 +122,19 @@ Our experiment was design to test the following hypotheses:
 \section*{Materials and methods}
 
 \subsection*{Study species}
-\emph {Elymus virginicus} (Virginia wildrye) is a C3 perennial bunchgrass native to woodland and prairie habitats of eastern North America. 
-The westernmost range limits of this species correspond to the longitudinal aridity gradient in the central and southern Great Plains (Figure 1). 
-The life cycle of \emph{E. virginicus}is typical of cool-season grasses, with seed germination in winter, growth in spring, and seed production in early summer. 
-We measure plant size as a count of vegetative tillers. Reproducing plants produce spikelet-bearing inflorescences, and each spikelet typically produces 2-3 seeds. 
-This species is capable of both self-pollination and outcrossing \textcolor{violet}{(Sneck et al. 2019)}. 
-Throughout its range, \emph {E. virginicus} is commonly symbiotic with the seed-transmitted fungal endophyte Epichloë elymi (Clavipitaceae). 
-In a prior study across natural populations in Texas, endophyte prevalence (fraction of plants that are endophyte-symbiotic) ranged from 10\% to 100 \%, with a mean of 53 \% \textcolor{violet}{(Sneck et al. 2017)}. 
-Fungal genotyping indicated that the endophytes are capable of synthesizing peramine, loline, and ergot alkaloids, which may confer resistance against drought and herbivory \textcolor{violet}{(Sneck et al. 2017)}.
+\emph {Elymus virginicus} (Poaceae) is a cool season perennial grass native to woodland and prairie habitats of eastern North America \citep{shaw2011guide}. 
+The westernmost range limits of this species correspond to the longitudinal aridity gradient in the central and southern Great Plains (Figure \ref{fig:site}). 
+Throughout its range, the species is  symbiotic with the seed-transmitted fungal endophyte (Epichloë spp.) \citep{rudgers2009benefits}. 
+In a prior study across natural populations in Texas, endophyte prevalence (fraction of plants that are endophyte-symbiotic) ranged from 10\% to 100 \%, with a mean of 53 \% \citep{sneck2017variation}. 
+Fungal genotyping indicated that the endophytes are capable of synthesizing secondary compounds such as peramine, loline, and ergot alkaloids, which may confer resistance against drought and herbivory \citep{beaudry1951seed}.
+In addition, the species is capable of both self-pollination and outcrossing \citep{church1958artificial}. 
+
+
+
 
 \subsection*{Common garden experiment}
 \paragraph {Source material, identification of indiviudal endophyte status and experimental Design} 
-We established a common garden experiment at 7 sites across the geographic range of \emph {Elymus virginicus} (fig.\ref{fig:site}). 
+We established a common garden experiment at 7 sites across the geographic range of \emph {Elymus virginicus} (Figure \ref{fig:site}). 
 Experimental sites spanned a aridity gradient (temperature gradient in addition to the soil moisture gradient).
 From the time the plants were placed on the ground to the time we collected demographic data, hourly temperature and soil moisture at each site using the HOBO MX2307 data loggers. 
 We used this hourly variable to calculate the daily mean temperature (\degree C) and soil moisture (\%)(fig.\ref{fig:gradient}). 
@@ -247,5 +254,6 @@ All authors participated in preparing the manuscript for submission.
   \end{center}
 \end{figure}
 
-
+% \end{flushleft}
+\end{spacing}
 \end{document}

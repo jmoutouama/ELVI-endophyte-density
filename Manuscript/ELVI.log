@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  5 MAY 2024 23:03
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  4 JUL 2024 16:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -8,8 +8,8 @@ LaTeX2e <2022-11-01> patch level 1
 L3 programming layer <2023-02-22>
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
-(/usr/local/texlive/2023/texmf-dist/tex/latex/base/size11.clo
-File: size11.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
+(/usr/local/texlive/2023/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
 )
 \c@part=\count185
 \c@section=\count186
@@ -486,50 +486,50 @@ LaTeX Warning: Label `fig:gradient' multiply defined.
 )
 \openout1 = `ELVI.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 60.
+LaTeX Font Info:    ... okay on input line 60.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
-* paper: <default>
+* paper: letterpaper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(92.14519pt, 430.00462pt, 92.14519pt)
-* v-part:(T,H,B)=(95.39737pt, 556.47656pt, 143.09605pt)
+* h-part:(L,W,R)=(72.2698pt, 469.75539pt, 72.2698pt)
+* v-part:(T,H,B)=(72.2698pt, 650.43037pt, 72.2698pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=430.00462pt
-* \textheight=556.47656pt
-* \oddsidemargin=19.8752pt
-* \evensidemargin=19.8752pt
-* \topmargin=23.12738pt
+* \textwidth=469.75539pt
+* \textheight=650.43037pt
+* \oddsidemargin=-0.00018pt
+* \evensidemargin=-0.00018pt
+* \topmargin=-0.00018pt
 * \headheight=0.0pt
 * \headsep=0.0pt
-* \topskip=11.0pt
+* \topskip=12.0pt
 * \footskip=30.0pt
-* \marginparwidth=59.0pt
+* \marginparwidth=44.0pt
 * \marginparsep=10.0pt
 * \columnsep=10.0pt
-* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
 * \hoffset=0.0pt
 * \voffset=0.0pt
 * \mag=1000
@@ -571,16 +571,16 @@ e
 ))
 \symgns@font=\mathgroup7
 LaTeX Font Info:    Overwriting symbol font `gns@font' in version `bold'
-(Font)                  TS1/pplx/m/n --> TS1/pplx/b/n on input line 59.
-Package gensymb Info: Math companion symbols declared on input line 59.
-LaTeX Info: Redefining \degree on input line 59.
-LaTeX Info: Redefining \celsius on input line 59.
+(Font)                  TS1/pplx/m/n --> TS1/pplx/b/n on input line 60.
+Package gensymb Info: Math companion symbols declared on input line 60.
+LaTeX Info: Redefining \degree on input line 60.
+LaTeX Info: Redefining \celsius on input line 60.
 Package gensymb Info: Using text companion symbols for \degree, \celsius and \p
-erthousand on input line 59.
-LaTeX Info: Redefining \ohm on input line 59.
-Package gensymb Info: Using \textohm for \ohm on input line 59.
-Package gensymb Info: Using \textmu for \micro on input line 59.
-Package hyperref Info: Link coloring OFF on input line 59.
+erthousand on input line 60.
+LaTeX Info: Redefining \ohm on input line 60.
+Package gensymb Info: Using \textohm for \ohm on input line 60.
+Package gensymb Info: Using \textmu for \micro on input line 60.
+Package hyperref Info: Link coloring OFF on input line 60.
 
 (./ELVI.out) (./ELVI.out)
 \@outlinefile=\write4
@@ -591,75 +591,74 @@ Package caption Info: rotating package is loaded.
 Package caption Info: wrapfig package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
 LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 61.
+(Font)              scaled to size 15.0049pt on input line 62.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 61.
+(Font)              scaled to size 10.42007pt on input line 62.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 61.
+(Font)              scaled to size 8.33606pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 61.
+(Font)              scaled to size 15.0049pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 61.
+(Font)              scaled to size 10.42007pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 61.
+(Font)              scaled to size 8.33606pt on input line 62.
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
-61.
+62.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 61.
+(Font)              scaled to size 12.50409pt on input line 62.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 61.
+(Font)              scaled to size 9.37807pt on input line 62.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 61.
+(Font)              scaled to size 7.29405pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 61.
+(Font)              scaled to size 12.50409pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 61.
+(Font)              scaled to size 9.37807pt on input line 62.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 61.
+(Font)              scaled to size 7.29405pt on input line 62.
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 6
-3.
+4.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 )
-Overfull \hbox (11.77429pt too wide) in paragraph at lines 61--64
-\T1/pplx/m/n/10.95 data and code are avail-able at []$\T1/cmtt/m/n/10.95 https 
-: / / github . com / jmoutouama / ELVI-[]endophyte-[]density$[]\T1/pplx/m/n/10.
-95 . 
+Overfull \hbox (12.86224pt too wide) in paragraph at lines 62--65
+\T1/pplx/m/n/12 data and code are avail-able at []$\T1/cmtt/m/n/12 https : / / 
+github . com / jmoutouama / ELVI-[]endophyte-[]density$[]\T1/pplx/m/n/12 . 
  []
 
 [1
@@ -668,34 +667,34 @@ Overfull \hbox (11.77429pt too wide) in paragraph at lines 61--64
 al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/texlive/2023
 /texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}]
 LaTeX Font Info:    Trying to load font information for T1+cmss on input line 7
-1.
+2.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/base/t1cmss.fd
 File: t1cmss.fd 2022/07/10 v2.5l Standard LaTeX font definitions
 ) [2] [3] [4]
-[5] [6] [7] [8] [9] [10] (./ELVI.bbl [11] [12]) [13]
-<Figures/Study_site.jpg, id=126, 867.24pt x 650.43pt>
+[5] [6] [7] [8] [9] [10] [11] (./ELVI.bbl [12] [13] [14]) [15]
+<Figures/Study_site.jpg, id=169, 867.24pt x 650.43pt>
 File: Figures/Study_site.jpg Graphic file (type jpg)
 <use Figures/Study_site.jpg>
-Package pdftex.def Info: Figures/Study_site.jpg  used on input line 222.
-(pdftex.def)             Requested size: 425.70692pt x 319.27919pt.
-<Figures/Temperature.png, id=127, 784.9325pt x 230.8625pt>
+Package pdftex.def Info: Figures/Study_site.jpg  used on input line 229.
+(pdftex.def)             Requested size: 465.06041pt x 348.7954pt.
+<Figures/Temperature.png, id=170, 784.9325pt x 230.8625pt>
 File: Figures/Temperature.png Graphic file (type png)
 <use Figures/Temperature.png>
-Package pdftex.def Info: Figures/Temperature.png  used on input line 230.
-(pdftex.def)             Requested size: 421.40268pt x 123.94525pt.
-<Figures/Soil_moisture.png, id=128, 784.9325pt x 230.8625pt>
+Package pdftex.def Info: Figures/Temperature.png  used on input line 237.
+(pdftex.def)             Requested size: 460.35826pt x 135.40099pt.
+<Figures/Soil_moisture.png, id=171, 784.9325pt x 230.8625pt>
 File: Figures/Soil_moisture.png Graphic file (type png)
 <use Figures/Soil_moisture.png>
-Package pdftex.def Info: Figures/Soil_moisture.png  used on input line 231.
-(pdftex.def)             Requested size: 421.40268pt x 123.94525pt.
- [14 <./Figures/Study_site.jpg>]
-<Figures/Bestmodels.pdf, id=134, 650.43pt x 216.81pt>
+Package pdftex.def Info: Figures/Soil_moisture.png  used on input line 238.
+(pdftex.def)             Requested size: 460.35826pt x 135.40099pt.
+ [16 <./Figures/Study_site.jpg>]
+<Figures/Bestmodels.pdf, id=176, 650.43pt x 216.81pt>
 File: Figures/Bestmodels.pdf Graphic file (type pdf)
 <use Figures/Bestmodels.pdf>
-Package pdftex.def Info: Figures/Bestmodels.pdf  used on input line 240.
-(pdftex.def)             Requested size: 421.40268pt x 140.47159pt.
- [15 <./Figures/Temperature.png (PNG copy)> <./Figures/Soil_moisture.png (PNG c
+Package pdftex.def Info: Figures/Bestmodels.pdf  used on input line 247.
+(pdftex.def)             Requested size: 460.35826pt x 153.45647pt.
+ [17 <./Figures/Temperature.png (PNG copy)> <./Figures/Soil_moisture.png (PNG c
 opy)> <./Figures/Bestmodels.pdf>] (./ELVI.aux)
 
 LaTeX Warning: There were multiply-defined labels.
@@ -704,23 +703,23 @@ Package rerunfilecheck Info: File `ELVI.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 14704 strings out of 476025
- 232854 string characters out of 5790018
- 1861388 words of memory out of 5000000
- 34855 multiletter control sequences out of 15000+600000
- 556269 words of font info for 116 fonts, out of 8000000 for 9000
+ 14744 strings out of 476025
+ 233775 string characters out of 5790018
+ 1859388 words of memory out of 5000000
+ 34883 multiletter control sequences out of 15000+600000
+ 556266 words of font info for 116 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,6n,76p,1293b,578s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,76p,1293b,745s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sfss0800.pfb><
-/usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb></u
+/usr/local/texlive/2023/texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb></u
 sr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/loca
 l/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texli
 ve/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on ELVI.pdf (15 pages, 881201 bytes).
+Output written on ELVI.pdf (17 pages, 884748 bytes).
 PDF statistics:
- 186 PDF objects out of 1000 (max. 8388607)
- 150 compressed objects within 2 object streams
- 39 named destinations out of 1000 (max. 500000)
+ 230 PDF objects out of 1000 (max. 8388607)
+ 192 compressed objects within 2 object streams
+ 50 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
