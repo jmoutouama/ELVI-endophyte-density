@@ -4,40 +4,37 @@
 rm(list = ls())
 
 # Load required package
-
 library(tidyverse)
 library(readxl) 
-library(lme4)
-library(lmerTest)
-library(bbmle)
-library(glmmTMB)
+library(bayesplot)
 library(ggsci)
+library(rstan)
+# set rstan options
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores())
+set.seed(13)
 
-# tools::package_dependencies("Matrix", which = "LinkingTo", reverse = TRUE)[[1L]]
-# install.packages("lme4", type = "source")
-# oo <- options(repos = "https://cran.r-project.org/")
-# install.packages("Matrix")
-# install.packages("lme4")
-# options(oo)
-# choose path for data import
+# quote a series of bare names
+quote_bare <- function( ... ){
+  substitute( alist(...) ) %>% 
+    eval( ) %>% 
+    sapply( deparse )
+}
 
+invlogit<-function(x){exp(x)/(1+exp(x))}
 
-tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
-jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density"
-
-# tom_path<-"G:/Shared drives/Miller Lab/Endophytes - Range Limits/Elymus Data Analysis" # You need to change this because I have everything on Github
-jacob_path<-"/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endophyte-density"
-
+# tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
+jacob_path<-"/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density"
 
 # HOBO data ----
 ## format date and separate year-month-day
-choose_path<-tom_path
+choose_path<-jacob_path
 list.files(path = paste0(choose_path,"/Data/HOBO data/"),  
            pattern = "*.xlsx", full.names = TRUE) %>% # Identify all excel files
   lapply(read_excel) %>%                              # Store all files in list
   bind_rows ->hobo_data_raw # get HOBO data
 
-tidyr::separate(hobo_data_raw, 'date',
+tidyr::separate(hobo_data_raw, "date",
                 into = c('longdate', 'time'),
                 sep= ' ') %>%
   tidyr::separate('longdate', # Separate the ‘longdate’ column into separate columns for month, day and year using the separate() function.
@@ -47,53 +44,70 @@ tidyr::separate(hobo_data_raw, 'date',
 
 ## double check if the starting and ending dates are correct
 hobo_data_full %>% 
-  group_by(Site) %>% 
+  group_by(site) %>% 
   summarise(start=range(longdate)[1],
             end=range(longdate)[2],
             duration=as.Date(end)-as.Date(start))->hobo_dates 
 
 ## average over days to look at overall trend across sites
 hobo_data_full %>% 
-  group_by(longdate,Site,day) %>% 
-  summarise(daily_mean_moist=mean(water),daily_mean_temp=mean(temp))->HOBO_daily
+  group_by(longdate,site,day) %>% 
+  summarise(daily_mean_moist=mean(water),daily_mean_temp=mean(temperature))->HOBO_daily
 
 ## Plot the daily trend for temperature and soil moisture from start to end
 hobo_means<-HOBO_daily %>% 
-  group_by(Site) %>% 
+  group_by(site) %>% 
   summarise(mean_temp=mean(daily_mean_temp),
             mean_moisture=mean(daily_mean_moist))
 
+data_plotclim<-data.frame(site=c(HOBO_daily$site,HOBO_daily$site),daily_mean_clim=c(HOBO_daily$daily_mean_temp,HOBO_daily$daily_mean_moist),date=c(HOBO_daily$longdate,HOBO_daily$longdate),clim=c(rep("temp",nrow(HOBO_daily)),rep("water",nrow(HOBO_daily))))
+  
+site_names <- c("LAF"="Lafayette",
+                 "HUN"="Huntville",
+                 "BAS"="Bastrop",
+                "COL"="College Station",
+                "KER" ="Kerville",
+                "BFL" ="Brackenridge",
+                "SON"="Sonora")
+
+
+  
 figtempsite<-ggplot(HOBO_daily, aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_temp))+
-  geom_line(aes(colour=Site))+
+  geom_line(aes(colour=site))+
   ggtitle("a")+
   scale_fill_jco()+
   theme_bw()+ 
-  labs( y="Daily temperature  (°C)", x="Month")+
-  facet_grid(~factor(Site,levels=c('SON','KER','BFL','BAS','COL','HUN','LAF')))+
-  geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=Site))
+  theme(legend.position = "none",
+        axis.text.x = element_text(size=4.5,color="black", angle=0))+
+  labs( y="Daily temperature  (°C)", x="")+
+  # facet_grid(~factor(site,levels=c("LAF", "HUN", "BAS", "COL" ,"KER" ,"BLF", "SON")))+
+  facet_grid(~site,labeller = labeller(site=site_names))+
+  geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=site))
 
 figmoistsite<-ggplot(HOBO_daily, aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_moist))+
-  geom_line(aes(colour=Site))+
+  geom_line(aes(colour=site))+
   ggtitle("b")+
   scale_fill_jco()+
   theme_bw()+ 
+  theme(legend.position = "none",
+        axis.text.x = element_text(size=4.55, color="black",angle=0))+
   labs( y="Daily soil moisture (wfv)", x="Month")+
-  facet_grid(~factor(Site,levels=c('SON','KER','BFL','BAS','COL','HUN','LAF')))+
-  geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=Site))
+  facet_grid(~site,labeller = labeller(site=site_names))+
+  geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=site))
 
-# pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endo-density/Figure/climatesite.pdf",height =3.5,width =6,useDingbats = F)
-# (Figclimatesite<-ggpubr::ggarrange(figtempsite,figmoistsite,common.legend = TRUE,legend.position = "bottom",legend.box = "horizontal"))
+# pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =5,width =12,useDingbats = F)
+# (Figclimatesite<-ggpubr::ggarrange(figtempsite,figmoistsite,common.legend = FALSE,ncol = 1, nrow = 2))
 # dev.off()
 
 ## Average over days
 
 HOBO_daily %>%
-  group_by(Site)%>%
+  group_by(site)%>%
   summarise(water_mean = mean(daily_mean_moist),
             water_cv=sd(daily_mean_moist)/water_mean,
             temp_mean = mean(daily_mean_temp),
             temp_cv=sd(daily_mean_temp)/temp_mean) %>% 
-  left_join(.,hobo_dates,by=c("Site"))->HOBO_summary
+  left_join(.,hobo_dates,by=c("site"))->HOBO_summary
 
 ## how strongly are these summary stats related to duration of the experimental period?
 par(mfrow=c(2,2))
@@ -134,162 +148,342 @@ plot(HOBO_summary$duration,HOBO_summary$water_cv,pch=16)
 # Merge the demographic with the climatic data
 datini<-read_csv(paste0(choose_path,"/Data/Initialdata.csv"))
 dat23<-read_csv(paste0(choose_path,"/Data/census2023.csv"))
-## is this "dat23" data frame derived from some other file?
-## where "Spikelet" and "Spikelet_avg" come from?
-## why are there zero spikelets where there should be NA?
+dat24<-read_csv(paste0(choose_path,"/Data/census2024.csv"))
+datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
 
-# datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
-# head(datherbivory)
-## Merge the initial data with the 23 data -----
-datdemo <- left_join(x = datini ,y =dat23,by=c("Tag_ID")) 
+# calculate the total spikelet for each census
+dat23 %>% 
+  mutate(Spikelet_23=rowSums(across(Spikelet_A:Spikelet_C)))->dat23_spike
+dat24 %>% 
+  mutate(Spikelet_24=rowSums(across(Spikelet_A:Spikelet_C)),Inf_24=rowSums(across(attachedInf_24:brokenInf_24)))->dat24_spike_inf
+
+## Merge the initial data with the 23 data and the 23 data with the 24 -----
+datini23 <- left_join(x = datini,y =dat23_spike,by=c("Tag_ID"))
 ## warning says this id in x occurs multiple times in y
-datini$Tag_ID[1441]
-dat23[dat23$Tag_ID==datini$Tag_ID[1441],] ##this needs to be fixed
+datini$Tag_ID[1455]
+datini$Tag_ID[628]
+dat23[dat23$Tag_ID==datini$Tag_ID[1455],] ##this needs to be fixed
+dat23[dat23$Tag_ID==datini$Tag_ID[628],] ##this needs to be fixed
 
-# names(dat)
-# unique(dat$Species)
-#demography<-left_join(x=datdemo,y=datherbivory,by=c("Site","Species","Plot"))# Merge the demographic data with the herbivory data
+datini23 %>% 
+  mutate(tiller_t=ini_Tiller,
+         tiller_t1=Tiller_23,
+         inf_t1=Inf_23,
+         spikelet_t1=Spikelet_23,
+         year=c(rep(2023,nrow(datini23)))) %>% 
+  dplyr::select(Site,
+                Species,
+                Plot,
+                Position,
+                Tag_ID,
+                Population,
+                Clone,
+                GreenhouseID,
+                Endo,
+                tiller_t,
+                tiller_t1,
+                inf_t1,
+                spikelet_t1,
+                tiller_Herb,
+                year)->datini23_t_t1
+
+dat2324 <- left_join(x = datini23 ,y =dat24_spike_inf,by=c("Tag_ID")) 
+
+dat2324 %>% 
+  mutate(tiller_t=Tiller_23,
+         tiller_t1=Tiller_24,
+         inf_t1=Inf_24,
+         spikelet_t1=Spikelet_24,
+         tiller_Herb=tiller_Herb.y,
+         year=c(rep(2024,nrow(dat2324)))) %>% 
+  dplyr::select(Site,
+                Species,
+                Plot,
+                Position,
+                Tag_ID,
+                Population,
+                Clone,
+                GreenhouseID,
+                Endo,
+                tiller_t,
+                tiller_t1,
+                inf_t1,
+                spikelet_t1,
+                tiller_Herb,
+                year)->dat2324_t_t1
+
+datdemo<-rbind(datini23_t_t1,dat2324_t_t1)
+# names(datdemo)
+# unique(datdemo$Species)
+## Merge the demographic data with the herbivory data -----
+demography<-left_join(x=datdemo,y=datherbivory,by=c("Site","Plot","Species"))# Merge the demographic data with the herbivory data
+# view(demography)
 # head(demography)
-demography_climate<-left_join(x=datdemo,y=HOBO_summary,by=c("Site"))# Merge the demographic data with the temperature data
+HOBO_summary %>% 
+  rename(Site=site)->HOBO_summary_clean
+## Merge the demographic data with the climatic data -----
+demography_climate<-left_join(x=demography,y=HOBO_summary_clean,by=c("Site"))# Merge the demographic data with the temperature data
+# Subset only ELVI data -----
 demography_climate %>% 
   filter(Species=="ELVI")->demography_climate_elvi
-#view(demography_tempelvi)
-
+demography_climate_elvi$surv1<-1*(!is.na(demography_climate_elvi$tiller_t) & !is.na(demography_climate_elvi$tiller_t1))
+demography_climate_elvi$site_plot<-interaction(demography_climate_elvi$Site,demography_climate_elvi$Plot)
+# names(demography_climate_elvi)
+# view(demography_climate_elvi)
+# summary(demography_climate_elvi)
 # H1: We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
+## Survival 
+
+## Read and format survival data to build the model
+demography_climate_elvi %>% 
+  subset( tiller_t > 0 )%>%
+  dplyr::select(year, Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, surv1,temp_mean,temp_cv,water_mean,water_cv)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor %>% as.numeric,
+          Plot = Plot %>% as.factor %>% as.numeric,
+          site_plot=site_plot %>% as.factor %>% as.numeric,
+          Endo = Endo %>% as.factor %>% as.numeric,
+          Herbivory=Herbivory %>% as.factor %>% as.numeric,
+          Population = Population %>% as.factor %>% as.numeric ) %>%
+  mutate( log_size_t0 = log(tiller_t),
+          surv_t1=surv1,
+          log_temp_mean = log(temp_mean),
+          log_temp_cv = log(temp_cv),
+          log_water_mean = log(water_mean),
+          log_water_cv = log(water_cv))->demography_climate_elvi_surv
+
+## Separate each variable to use the same model stan
+data_sites_surv_temp_mean <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                           n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                           # survival data
+                           n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                           site_s   = demography_climate_elvi_surv$Site,
+                           pop_s =  demography_climate_elvi_surv$Population,
+                           plot_s  = demography_climate_elvi_surv$Plot,
+                           temp_s=as.vector(demography_climate_elvi_surv$log_temp_mean),
+                          endo_s  = demography_climate_elvi_surv$Endo-1,
+                          herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                           size_s   = demography_climate_elvi_surv$log_size_t0,
+                           y_s      = demography_climate_elvi_surv$surv_t1,
+                           n_s      = nrow(demography_climate_elvi_surv))
+data_sites_surv_temp_cv <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                                   n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                                   # survival data
+                                   n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                                   site_s   = demography_climate_elvi_surv$Site,
+                                   pop_s =  demography_climate_elvi_surv$Population,
+                                   plot_s  = demography_climate_elvi_surv$Plot,
+                                   temp_s=as.vector(demography_climate_elvi_surv$log_temp_cv),
+                                   endo_s  = demography_climate_elvi_surv$Endo-1,
+                                   herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                   size_s   = demography_climate_elvi_surv$log_size_t0,
+                                   y_s      = demography_climate_elvi_surv$surv_t1,
+                                   n_s      = nrow(demography_climate_elvi_surv))
+data_sites_surv_water_mean <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                                 n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                                 # survival data
+                                 n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                                 site_s   = demography_climate_elvi_surv$Site,
+                                 pop_s =  demography_climate_elvi_surv$Population,
+                                 plot_s  = demography_climate_elvi_surv$Plot,
+                                 temp_s=as.vector(demography_climate_elvi_surv$water_mean),
+                                 endo_s  = demography_climate_elvi_surv$Endo-1,
+                                 herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                 size_s   = demography_climate_elvi_surv$log_size_t0,
+                                 y_s      = demography_climate_elvi_surv$surv_t1,
+                                 n_s      = nrow(demography_climate_elvi_surv))
+data_sites_surv_water_cv <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                                    n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                                    # survival data
+                                    n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                                    site_s   = demography_climate_elvi_surv$Site,
+                                    pop_s =  demography_climate_elvi_surv$Population,
+                                    plot_s  = demography_climate_elvi_surv$Plot,
+                                    temp_s=as.vector(demography_climate_elvi_surv$water_cv),
+                                    endo_s  = demography_climate_elvi_surv$Endo-1,
+                                    herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                    size_s   = demography_climate_elvi_surv$log_size_t0,
+                                    y_s      = demography_climate_elvi_surv$surv_t1,
+                                    n_s      = nrow(demography_climate_elvi_surv))
+## Running the stan model
+
+sim_pars <- list(
+  warmup = 1000, 
+  iter = 4000, 
+  thin = 3, 
+  chains = 3
+)
+
+fit_allsites_surv_temp_mean <- stan(
+ file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_survival.stan",
+ data = data_sites_surv_temp_mean,
+ warmup = sim_pars$warmup,
+ iter = sim_pars$iter,
+ thin = sim_pars$thin,
+ chains = sim_pars$chains)
+
+fit_allsites_surv_temp_cv <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_survival.stan",
+  data = data_sites_surv_temp_cv,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+fit_allsites_surv_water_mean <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_survival.stan",
+  data = data_sites_surv_water_mean,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+fit_allsites_surv_water_cv <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_survival.stan",
+  data = data_sites_surv_water_cv,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+## Chains convergence
+traceplot(fit_allsites_surv_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                 bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+pairs(fit_allsites_surv_temp_mean, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                           bendotemp_s,bherbtemp_s,bendoherb_s),las=1)
+traceplot(fit_allsites_surv_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                         bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+pairs(fit_allsites_surv_temp_cv, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                     bendotemp_s,bherbtemp_s,bendoherb_s),las=1)
+traceplot(fit_allsites_surv_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                         bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+pairs(fit_allsites_surv_temp_mean,pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                     bendotemp_s,bherbtemp_s,bendoherb_s),las=1)
+traceplot(fit_allsites_surv_water_mean, inc_warmup=TRUE,pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                         bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+pairs(fit_allsites_surv_water_mean,pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                     bendotemp_s,bherbtemp_s,bendoherb_s),las=1)
+## Save RDS file for further use
+# saveRDS(fit_allsites_surv_temp_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Survival/fit_allsites_surv_temp_mean.rds')
+# saveRDS(fit_allsites_surv_temp_cv, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Survival/fit_allsites_surv_temp_cv.rds')
+# saveRDS(fit_allsites_surv_water_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Survival/fit_allsites_surv_water_mean.rds')
+# saveRDS(fit_allsites_surv_water_cv, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Survival/fit_allsites_surv_water_cv.rds')
+
+#load stan output 
+fit_allsites_surv_temp_mean <- readRDS(url("https://www.dropbox.com/scl/fi/g3spz9lff9xy3153o96vo/fit_allsites_surv_temp_mean.rds?rlkey=jnv64cw87w1wi9te8brvfh7df&dl=1"))
+fit_allsites_surv_temp_cv <- readRDS(url("https://www.dropbox.com/scl/fi/vq8ryu7vgtp3yqs68ewff/fit_allsites_surv_temp_cv.rds?rlkey=i227tu61cp224hkjpgekox11r&dl=1"))
+fit_allsites_surv_water_mean <- readRDS(url("https://www.dropbox.com/scl/fi/at18rlo9e53pqc1tmmund/fit_allsites_surv_water_mean.rds?rlkey=hvvbxzn9g1x4brlidxcm147n3&dl=1"))
+fit_allsites_surv_water_cv <- readRDS(url("https://www.dropbox.com/scl/fi/wdnd6e2oc4zunmmhsvayn/fit_allsites_surv_water_cv.rds?rlkey=sbim89fp48gnsoagpk1r57t4k&dl=1"))
+
+
+## Model comparison based on epdl/looic 
+log_lik_surv_temp_mean <- loo::extract_log_lik(fit_allsites_surv_temp_mean, merge_chains = FALSE)
+r_eff_surv_temp_mean <- loo::relative_eff(exp(log_lik_surv_temp_mean))
+loo_surv_temp_mean <- loo(log_lik_surv_temp_mean, r_eff = r_eff_surv_temp_mean, cores = 1)
+plot(loo_surv_temp_mean)
+
+log_lik_surv_temp_cv <- loo::extract_log_lik(fit_allsites_surv_temp_cv, merge_chains = FALSE)
+r_eff_surv_temp_cv <- loo::relative_eff(exp(log_lik_surv_temp_cv))
+loo_surv_temp_cv <- loo(log_lik_surv_temp_cv, r_eff = r_eff_surv_temp_cv, cores = 3)
+plot(loo_surv_temp_cv)
+
+log_lik_surv_water_mean <- loo::extract_log_lik(fit_allsites_surv_water_mean, merge_chains = FALSE)
+r_eff_surv_water_mean <- loo::relative_eff(exp(log_lik_surv_water_mean))
+loo_surv_water_mean <- loo(log_lik_surv_water_mean, r_eff = r_eff_surv_water_mean, cores = 3)
+plot(loo_surv_water_mean)
+
+log_lik_surv_water_cv <- loo::extract_log_lik(fit_allsites_surv_water_cv, merge_chains = FALSE)
+r_eff_surv_water_cv <- loo::relative_eff(exp(log_lik_surv_water_cv))
+loo_surv_water_cv <- loo(log_lik_surv_water_cv, r_eff = r_eff_surv_water_cv, cores = 3)
+plot(loo_surv_water_cv)
+
+(comp_surv <- loo::loo_compare(loo_surv_temp_mean,loo_surv_temp_cv, loo_surv_water_mean,loo_surv_water_cv))
+
+
+## Read and format the growth data to build the model
+demography_climate_elvi$grow<-(log(demography_climate_elvi$tiller_t1) - log(demography_climate_elvi$tiller_t))# Relative growth rate
+hist(demography_climate_elvi$grow)
 
 demography_climate_elvi %>% 
-  filter(Tiller_23 >0)->demography_climate_elvi
-demography_climate_elvi$grow<-(log(demography_climate_elvi$Tiller_23) - log(demography_climate_elvi$ini_Tiller))# Relative growth rate
-#summary(demography_climate_elvi)
-demography_climate_elvi$Endo<-as.factor(demography_climate_elvi$Endo)
-demography_climate_elvi %>% 
-  mutate(genotype = interaction(Population,GreenhouseID))->demography_climate_elvi
-# table(demography_climate_elvi$genotype,demography_climate_elvi$Site)
-#view(demography_climate_elvi)
+  subset( tiller_t > 0 & tiller_t1 > 0)%>%
+  dplyr::select(year, Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, grow,temp_mean,temp_cv,water_mean,water_cv)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor %>% as.numeric,
+          Plot = Plot %>% as.factor %>% as.numeric,
+          site_plot=site_plot %>% as.factor %>% as.numeric,
+          Endo = Endo %>% as.factor %>% as.numeric,
+          Herbivory=Herbivory %>% as.factor %>% as.numeric,
+          Population = Population %>% as.factor %>% as.numeric ) %>%
+  mutate( log_size_t0 = log(tiller_t),
+          grow_t1=grow,
+          log_temp_mean = log(temp_mean),
+          log_temp_cv = log(temp_cv),
+          log_water_mean = log(water_mean),
+          log_water_cv = log(water_cv))->demography_climate_elvi_grow
 
-## Growth----
+## Separate each variable to use the same model stan
+data_sites_grow_temp_mean <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
+                                   n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
+                                   # survival data
+                                   n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
+                                   site_g   = demography_climate_elvi_grow$Site,
+                                   pop_g =  demography_climate_elvi_grow$Population,
+                                   plot_g  = demography_climate_elvi_grow$Plot,
+                                   temp_g=as.vector(demography_climate_elvi_grow$log_temp_mean),
+                                   endo_g  = demography_climate_elvi_grow$Endo-1,
+                                   herb_g  = demography_climate_elvi_grow$Herbivory-1,
+                                   size_g   = demography_climate_elvi_grow$log_size_t0,
+                                   y_g      = demography_climate_elvi_grow$grow_t1,
+                                   n_g      = nrow(demography_climate_elvi_grow))
 
-endostatus_growth_mods <- list()
-endostatus_growth_mods[[1]] <-lmer(grow ~ 1 + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[2]] <- lmer(grow ~ Endo + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[3]] <- lmer(grow ~ Endo + water_mean + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[4]] <- lmer(grow ~ Endo*water_mean + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[5]] <- lmer(grow ~ Endo + water_cv+ (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[6]] <- lmer(grow ~ Endo*water_cv+ (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[7]] <- lmer(grow ~ Endo + temp_mean + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[8]] <- lmer(grow ~ Endo*temp_mean + (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[9]] <- lmer(grow ~ Endo + temp_cv+ (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-endostatus_growth_mods[[10]] <- lmer(grow ~ Endo*temp_cv+ (1|Site/Plot) + (1|Population) , data=demography_climate_elvi,na.action = na.omit)
-
-AICtab(endostatus_growth_mods)
-summary(endostatus_growth_mods[[10]])
-
-# ranef(endostatus_growth_mods[[10]])$Site
-
-coefgrowth<-fixef(endostatus_growth_mods[[10]])
-s.igEndo0<-coefgrowth[1]			## intercept for Endo 0
-s.sgEndo0<-coefgrowth[3]			## slope for for Endo 0
-
-s.igEndo1 <-coefgrowth[2]+s.igEndo0	## intercept for Endo 1
-s.sgEndo1 <-coefgrowth[4]+s.sgEndo0	## slope for Endo 1
-
-# Number inflorescence ---- 
-endostatus_inf_mods<-list()
-endostatus_inf_mods[[1]] <- glmmTMB(Inf_23 ~ 1+ (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi,na.action = na.omit)
-endostatus_inf_mods[[2]] <- glmmTMB(Inf_23 ~ Endo + (1|Site/Plot) + (1|Population),ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[3]] <- glmmTMB(Inf_23 ~ Endo + water_mean + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[4]] <- glmmTMB(Inf_23 ~ Endo*water_mean + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[5]] <- glmmTMB(Inf_23 ~ Endo + water_cv + (1|Site/Plot) + (1|Population), ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_inf_mods[[6]] <- glmmTMB(Inf_23 ~ Endo*water_cv + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[7]] <- glmmTMB(Inf_23 ~ Endo + temp_mean + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[8]] <- glmmTMB(Inf_23 ~ Endo*temp_mean + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-endostatus_inf_mods[[9]] <- glmmTMB(Inf_23 ~ Endo + temp_cv + (1|Site/Plot) + (1|Population), ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_inf_mods[[10]] <- glmmTMB(Inf_23 ~ Endo*temp_cv + (1|Site/Plot) + (1|Population) ,ziformula = ~1,family = nbinom2,  data=demography_climate_elvi)
-
-AICtab(endostatus_inf_mods)
-summary(endostatus_inf_mods[[9]])
-
-coefinf<-fixef(endostatus_inf_mods[[9]])
-s.iiEndo0<-coefinf[1]$cond[1]			## intercept for Endo 0
-s.siEndo0<-coefinf[1]$cond[3]			## slope for for Endo 0
-
-s.iiEndo1 <-coefinf[1]$cond[2]+ s.iiEndo0	## intercept for Endo 1
-s.siEndo1 <- s.siEndo0	## slope for Endo 1
-
-# Number of spikelet 
-
-demography_climate_elvi$mean_spikelet<-round(rowMeans(demography_climate_elvi[,c(13,14,15)]),0)
-endostatus_spike_mods<-list()
-endostatus_spike_mods[[1]] <- glmmTMB(mean_spikelet ~ 1 + (1|Site/Plot) + (1|Population)  , data=demography_climate_elvi,ziformula = ~1,family = nbinom2)
-endostatus_spike_mods[[2]] <- glmmTMB(mean_spikelet ~ Endo + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[3]] <- glmmTMB(mean_spikelet ~ Endo + water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[4]] <- glmmTMB(mean_spikelet ~ Endo*water_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[5]] <- glmmTMB(mean_spikelet ~ Endo + water_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[6]] <- glmmTMB(mean_spikelet ~ Endo*water_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
-endostatus_spike_mods[[7]] <- glmmTMB(mean_spikelet ~ Endo + temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[8]] <- glmmTMB(mean_spikelet ~ Endo*temp_mean + (1|Site/Plot) + (1|Plot/Population) ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[9]] <- glmmTMB(mean_spikelet ~ Endo + temp_cv + (1|Site/Plot) + (1|Plot/Population)  ,ziformula = ~1,family = nbinom2, data=demography_climate_elvi)
-endostatus_spike_mods[[10]] <- glmmTMB(mean_spikelet ~ Endo*temp_cv + (1|Site/Plot) + (1|Plot/Population) , ziformula = ~1,family = nbinom2,data=demography_climate_elvi)
-
-
-AICtab(endostatus_spike_mods)
-summary(endostatus_spike_mods[[5]])
+data_sites_grow_temp_cv <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
+                                 n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
+                                 # survival data
+                                 n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
+                                 site_s   = demography_climate_elvi_grow$Site,
+                                 pop_s =  demography_climate_elvi_surv$Population,
+                                 plot_s  = demography_climate_elvi_surv$Plot,
+                                 temp_s=as.vector(demography_climate_elvi_surv$log_temp_cv),
+                                 endo_s  = demography_climate_elvi_surv$Endo-1,
+                                 herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                 size_s   = demography_climate_elvi_surv$log_size_t0,
+                                 y_s      = demography_climate_elvi_surv$surv_t1,
+                                 n_s      = nrow(demography_climate_elvi_surv))
+data_sites_surv_water_mean <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                                    n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                                    # survival data
+                                    n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                                    site_s   = demography_climate_elvi_surv$Site,
+                                    pop_s =  demography_climate_elvi_surv$Population,
+                                    plot_s  = demography_climate_elvi_surv$Plot,
+                                    temp_s=as.vector(demography_climate_elvi_surv$water_mean),
+                                    endo_s  = demography_climate_elvi_surv$Endo-1,
+                                    herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                    size_s   = demography_climate_elvi_surv$log_size_t0,
+                                    y_s      = demography_climate_elvi_surv$surv_t1,
+                                    n_s      = nrow(demography_climate_elvi_surv))
+data_sites_surv_water_cv <- list( n_sites    = demography_climate_elvi_surv$Site %>% n_distinct,
+                                  n_pops  = demography_climate_elvi_surv$Population %>% n_distinct(),
+                                  # survival data
+                                  n_plot_s = demography_climate_elvi_surv$Plot %>% n_distinct,
+                                  site_s   = demography_climate_elvi_surv$Site,
+                                  pop_s =  demography_climate_elvi_surv$Population,
+                                  plot_s  = demography_climate_elvi_surv$Plot,
+                                  temp_s=as.vector(demography_climate_elvi_surv$water_cv),
+                                  endo_s  = demography_climate_elvi_surv$Endo-1,
+                                  herb_s  = demography_climate_elvi_surv$Herbivory-1,
+                                  size_s   = demography_climate_elvi_surv$log_size_t0,
+                                  y_s      = demography_climate_elvi_surv$surv_t1,
+                                  n_s      = nrow(demography_climate_elvi_surv))
 
 
 
-coefspk<-fixef(endostatus_spike_mods[[5]])
-s.isEndo0<-coefspk[1]$cond[1]			## intercept for Endo 0
-s.ssEndo0<-coefspk[1]$cond[3]			## slope for for Endo 0
-
-s.isEndo1 <-coefspk[1]$cond[2]+ s.isEndo0	## intercept for Endo 1
-s.ssEndo1 <- s.ssEndo0	## slope for Endo 1
-
-
-
-# Plot the relationships between each vital rate and the water CV/ Water mean 
-cbPalette <- c("#999999", "#E69F00")
-water_cv_seq<-seq(min(na.omit(demography_climate_elvi$water_cv)),max(na.omit(demography_climate_elvi$water_cv)),length.out=20)
-water_mean_seq<-seq(min(na.omit(demography_climate_elvi$water_mean)),max(na.omit(demography_climate_elvi$water_mean)),length.out=20)
-temp_cv_seq<-seq(min(na.omit(demography_climate_elvi$temp_cv)),max(na.omit(demography_climate_elvi$temp_cv)),length.out=20)
-temp_mean_seq<-seq(min(na.omit(demography_climate_elvi$temp_mean)),max(na.omit(demography_climate_elvi$temp_mean)),length.out=20)
-
-
-pdf("/Users/jmoutouama/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Bestmodels.pdf",height=3,width =9,useDingbats = F)
-# layout(mat = layout.matrix,
-#        heights = rep(c(1, 1,1),2), # Heights of the two rows
-#        widths = c(3, 3,3))
-# layout.show(3)
-# par(oma=c(5,1,0.5,0.5))
-
-par(mfrow=c(1,3),mar=c(5,5,2,1))
-with(demography_climate_elvi,{
-  # par(mar=c(4,4,2,4))
-  plot(temp_cv,grow,cex.lab=1.5,xlab="Soil temperature (CV)",ylab="Growth rate");box()
-  points(jitter(temp_cv),jitter(grow),bg=cbPalette,pch=21,col=NA,cex=2,lwd=2)
-  title("A",adj=0)
-  lines(temp_cv_seq,(s.igEndo0 + s.sgEndo0*temp_cv_seq),col=cbPalette[1],lwd=3,)
-  lines(temp_cv_seq,(s.igEndo1 + s.sgEndo1*temp_cv_seq),col=cbPalette[2],lwd=3,)
-})
-
-with(demography_climate_elvi,{
-  # par(mar=c(4,4,2,4))
-  plot(temp_cv,Inf_23,cex.lab=1.5,xlab="Soil temperature (CV)",ylab="# Inflorescences");box()
-  points(jitter(temp_cv),jitter(Inf_23),bg=cbPalette,pch=21,col=NA,cex=2,lwd=2)
-  title("B",adj=0)
-  lines(temp_cv_seq,exp(s.iiEndo0 + s.siEndo0*temp_cv_seq),col=cbPalette[1],lwd=3,)
-  lines(temp_cv_seq,exp(s.iiEndo1 + s.siEndo1*temp_cv_seq),col=cbPalette[2],lwd=3,)
-})
-
-with(demography_climate_elvi,{
-  # par(mar=c(4,4,2,4))
-  plot(water_cv,mean_spikelet,cex.lab=1.5,xlab="Soil Water (CV)",ylab="# Spikelets");box()
-  points(jitter(water_cv),jitter(mean_spikelet),bg=cbPalette,pch=21,col=NA,cex=2,lwd=2)
-  title("C",adj=0)
-  lines(water_cv_seq,exp(s.isEndo0 + s.ssEndo0*water_cv_seq),col=cbPalette[1],lwd=3,)
-  lines(water_cv_seq,exp(s.isEndo1 + s.ssEndo1*water_cv_seq),col=cbPalette[2],lwd=3,)
-  legend("topright",legend=c("E-","E+"),lwd=2,col =cbPalette ,bty="n",cex=1)
-})
-
-dev.off()
-
-
+fit_allsites_grow_temp_mean <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_growth.stan",
+  data = data_sites_grow_temp_mean,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
