@@ -9,11 +9,21 @@ data {
   int<lower=1> site_g[n_g];  // site index
   int<lower=1> plot_g[n_g];  // plot index
   int<lower=1> pop_g[n_g];  // population  index
-  real y_g[n_g]; // growth betwen t and t+1.
+  vector[n_g] y_g; // growth betwen t and t+1.
   vector[n_g] endo_g;  // endophyte status (positive=1, negative=0)
   vector[n_g] herb_g;  // herbivory  (herb=1, noherb=0)
   vector[n_g] temp_g;  // temperature 
   
+}
+
+transformed data {
+  int Kc = n_plot_g - 1;
+  matrix[n_g, Kc] Xc;  // centered version of X without an intercept
+  vector[Kc] means_X;  // column means of X before centering
+  for (i in 2:K) {
+    means_X[i - 1] = mean(X[, i]);
+    Xc[, i - 1] = X[, i] - means_X[i - 1];
+  }
 }
 
 parameters {
@@ -25,10 +35,11 @@ parameters {
   real btemp_g;  
   real bendotemp_g;  
   real bherbtemp_g; 
-  real bendoherb_g;  
-  //real btemp2_g;  
-  //real bendotemp2_g;
-  //real bherbtemp2_g;
+  real bendoherb_g; 
+  real<lower=0> sigma_g; 
+  //real dtemp2_g;  
+  //real dendotemp2_g;
+  //real dherbtemp2_g;
    
   //random effects
   real<lower=0> plot_tau_g; 
@@ -37,7 +48,6 @@ parameters {
   real pop_rfx_g[n_pops];
   real<lower=0> site_tau_g; 
   real site_rfx_g[n_sites];
-  real<lower=0> sigma_g;
   }
 
 transformed parameters {
@@ -71,16 +81,17 @@ transformed parameters {
 model {
   // priors on parameters
   //Growth
-  b0_g ~ normal(0,1);    
-  bendo_g ~ normal(0,1);   
-  bherb_g ~ normal(0,1); 
-  btemp_g ~ normal(0,1);  
-  bendotemp_g ~ normal(0,1);  
-  bherbtemp_g ~ normal(0,1); 
-  bendoherb_g ~ normal(0,1); 
-  //btemp2_g ~ normal(0,1);  
-  //bendotemp2_g ~ normal(0,1);
-  //bherbtemp2_g ~ normal(0,1);
+  b0_g ~ student_t(3,0,2.5);    
+  bendo_g ~ student_t (3,0,2.5);   
+  bherb_g ~ student_t (3,0,2.5); 
+  btemp_g ~ student_t (3,0,2.5);  
+  bendotemp_g ~ student_t (3,0,2.5);  
+  bherbtemp_g ~ student_t(3,0,2.5); 
+  bendoherb_g ~ student_t (3,0,2.5);
+  sigma_g ~ student_t (3,0,2.5);
+  //btemp2_g ~ normal(0,1000);  
+  //bendotemp2_g ~ normal(0,1000);
+  //bherbtemp2_g ~ normal(0,1000);
   plot_tau_g ~ inv_gamma(0.1, 0.1);
   for (i in 1:n_plot_g){
     plot_rfx_g[i] ~ normal(0, plot_tau_g);
@@ -93,7 +104,8 @@ model {
   for (i in 1:n_sites){
     site_rfx_g[i] ~ normal(0, site_tau_g);
   }
-
+  
+  
   // sampling  
 
   //growth
@@ -105,7 +117,7 @@ model {
 generated quantities {
   vector[n_g] log_lik;
   for (i in 1:n_g) {
- log_lik[i] = normal_lpdf (y_g[i] |predG[i],sigma_g);
+ log_lik[i] = normal_id_glm_lpdf (y_g[i] | Xc, pop_rfx_g,predG[i],sigma_g);
  }
 }
 

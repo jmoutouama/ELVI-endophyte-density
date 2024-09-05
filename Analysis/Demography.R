@@ -232,8 +232,8 @@ demography_climate_elvi$site_plot<-interaction(demography_climate_elvi$Site,demo
 # view(demography_climate_elvi)
 # summary(demography_climate_elvi)
 # H1: We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
-## Survival 
 
+## Survival 
 ## Read and format survival data to build the model
 demography_climate_elvi %>% 
   subset( tiller_t > 0 )%>%
@@ -376,7 +376,6 @@ fit_allsites_surv_temp_cv <- readRDS(url("https://www.dropbox.com/scl/fi/vq8ryu7
 fit_allsites_surv_water_mean <- readRDS(url("https://www.dropbox.com/scl/fi/at18rlo9e53pqc1tmmund/fit_allsites_surv_water_mean.rds?rlkey=hvvbxzn9g1x4brlidxcm147n3&dl=1"))
 fit_allsites_surv_water_cv <- readRDS(url("https://www.dropbox.com/scl/fi/wdnd6e2oc4zunmmhsvayn/fit_allsites_surv_water_cv.rds?rlkey=sbim89fp48gnsoagpk1r57t4k&dl=1"))
 
-
 ## Model comparison based on epdl/looic 
 log_lik_surv_temp_mean <- loo::extract_log_lik(fit_allsites_surv_temp_mean, merge_chains = FALSE)
 r_eff_surv_temp_mean <- loo::relative_eff(exp(log_lik_surv_temp_mean))
@@ -400,9 +399,138 @@ plot(loo_surv_water_cv)
 
 (comp_surv <- loo::loo_compare(loo_surv_temp_mean,loo_surv_temp_cv, loo_surv_water_mean,loo_surv_water_cv))
 
+## Flowering 
+demography_climate_elvi %>% 
+  subset( tiller_t1 > 0 )%>%
+  dplyr::select(year, Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t1, inf_t1,temp_mean,temp_cv,water_mean,water_cv)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor %>% as.numeric,
+          Plot = Plot %>% as.factor %>% as.numeric,
+          site_plot=site_plot %>% as.factor %>% as.numeric,
+          Endo = Endo %>% as.factor %>% as.numeric,
+          Herbivory=Herbivory %>% as.factor %>% as.numeric,
+          Population = Population %>% as.factor %>% as.numeric ) %>%
+  mutate( flow_t1=inf_t1,
+          log_temp_mean = log(temp_mean),
+          log_temp_cv = log(temp_cv),
+          log_water_mean = log(water_mean),
+          log_water_cv = log(water_cv))->demography_climate_elvi_flowering
+# hist(demography_climate_elvi_flowering$flow_t1)
+## Separate each variable to use the same model stan
+data_sites_flow_temp_mean <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
+                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
+                                   # survival data
+                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
+                                   site_f   = demography_climate_elvi_flowering$Site,
+                                   pop_f =  demography_climate_elvi_flowering$Population,
+                                   plot_f  = demography_climate_elvi_flowering$Plot,
+                                   temp_f=as.vector(demography_climate_elvi_flowering$log_temp_mean),
+                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
+                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
+                                   y_f      = demography_climate_elvi_flowering$flow_t1,
+                                   n_f      = nrow(demography_climate_elvi_flowering))
+
+data_sites_flow_temp_cv <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
+                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
+                                   # survival data
+                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
+                                   site_f   = demography_climate_elvi_flowering$Site,
+                                   pop_f =  demography_climate_elvi_flowering$Population,
+                                   plot_f  = demography_climate_elvi_flowering$Plot,
+                                   temp_f=as.vector(demography_climate_elvi_flowering$log_temp_cv),
+                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
+                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
+                                   y_f      = demography_climate_elvi_flowering$flow_t1,
+                                   n_f      = nrow(demography_climate_elvi_flowering))
+
+data_sites_flow_water_mean <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
+                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
+                                   # survival data
+                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
+                                   site_f   = demography_climate_elvi_flowering$Site,
+                                   pop_f =  demography_climate_elvi_flowering$Population,
+                                   plot_f  = demography_climate_elvi_flowering$Plot,
+                                   temp_f=as.vector(demography_climate_elvi_flowering$log_water_mean),
+                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
+                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
+                                   y_f      = demography_climate_elvi_flowering$flow_t1,
+                                   n_f      = nrow(demography_climate_elvi_flowering))
+
+data_sites_flow_water_cv <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
+                                 n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
+                                 # survival data
+                                 n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
+                                 site_f   = demography_climate_elvi_flowering$Site,
+                                 pop_f =  demography_climate_elvi_flowering$Population,
+                                 plot_f  = demography_climate_elvi_flowering$Plot,
+                                 temp_f=as.vector(demography_climate_elvi_flowering$log_water_cv),
+                                 endo_f  = demography_climate_elvi_flowering$Endo-1,
+                                 herb_f  = demography_climate_elvi_flowering$Herbivory-1,
+                                 y_f      = demography_climate_elvi_flowering$flow_t1,
+                                 n_f      = nrow(demography_climate_elvi_flowering))
+
+fit_allsites_flow_temp_mean <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_flowering.stan",
+  data = data_sites_flow_temp_mean,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+fit_allsites_flow_temp_cv <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_flowering.stan",
+  data = data_sites_flow_temp_cv,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+fit_allsites_flow_water_mean <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_flowering.stan",
+  data = data_sites_flow_water_mean,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+fit_allsites_flow_water_cv <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_flowering.stan",
+  data = data_sites_flow_water_cv,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+
+
+
+traceplot(fit_allsites_flow_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                         bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+pairs(fit_allsites_flow_temp_mean, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                     bendotemp_f,bherbtemp_f,bendoherb_f),las=1)
+traceplot(fit_allsites_flow_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                         bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+pairs(fit_allsites_flow_temp_cv, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                     bendotemp_f,bherbtemp_f,bendoherb_f),las=1)
+traceplot(fit_allsites_flow_water_mean,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                       bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+pairs(fit_allsites_flow_water_mean, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                   bendotemp_f,bherbtemp_f,bendoherb_f),las=1)
+traceplot(fit_allsites_flow_water_cv,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                          bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+pairs(fit_allsites_flow_water_cv, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                      bendotemp_f,bherbtemp_f,bendoherb_f),las=1)
+
+# Save RDS file for further use
+# saveRDS(fit_allsites_flow_temp_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Flowering/fit_allsites_flow_temp_mean.rds')
+# saveRDS(fit_allsites_flow_temp_cv, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Flowering/fit_allsites_flow_temp_cv.rds')
+# saveRDS(fit_allsites_flow_water_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Flowering/fit_allsites_flow_water_mean.rds')
+# saveRDS(fit_allsites_flow_water_cv, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/output/Flowering/fit_allsites_flow_water_cv.rds')
+
 
 ## Read and format the growth data to build the model
-demography_climate_elvi$grow<-(log(demography_climate_elvi$tiller_t1) - log(demography_climate_elvi$tiller_t))# Relative growth rate
+demography_climate_elvi$grow<-(log(demography_climate_elvi$tiller_t1+1) - log(demography_climate_elvi$tiller_t+1))# Relative growth rate
 hist(demography_climate_elvi$grow)
 
 demography_climate_elvi %>% 
@@ -437,7 +565,7 @@ data_sites_grow_temp_mean <- list( n_sites    = demography_climate_elvi_grow$Sit
                                    size_g   = demography_climate_elvi_grow$log_size_t0,
                                    y_g      = demography_climate_elvi_grow$grow_t1,
                                    n_g      = nrow(demography_climate_elvi_grow))
-
+summary(data_sites_grow_temp_mean$y_g)
 data_sites_grow_temp_cv <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
                                  n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
                                  # survival data
@@ -478,8 +606,6 @@ data_sites_surv_water_cv <- list( n_sites    = demography_climate_elvi_surv$Site
                                   y_s      = demography_climate_elvi_surv$surv_t1,
                                   n_s      = nrow(demography_climate_elvi_surv))
 
-
-
 fit_allsites_grow_temp_mean <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/elvi_growth.stan",
   data = data_sites_grow_temp_mean,
@@ -487,3 +613,38 @@ fit_allsites_grow_temp_mean <- stan(
   iter = sim_pars$iter,
   thin = sim_pars$thin,
   chains = sim_pars$chains)
+
+traceplot(fit_allsites_grow_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,
+                                                                         bendotemp_g,bherbtemp_g,bendoherb_g))+theme_bw()
+pairs(fit_allsites_grow_temp_mean, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,
+                                                     bendotemp_g,bherbtemp_g,bendoherb_g),las=1)
+
+
+demography_climate_elvi %>% 
+  subset( tiller_t > 0 & tiller_t1 > 0)%>%
+  dplyr::select(year, Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, grow,temp_mean,temp_cv,water_mean,water_cv)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor,
+          Plot = Plot %>% as.factor,
+          site_plot=site_plot %>% as.factor ,
+          Endo = Endo %>% as.factor,
+          Herbivory=Herbivory %>% as.factor,
+          Population = Population %>% as.factor) %>%
+  mutate( log_size_t0 = log(tiller_t),
+          grow_t1=grow,
+          log_temp_mean = log(temp_mean),
+          log_temp_cv = log(temp_cv),
+          log_water_mean = log(water_mean),
+          log_water_cv = log(water_cv))->demography_climate_elvi_grow_brms
+
+
+modg = brms::brm(
+  grow_t1 ~ log_temp_mean + Endo + Herbivory + log_temp_mean*Endo + log_temp_mean*Herbivory + (1|Population) + (1|Site/Plot), data = demography_climate_elvi_grow_brms,
+  family = 'gaussian',
+  prior = set_prior('normal(0, 3)'), iter = 1000,
+  chains = 4,
+  cores = 4
+)
+
+plot(modg)
