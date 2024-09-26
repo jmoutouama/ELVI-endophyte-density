@@ -585,7 +585,7 @@ fit_allsites_spi_water_cv <- stan(
   thin = sim_pars$thin,
   chains = sim_pars$chains)
 
-# Save RDS file for further use
+#Save RDS file for further use
 # saveRDS(fit_allsites_spi_temp_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/Stan output/Spikelet/fit_allsites_spi_temp_mean.rds')
 # saveRDS(fit_allsites_spi_temp_cv, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/Stan output/Spikelet/fit_allsites_spi_temp_cv.rds')
 # saveRDS(fit_allsites_spi_water_mean, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Analysis/stan/Stan output/Spikelet/fit_allsites_spi_water_mean.rds')
@@ -723,43 +723,43 @@ fit_allsites_spi_water_mean <- readRDS(url("https://www.dropbox.com/scl/fi/yfblw
 fit_allsites_spi_water_cv <- readRDS(url("https://www.dropbox.com/scl/fi/9c1g64vktpipekcsyr8l0/fit_allsites_spi_water_cv.rds?rlkey=8t0zy6tjbldjmr2zwv8zmoazi&dl=1"))
 
 fit_allsites_grow_temp_mean <- readRDS(url("https://www.dropbox.com/scl/fi/1i3e3yt01df9t7zwkzbew/fit_allsites_grow_temp_mean.rds?rlkey=7xy0kzfycilta76t7ixwjfune&dl=1"))
-fit_allsites_grow_temp_cv <- readRDS(url("https://www.dropbox.com/scl/fi/xvj2a3qmnr91gl5cgkh4y/fit_allsites_grow_temp_cv.rds?rlkey=q45tc1kv1jvnnxk37yi6xxhm6&dl=1"))
+fit_allsites_grow_temp_cv <- readRDS(url("https://www.dropbox.com/scl/fi/vc0saw1n88gyrkl2uwu4j/fit_allsites_spi_temp_cv.rds?rlkey=xuqq69qcgxwunha8yld2lbxl4&dl=1"))
 fit_allsites_grow_water_mean <- readRDS(url("https://www.dropbox.com/scl/fi/a2dprxvwrvzshv0xn45ww/fit_allsites_grow_water_mean.rds?rlkey=vt74d5ixqjzj4nbpllco1juxp&dl=1"))
 fit_allsites_grow_water_cv <- readRDS(url("https://www.dropbox.com/scl/fi/jccvkcexr1e3mkjl6yrpx/fit_allsites_grow_water_cv.rds?rlkey=4cc0t8d5joi8aoqd3dbxk3rbh&dl=1"))
 
 ## Chains convergence
-traceplot(fit_allsites_surv_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
-                                                                         bendotemp_s,bherbtemp_s))+theme_bw()
-traceplot(fit_allsites_surv_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
-                                                                       bendotemp_s,bherbtemp_s))+theme_bw()
-traceplot(fit_allsites_surv_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
-                                                                         bendotemp_s,bherbtemp_s))+theme_bw()
-traceplot(fit_allsites_surv_water_mean, inc_warmup=TRUE,pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
-                                                                          bendotemp_s,bherbtemp_s))+theme_bw()
-traceplot(fit_allsites_flow_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
-                                                                         bendotemp_f,bherbtemp_f))+theme_bw()
-traceplot(fit_allsites_flow_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
-                                                                       bendotemp_f,bherbtemp_f))+theme_bw()
-traceplot(fit_allsites_flow_water_mean,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
-                                                                          bendotemp_f,bherbtemp_f))+theme_bw()
-traceplot(fit_allsites_flow_water_cv,inc_warmup=TRUE, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
-                                                                        bendotemp_f,bherbtemp_f))+theme_bw()
-traceplot(fit_allsites_spi_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
-                                                                        bendotemp_spk,bherbtemp_spk))+theme_bw()
-traceplot(fit_allsites_spi_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
-                                                                      bendotemp_spk,bherbtemp_spk))+theme_bw()
-traceplot(fit_allsites_spi_water_mean,inc_warmup=TRUE, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
-                                                                         bendotemp_spk,bherbtemp_spk))+theme_bw()
-traceplot(fit_allsites_spi_water_cv,inc_warmup=TRUE, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
-                                                                       bendotemp_spk,bherbtemp_spk))+theme_bw()
-traceplot(fit_allsites_grow_temp_mean,inc_warmup=TRUE, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
-                                                                         bherbtemp_g))+theme_bw()
-traceplot(fit_allsites_grow_temp_cv,inc_warmup=TRUE, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
-                                                                       bherbtemp_g))+theme_bw()
-traceplot(fit_allsites_grow_water_mean,inc_warmup=TRUE, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
-                                                                          bherbtemp_g))+theme_bw()
-traceplot(fit_allsites_grow_water_cv,inc_warmup=TRUE, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
-                                                                        bherbtemp_g))+theme_bw()
+mcmc_trace(fit_allsites_surv_temp_mean, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                                         bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+mcmc_trace(fit_allsites_surv_temp_cv, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                                       bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+mcmc_trace(fit_allsites_surv_temp_mean, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                                         bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+mcmc_trace(fit_allsites_surv_water_mean,pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,btemp_s,
+                                                                          bendotemp_s,bherbtemp_s,bendoherb_s))+theme_bw()
+mcmc_trace(fit_allsites_flow_temp_mean, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                         bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+mcmc_trace(fit_allsites_flow_temp_cv, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                       bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+mcmc_trace(fit_allsites_flow_water_mean, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                          bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+mcmc_trace(fit_allsites_flow_water_cv, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,btemp_f,
+                                                                        bendotemp_f,bherbtemp_f,bendoherb_f))+theme_bw()
+mcmc_trace(fit_allsites_spi_temp_mean, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
+                                                                        bendotemp_spk,bherbtemp_spk,bendoherb_spk))+theme_bw()
+mcmc_trace(fit_allsites_spi_temp_cv, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
+                                                                      bendotemp_spk,bherbtemp_spk,bendoherb_spk))+theme_bw()
+mcmc_trace(fit_allsites_spi_water_mean,pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
+                                                                         bendotemp_spk,bherbtemp_spk,bendoherb_spk))+theme_bw()
+mcmc_trace(fit_allsites_spi_water_cv, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,btemp_spk,
+                                                                       bendotemp_spk,bherbtemp_spk,bendoherb_spk))+theme_bw()
+mcmc_trace(fit_allsites_grow_temp_mean, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
+                                                                         bherbtemp_g,bendoherb_g))+theme_bw()
+mcmc_trace(fit_allsites_grow_temp_cv, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
+                                                                       bherbtemp_g,bendoherb_g))+theme_bw()
+mcmc_trace(fit_allsites_grow_water_mean, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
+                                                                          bherbtemp_g,bendoherb_g))+theme_bw()
+mcmc_trace(fit_allsites_grow_water_cv, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,btemp_g,bendotemp_g,
+                                                                        bherbtemp_g,bendoherb_g))+theme_bw()
 
 
 ## Posterior predictive check for survival
@@ -770,7 +770,7 @@ traceplot(fit_allsites_grow_water_cv,inc_warmup=TRUE, pars = quote_bare(b0_g,ben
 log_lik_surv_temp_mean <- loo::extract_log_lik(fit_allsites_surv_temp_mean, merge_chains = FALSE)
 r_eff_surv_temp_mean <- loo::relative_eff(exp(log_lik_surv_temp_mean))
 loo_surv_temp_mean <- loo(log_lik_surv_temp_mean, r_eff = r_eff_surv_temp_mean, cores = 1)
-#plot(loo_surv_temp_mean)
+plot(loo_surv_temp_mean)
 
 log_lik_surv_temp_cv <- loo::extract_log_lik(fit_allsites_surv_temp_cv, merge_chains = FALSE)
 r_eff_surv_temp_cv <- loo::relative_eff(exp(log_lik_surv_temp_cv))
@@ -816,22 +816,22 @@ loo_grow_water_cv <- loo(log_lik_grow_water_cv, r_eff = r_eff_grow_water_cv, cor
 log_lik_flow_temp_mean <- loo::extract_log_lik(fit_allsites_flow_temp_mean, merge_chains = FALSE)
 r_eff_flow_temp_mean <- loo::relative_eff(exp(log_lik_flow_temp_mean))
 loo_flow_temp_mean <- loo(log_lik_flow_temp_mean, r_eff = r_eff_flow_temp_mean, cores = 1)
-plot(loo_flow_temp_mean)
+# plot(loo_flow_temp_mean)
 
 log_lik_flow_temp_cv <- loo::extract_log_lik(fit_allsites_flow_temp_cv, merge_chains = FALSE)
 r_eff_flow_temp_cv <- loo::relative_eff(exp(log_lik_flow_temp_cv))
 loo_flow_temp_cv <- loo(log_lik_flow_temp_cv, r_eff = r_eff_flow_temp_cv, cores = 3)
-plot(loo_flow_temp_cv)
+# plot(loo_flow_temp_cv)
 
 log_lik_flow_water_mean <- loo::extract_log_lik(fit_allsites_flow_water_mean, merge_chains = FALSE)
 r_eff_flow_water_mean <- loo::relative_eff(exp(log_lik_flow_water_mean))
 loo_flow_water_mean <- loo(log_lik_flow_water_mean, r_eff = r_eff_flow_water_mean, cores = 3)
-plot(loo_flow_water_mean)
+# plot(loo_flow_water_mean)
 
 log_lik_flow_water_cv <- loo::extract_log_lik(fit_allsites_flow_water_cv, merge_chains = FALSE)
 r_eff_flow_water_cv <- loo::relative_eff(exp(log_lik_flow_water_cv))
 loo_flow_water_cv <- loo(log_lik_flow_water_cv, r_eff = r_eff_flow_water_cv, cores = 3)
-plot(loo_flow_water_cv)
+# plot(loo_flow_water_cv)
 
 (comp_flow <- loo::loo_compare(loo_flow_temp_mean,loo_flow_temp_cv, loo_flow_water_mean,loo_flow_water_cv))
 
@@ -862,16 +862,17 @@ loo_spi_water_cv <- loo(log_lik_spi_water_cv, r_eff = r_eff_spi_water_cv, cores 
 posterior_surv <- as.array(fit_allsites_surv_temp_cv)
 color_scheme_set("red")
 surv<-mcmc_intervals(posterior_surv, pars = quote_bare(b0_s,bendo_s,bherb_s,btemp_s,
-                                                       bendotemp_s,bherbtemp_s)) + 
+                                                       bendotemp_s,bherbtemp_s,bendoherb_s)) + 
   ggplot2::scale_y_discrete(limits = c("b0_s","bendo_s","bherb_s","btemp_s",
-                                       "bendotemp_s","bherbtemp_s"),
+                                       "bendotemp_s","bherbtemp_s","bendoherb_s"),
                             labels=c("b0_s"="Intercept",
                                      "bendo_s"="Endophyte",
                                      "bherb_s"="Herbivory",
                                      "bsizesex_s"="size:sex",
                                      "btemp_s"="Temperature",
                                      "bendotemp_s"="Endo:Temp",
-                                     "bherbtemp_s"="Herb:Temp"))+
+                                     "bherbtemp_s"="Herb:Temp",
+                                     "bendoherb_s"="Endo:Herb"))+
   geom_vline(xintercept = 0, linetype = "dashed", size = 0.6, alpha = 0.6, color = "black") +
   labs(color = "Interaction type:")+
   xlab("Posterior estimates (Survival)")+
@@ -892,16 +893,17 @@ surv<-mcmc_intervals(posterior_surv, pars = quote_bare(b0_s,bendo_s,bherb_s,btem
 
 posterior_grow <- as.array(fit_allsites_grow_temp_cv)
 grow<-mcmc_intervals(posterior_grow, pars = quote_bare(b0_g,bendo_g,bherb_g,btemp_g,
-                                                       bendotemp_g,bherbtemp_g)) + 
+                                                       bendotemp_g,bherbtemp_g,bendoherb_g)) + 
   ggplot2::scale_y_discrete(limits = c("b0_g","bendo_g","bherb_g","btemp_g",
-                                       "bendotemp_g","bherbtemp_g"),
+                                       "bendotemp_g","bherbtemp_g","bendoherb_g"),
                             labels=c("b0_g"="Intercept",
                                      "bendo_g"="Endophyte",
                                      "bherb_g"="Herbivory",
                                      "bsizesex_g"="size:sex",
                                      "btemp_g"="Temperature",
                                      "bendotemp_g"="Endo:Temp",
-                                     "bherbtemp_g"="Herb:Temp"))+
+                                     "bherbtemp_g"="Herb:Temp",
+                                     "bendoherb_g"="Endo:Herb"))+
   geom_vline(xintercept = 0, linetype = "dashed", size = 0.6, alpha = 0.6, color = "black") +
   labs(color = "Interaction type:")+
   xlab("Posterior estimates (Growth)")+
@@ -922,16 +924,17 @@ grow<-mcmc_intervals(posterior_grow, pars = quote_bare(b0_g,bendo_g,bherb_g,btem
 
 posterior_flow <- as.array(fit_allsites_flow_temp_cv)
 flow<-mcmc_intervals(posterior_flow, pars = quote_bare(b0_f,bendo_f,bherb_f,btemp_f,
-                                                       bendotemp_f,bherbtemp_f)) + 
+                                                       bendotemp_f,bherbtemp_f,bendoherb_f)) + 
   ggplot2::scale_y_discrete(limits = c("b0_f","bendo_f","bherb_f","btemp_f",
-                                       "bendotemp_f","bherbtemp_f"),
+                                       "bendotemp_f","bherbtemp_f","bendoherb_f"),
                             labels=c("b0_f"="Intercept",
                                      "bendo_f"="Endophyte",
                                      "bherb_f"="Herbivory",
                                      "bsizesex_f"="size:sex",
                                      "btemp_f"="Temperature",
                                      "bendotemp_f"="Endo:Temp",
-                                     "bherbtemp_f"="Herb:Temp"))+
+                                     "bherbtemp_f"="Herb:Temp",
+                                     "bendoherb_f"="Endo:Herb"))+
   geom_vline(xintercept = 0, linetype = "dashed", size = 0.6, alpha = 0.6, color = "black") +
   labs(color = "Interaction type:")+
   xlab("Posterior estimates (Inflorescence)")+
@@ -952,16 +955,17 @@ flow<-mcmc_intervals(posterior_flow, pars = quote_bare(b0_f,bendo_f,bherb_f,btem
 
 posterior_spi <- as.array(fit_allsites_spi_temp_cv)
 flow<-mcmc_intervals(posterior_spi, pars = quote_bare(b0_sp,bendo_f,bherb_f,btemp_f,
-                                                       bendotemp_f,bherbtemp_f)) + 
+                                                       bendotemp_f,bherbtemp_f,bendoherb_f)) + 
   ggplot2::scale_y_discrete(limits = c("b0_f","bendo_f","bherb_f","btemp_f",
-                                       "bendotemp_f","bherbtemp_f"),
+                                       "bendotemp_f","bherbtemp_f","bendoherb_f"),
                             labels=c("b0_f"="Intercept",
                                      "bendo_f"="Endophyte",
                                      "bherb_f"="Herbivory",
                                      "bsizesex_f"="size:sex",
                                      "btemp_f"="Temperature",
                                      "bendotemp_f"="Endo:Temp",
-                                     "bherbtemp_f"="Herb:Temp"))+
+                                     "bherbtemp_f"="Herb:Temp",
+                                     "bendoherb_f"="Endo:Herb"))+
   geom_vline(xintercept = 0, linetype = "dashed", size = 0.6, alpha = 0.6, color = "black") +
   labs(color = "Interaction type:")+
   xlab("Posterior estimates (Inflorescence)")+
@@ -982,16 +986,17 @@ flow<-mcmc_intervals(posterior_spi, pars = quote_bare(b0_sp,bendo_f,bherb_f,btem
 
 posterior_spi <- as.array(fit_allsites_spi_temp_cv)
 spi<-mcmc_intervals(posterior_spi, pars = quote_bare(b0_spk,bendo_spk,bherb_spk,btemp_spk,
-                                                       bendotemp_spk,bherbtemp_spk)) + 
+                                                       bendotemp_spk,bherbtemp_spk,bendoherb_spk)) + 
   ggplot2::scale_y_discrete(limits = c("b0_spk","bendo_spk","bherb_spk","btemp_spk",
-                                       "bendotemp_spk","bherbtemp_spk"),
+                                       "bendotemp_spk","bherbtemp_spk","bendoherb_spk"),
                             labels=c("b0_spk"="Intercept",
                                      "bendo_spk"="Endophyte",
                                      "bherb_spk"="Herbivory",
                                      "bsizesex_spk"="size:sex",
                                      "btemp_spk"="Temperature",
                                      "bendotemp_spk"="Endo:Temp",
-                                     "bherbtemp_spk"="Herb:Temp"))+
+                                     "bherbtemp_spk"="Herb:Temp",
+                                     "bendoherb_spk"="Endo:Herb"))+
   geom_vline(xintercept = 0, linetype = "dashed", size = 0.6, alpha = 0.6, color = "black") +
   labs(color = "Interaction type:")+
   xlab("Posterior estimates (Spikelet)")+

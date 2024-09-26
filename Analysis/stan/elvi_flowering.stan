@@ -25,7 +25,7 @@ parameters {
   real btemp_f;  
   real bendotemp_f;  
   real bherbtemp_f; 
-  //real bendoherb_f;  
+  real bendoherb_f;  
   //real btemp2_f;  
   //real bendotemp2_f;
   //real bherbtemp2_f;
@@ -53,7 +53,7 @@ transformed parameters {
                 //2-way interactions
                 bendotemp_f * temp_f[iflow] * endo_f[iflow] +
                 bherbtemp_f * temp_f[iflow] * herb_f[iflow] +
-                //bendoherb_f * endo_f[iflow] * herb_f[iflow] +
+                bendoherb_f * endo_f[iflow] * herb_f[iflow] +
 
                 //polynomial 2
                 //btemp2_f * pow(temp_f[iflow],2) +  
@@ -77,7 +77,7 @@ model {
   btemp_f ~ normal(0,2);  
   bendotemp_f ~ normal(0,2);  
   bherbtemp_f ~ normal(0,2); 
-  //bendoherb_f ~ normal(0,2); 
+  bendoherb_f ~ normal(0,2); 
   //btemp2_f ~ normal(0,2);  
   //bendotemp2_f ~ normal(0,2);
   //bherbtemp2_f ~ normal(0,2);
