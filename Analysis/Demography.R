@@ -1,4 +1,4 @@
-# Project: Forecasting range shifts of a dioecious plant species under climate change
+# Project: 
 # Purpose: Fit vital rate models to test the effect of grass-endophyte symbiosis and endophyte hyphal density on  vital rate models (survival, growth, flowering,fertility).
 # Note: Raster files are too large to provide in public repository. They are stored on a local machine
 # Authors: Jacob Moutouama
@@ -80,14 +80,67 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-
-
 jacob_path<-"/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density"
 # tom_path<-"C:/Users/tm9/Dropbox/github/ELVI-endophyte-density" 
+choose_path<-jacob_path
+# Demographic data -----
+# Merge the demographic census
+datini<-read_csv(paste0(choose_path,"/Data/Initialdata.csv"))
+dat23<-read_csv(paste0(choose_path,"/Data/census2023.csv"))
+dat24<-read_csv(paste0(choose_path,"/Data/census2024.csv"))
+datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
+unique(datini$Site)
+unique(datini$dat23)
+unique(datini$dat24)
+# calculate the total spikelet for each census
+dat23 %>% 
+  mutate(spikelet_23=rowSums(across(Spikelet_A:Spikelet_C)))->dat23_spike
+dat24 %>% 
+  mutate(spikelet_24=rowSums(across(Spikelet_A:Spikelet_C)),Inf_24=rowSums(across(attachedInf_24:brokenInf_24)))->dat24_spike
+
+## Merge the initial data with the 23 data and the 23 data with the 24 -----
+
+dat2324 <- left_join(x = datini,y =dat24_spike,by=c("Tag_ID"))
+names(dat2324)
+unique(dat2324$Site)
+dat2324 %>% 
+  mutate(tiller_t=ini_Tiller,
+         tiller_t1=Tiller_24,
+         inf_t1=Inf_24,
+         spikelet_t1=spikelet_24,
+         tiller_Herb=tiller_herb_24) %>% 
+  dplyr::select(Site,
+                Species,
+                Plot,
+                Position,
+                Tag_ID,
+                Population,
+                Clone,
+                GreenhouseID,
+                Endo,
+                tiller_t,
+                tiller_t1,
+                inf_t1,
+                spikelet_t1,
+                stroma,
+                tiller_Herb)->dat2324_all_sp
+
+#names(dat2324_all_sp)
+## Merge the demographic data with the herbivory data -----
+dat2324_all_sp_herb<-left_join(x=dat2324_all_sp,y=datherbivory,by=c("Site","Plot","Species"))# Merge the demographic data with the herbivory data
+view(dat2324_all_sp_herb)
+# head(dat2324_all_sp_herb)
+
+## Find the starting and ending dates are correct
+dat2324_all_sp_herb %>% 
+  dplyr::select(Site,Species,date_23,date_24) %>% 
+  group_by(Site,Species) %>% 
+  unique()->dat2324_all_sp_herb_dates
+
+view(dat2324_all_sp_herb_dates)
 
 # HOBO data ----
 ## format date and separate year-month-day
-choose_path<-jacob_path
 list.files(path = paste0(choose_path,"/Data/HOBO data/"),  
            pattern = "*.xlsx", full.names = TRUE) %>% # Identify all excel files
   lapply(read_excel) %>%                              # Store all files in list
@@ -168,76 +221,7 @@ HOBO_daily %>%
             temp_cv=sd(daily_mean_temp)/temp_mean) %>% 
   left_join(.,hobo_dates,by=c("site"))->HOBO_summary
 
-# Demographic data -----
-# Merge the demographic with the climatic data
-datini<-read_csv(paste0(choose_path,"/Data/Initialdata.csv"))
-dat23<-read_csv(paste0(choose_path,"/Data/census2023.csv"))
-dat24<-read_csv(paste0(choose_path,"/Data/census2024.csv"))
-datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
 
-# calculate the total spikelet for each census
-dat23 %>% 
-  mutate(Spikelet_23=rowSums(across(Spikelet_A:Spikelet_C)))->dat23_spike
-dat24 %>% 
-  mutate(Spikelet_24=rowSums(across(Spikelet_A:Spikelet_C)),Inf_24=rowSums(across(attachedInf_24:brokenInf_24)))->dat24_spike_inf
-
-## Merge the initial data with the 23 data and the 23 data with the 24 -----
-datini23 <- left_join(x = datini,y =dat23_spike,by=c("Tag_ID"))
-
-datini23 %>% 
-  mutate(tiller_t=ini_Tiller,
-         tiller_t1=Tiller_23,
-         inf_t1=Inf_23,
-         spikelet_t1=Spikelet_23,
-         year=c(rep(2023,nrow(datini23)))) %>% 
-  dplyr::select(Site,
-                Species,
-                Plot,
-                Position,
-                Tag_ID,
-                Population,
-                Clone,
-                GreenhouseID,
-                Endo,
-                tiller_t,
-                tiller_t1,
-                inf_t1,
-                spikelet_t1,
-                tiller_Herb,
-                year)->datini23_t_t1
-
-dat2324 <- left_join(x = datini23 ,y =dat24_spike_inf,by=c("Tag_ID")) 
-
-dat2324 %>% 
-  mutate(tiller_t=Tiller_23,
-         tiller_t1=Tiller_24,
-         inf_t1=Inf_24,
-         spikelet_t1=Spikelet_24,
-         tiller_Herb=tiller_Herb.y,
-         year=c(rep(2024,nrow(dat2324)))) %>% 
-  dplyr::select(Site,
-                Species,
-                Plot,
-                Position,
-                Tag_ID,
-                Population,
-                Clone,
-                GreenhouseID,
-                Endo,
-                tiller_t,
-                tiller_t1,
-                inf_t1,
-                spikelet_t1,
-                tiller_Herb,
-                year)->dat2324_t_t1
-
-datdemo<-rbind(datini23_t_t1,dat2324_t_t1)
-# names(datdemo)
-# unique(datdemo$Species)
-## Merge the demographic data with the herbivory data -----
-demography<-left_join(x=datdemo,y=datherbivory,by=c("Site","Plot","Species"))# Merge the demographic data with the herbivory data
-# view(demography)
-# head(demography)
 HOBO_summary %>% 
   rename(Site=site)->HOBO_summary_clean
 ## Merge the demographic data with the climatic data -----

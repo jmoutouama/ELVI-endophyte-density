@@ -305,4 +305,45 @@
   publisher = {Springer},
 }
 
+@Article{church1958artificial,
+  author    = {Church, George L},
+  journal   = {American Journal of Botany},
+  title     = {Artificial hybrids of Elymus virginicus with E. canadensis, interruptus, riparius, and wiegandii},
+  year      = {1958},
+  pages     = {410--417},
+  publisher = {JSTOR},
+}
+
+@Article{laughton2014combined,
+  author    = {Laughton, Alice M and Fan, Maretta H and Gerardo, Nicole M},
+  journal   = {Applied and environmental microbiology},
+  title     = {The combined effects of bacterial symbionts and aging on life history traits in the pea aphid, Acyrthosiphon pisum},
+  year      = {2014},
+  number    = {2},
+  pages     = {470--477},
+  volume    = {80},
+  publisher = {Am Soc Microbiol},
+}
+
+@Article{hoeksema2015context,
+  author    = {Hoeksema, Jason D and Bruna, Emilio M},
+  journal   = {Mutualism},
+  title     = {Context-dependent outcomes of mutualistic interactions},
+  year      = {2015},
+  pages     = {181--202},
+  volume    = {10},
+  publisher = {Oxford University Press Oxford, UK},
+}
+
+@Article{bronstein1994conditional,
+  author    = {Bronstein, Judith L},
+  journal   = {Trends in ecology \& evolution},
+  title     = {Conditional outcomes in mutualistic interactions},
+  year      = {1994},
+  number    = {6},
+  pages     = {214--217},
+  volume    = {9},
+  publisher = {Elsevier Current Trends},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

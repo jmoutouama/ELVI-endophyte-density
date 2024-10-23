@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: AmNat_MS_ELVI.aux
+The style file: amnatnat.bst
+Database file #1: ELVI.bib
+Warning--I didn't find a database entry for "CookEtAl2015"
+Warning--I didn't find a database entry for "LemKapEx07"
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 24 entries,
+            3251 wiz_defined-function locations,
+            829 strings with 10177 characters,
+and the built_in function-call counts, 15704 in all, are:
+= -- 1297
+> -- 861
+< -- 8
++ -- 301
+- -- 264
+* -- 1181
+:= -- 2568
+add.period$ -- 95
+call.type$ -- 24
+change.case$ -- 208
+chr.to.int$ -- 23
+cite$ -- 24
+duplicate$ -- 1085
+empty$ -- 1046
+format.name$ -- 340
+if$ -- 3070
+int.to.chr$ -- 2
+int.to.str$ -- 1
+missing$ -- 228
+newline$ -- 123
+num.names$ -- 96
+pop$ -- 432
+preamble$ -- 1
+purify$ -- 184
+quote$ -- 0
+skip$ -- 293
+stack$ -- 0
+substring$ -- 806
+swap$ -- 504
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 216
+warning$ -- 0
+while$ -- 111
+width$ -- 0
+write$ -- 312
+(There were 2 warnings)
