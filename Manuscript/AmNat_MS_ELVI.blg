@@ -6,45 +6,45 @@ Database file #1: ELVI.bib
 Warning--I didn't find a database entry for "CookEtAl2015"
 Warning--I didn't find a database entry for "LemKapEx07"
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 24 entries,
+You've used 23 entries,
             3251 wiz_defined-function locations,
-            829 strings with 10177 characters,
-and the built_in function-call counts, 15704 in all, are:
-= -- 1297
-> -- 861
-< -- 8
-+ -- 301
-- -- 264
-* -- 1181
-:= -- 2568
-add.period$ -- 95
-call.type$ -- 24
-change.case$ -- 208
-chr.to.int$ -- 23
-cite$ -- 24
-duplicate$ -- 1085
-empty$ -- 1046
-format.name$ -- 340
-if$ -- 3070
+            818 strings with 9461 characters,
+and the built_in function-call counts, 13817 in all, are:
+= -- 1196
+> -- 621
+< -- 14
++ -- 218
+- -- 186
+* -- 965
+:= -- 2264
+add.period$ -- 92
+call.type$ -- 23
+change.case$ -- 176
+chr.to.int$ -- 22
+cite$ -- 23
+duplicate$ -- 979
+empty$ -- 990
+format.name$ -- 257
+if$ -- 2740
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 228
-newline$ -- 123
-num.names$ -- 96
-pop$ -- 432
+missing$ -- 197
+newline$ -- 119
+num.names$ -- 92
+pop$ -- 368
 preamble$ -- 1
-purify$ -- 184
+purify$ -- 154
 quote$ -- 0
-skip$ -- 293
+skip$ -- 302
 stack$ -- 0
-substring$ -- 806
-swap$ -- 504
-text.length$ -- 0
+substring$ -- 759
+swap$ -- 442
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 216
+type$ -- 204
 warning$ -- 0
-while$ -- 111
+while$ -- 108
 width$ -- 0
-write$ -- 312
+write$ -- 301
 (There were 2 warnings)

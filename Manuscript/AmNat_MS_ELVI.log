@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  22 OCT 2024 22:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  3 NOV 2024 21:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -296,41 +296,57 @@ File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 
 {/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
 al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2] [3] [4] [5]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//clim_map_v1.pdf, id=23, 397.485pt x 289.08pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//clim_map_v1.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//clim_map_v1.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 163.
+(pdftex.def)             Requested size: 469.75502pt x 341.64957pt.
 
-Package natbib Warning: Citation `CookEtAl2015' on page 6 undefined on input li
-ne 178.
 
-[6] [7] (./AmNat_MS_ELVI.bbl [8] [9]) [10] [11]
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-Package natbib Warning: Citation `LemKapEx07' on page 12 undefined on input lin
-e 319.
+[6] [7 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
+yte-density/Figure//clim_map_v1.pdf>] [8] [9]
+
+Package natbib Warning: Citation `CookEtAl2015' on page 10 undefined on input l
+ine 261.
+
+[10] [11] (./AmNat_MS_ELVI.bbl [12] [13]) [14] [15]
+
+Package natbib Warning: Citation `LemKapEx07' on page 16 undefined on input lin
+e 402.
 
 
-Package natbib Warning: Citation `LemKapEx07' on page 12 undefined on input lin
-e 319.
+Package natbib Warning: Citation `LemKapEx07' on page 16 undefined on input lin
+e 402.
 
 
 Package natbib Warning: There were undefined citations.
 
-[12] (./AmNat_MS_ELVI.aux) ) 
+[16] (./AmNat_MS_ELVI.aux) ) 
 Here is how much of TeX's memory you used:
- 4304 strings out of 476025
- 64476 string characters out of 5790018
+ 4317 strings out of 476025
+ 65300 string characters out of 5790018
  1859388 words of memory out of 5000000
- 24683 multiletter control sequences out of 15000+600000
- 543157 words of font info for 105 fonts, out of 8000000 for 9000
+ 24690 multiletter control sequences out of 15000+600000
+ 544314 words of font info for 109 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,9n,62p,484b,273s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,9n,62p,1302b,277s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmss8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/pa
-latino/uplb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/
-uplr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a
-.pfb>
-Output written on AmNat_MS_ELVI.pdf (12 pages, 94373 bytes).
+lic/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/publi
+c/amsfonts/cm/cmss8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/pala
+tino/uplb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/up
+lr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.p
+fb>
+Output written on AmNat_MS_ELVI.pdf (16 pages, 201520 bytes).
 PDF statistics:
- 69 PDF objects out of 1000 (max. 8388607)
- 44 compressed objects within 1 object stream
+ 96 PDF objects out of 1000 (max. 8388607)
+ 61 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -346,4 +346,59 @@
   publisher = {Elsevier Current Trends},
 }
 
+@Article{faeth2009asexual,
+  author    = {Faeth, Stanley H},
+  journal   = {The American Naturalist},
+  title     = {Asexual fungal symbionts alter reproductive allocation and herbivory over time in their native perennial grass hosts},
+  year      = {2009},
+  number    = {5},
+  pages     = {554--565},
+  volume    = {173},
+  publisher = {The University of Chicago Press},
+}
+
+@Article{clay2002evolutionary,
+  author    = {Clay, Keith and Schardl, Christopher},
+  journal   = {the american naturalist},
+  title     = {Evolutionary origins and ecological consequences of endophyte symbiosis with grasses},
+  year      = {2002},
+  number    = {S4},
+  pages     = {S99--S127},
+  volume    = {160},
+  publisher = {The University of Chicago Press},
+}
+
+@Article{giauque2019endophyte,
+  author    = {Giauque, Hannah and Connor, Elise W and Hawkes, Christine V},
+  journal   = {New Phytologist},
+  title     = {Endophyte traits relevant to stress tolerance, resource use and habitat of origin predict effects on host plants},
+  year      = {2019},
+  number    = {4},
+  pages     = {2239--2249},
+  volume    = {221},
+  publisher = {Wiley Online Library},
+}
+
+@Article{yule2013costs,
+  author    = {Yule, Kelsey M and Miller, Tom EX and Rudgers, Jennifer A},
+  journal   = {Oikos},
+  title     = {Costs, benefits, and loss of vertically transmitted symbionts affect host population dynamics},
+  year      = {2013},
+  number    = {10},
+  pages     = {1512--1520},
+  volume    = {122},
+  publisher = {Wiley Online Library},
+}
+
+@Article{bibian2016role,
+  author    = {Bibian, Andrew J and Rudgers, Jennifer A and Miller, Tom EX},
+  journal   = {The American Naturalist},
+  title     = {The role of host demographic storage in the ecological dynamics of heritable symbionts},
+  year      = {2016},
+  number    = {4},
+  pages     = {446--459},
+  volume    = {188},
+  publisher = {University of Chicago Press Chicago, IL},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
