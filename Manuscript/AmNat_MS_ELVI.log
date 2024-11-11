@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  3 NOV 2024 21:46
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  10 NOV 2024 20:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -208,7 +208,7 @@ File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
 Package: gensymb 2022/10/17 v1.0.2 (KJH)
 )
 LaTeX Font Info:    Trying to load font information for OT1+pplx on input line 
-67.
+66.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
@@ -218,25 +218,28 @@ File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count282
 \l__pdf_internal_box=\box57
 )
-(./AmNat_MS_ELVI.aux)
+(./AmNat_MS_ELVI.aux
+
+LaTeX Warning: Label `fig:climate' multiply defined.
+
+)
 \openout1 = `AmNat_MS_ELVI.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 67.
-LaTeX Font Info:    ... okay on input line 67.
-
-(/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 66.
+LaTeX Font Info:    ... okay on input line 66.
+ (/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count283
 \scratchdimen=\dimen162
@@ -258,95 +261,175 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \celsius on input line 67.
-Package gensymb Info: Faking symbols for \degree and \celsius on input line 67.
+LaTeX Info: Redefining \celsius on input line 66.
+Package gensymb Info: Faking symbols for \degree and \celsius on input line 66.
 
 
 
 Package gensymb Warning: Not defining \perthousand.
 
-LaTeX Info: Redefining \ohm on input line 67.
-Package gensymb Info: Using \upOmega for \ohm on input line 67.
+LaTeX Info: Redefining \ohm on input line 66.
+Package gensymb Info: Using \upOmega for \ohm on input line 66.
 
 Package gensymb Warning: Not defining \micro.
 
 LaTeX Font Info:    Trying to load font information for OML+zplm on input line 
-69.
+68.
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 
-69.
+68.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 
-69.
+68.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
 LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 
-69.
+68.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 ) [1
 
 {/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
-al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2] [3] [4] [5]
+al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2] [3] [4]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//clim_map_v1.pdf, id=23, 397.485pt x 289.08pt>
+sity/Figure//clim_map_v1.pdf, id=20, 397.485pt x 289.08pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//clim_map_v1.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//clim_map_v1.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 163.
+ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 162.
 (pdftex.def)             Requested size: 469.75502pt x 341.64957pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[6] [7 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
-yte-density/Figure//clim_map_v1.pdf>] [8] [9]
+[5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
+yte-density/Figure//clim_map_v1.pdf>]
+LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
+189.
 
-Package natbib Warning: Citation `CookEtAl2015' on page 10 undefined on input l
-ine 261.
+(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
+File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
+) [7]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//climatesite.pdf, id=40, 650.43pt x 361.35pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//climatesite.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//climatesite.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//climatesite.pdf  used on input line 206.
+(pdftex.def)             Requested size: 469.75502pt x 260.98232pt.
+ [8 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//climatesite.pdf>] [9]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//Posterior_mean.pdf, id=53, 578.16pt x 505.89pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//Posterior_mean.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//Posterior_mean.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 301
+.
+(pdftex.def)             Requested size: 469.75502pt x 411.0346pt.
 
-[10] [11] (./AmNat_MS_ELVI.bbl [12] [13]) [14] [15]
 
-Package natbib Warning: Citation `LemKapEx07' on page 16 undefined on input lin
-e 402.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-Package natbib Warning: Citation `LemKapEx07' on page 16 undefined on input lin
-e 402.
+[10]
+Overfull \vbox (7.88277pt too high) has occurred while \output is active []
 
 
-Package natbib Warning: There were undefined citations.
+[11 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//Posterior_mean.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//PPC_survival.pdf, id=69, 433.62pt x 361.35pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//PPC_survival.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//PPC_survival.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 335.
+(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
+ [12 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//PPC_survival.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//PPC_growth.pdf, id=82, 433.62pt x 361.35pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//PPC_growth.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//PPC_growth.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 342.
+(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 
-[16] (./AmNat_MS_ELVI.aux) ) 
+[13
+
+ </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
+nsity/Figure//PPC_growth.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//PPC_spikelet.pdf, id=96, 433.62pt x 361.35pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//PPC_spikelet.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//PPC_spikelet.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 349.
+(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
+ [14
+
+ </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
+nsity/Figure//PPC_spikelet.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//PPC_flowering.pdf, id=109, 433.62pt x 361.35pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//PPC_flowering.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//PPC_flowering.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 356.
+
+(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
+ [15
+
+ </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
+nsity/Figure//PPC_flowering.pdf>] (./AmNat_MS_ELVI.bbl [16
+
+] [17]) [18]
+(./AmNat_MS_ELVI.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 4317 strings out of 476025
- 65300 string characters out of 5790018
- 1859388 words of memory out of 5000000
- 24690 multiletter control sequences out of 15000+600000
- 544314 words of font info for 109 fonts, out of 8000000 for 9000
+ 4418 strings out of 476025
+ 70731 string characters out of 5790018
+ 1862388 words of memory out of 5000000
+ 24782 multiletter control sequences out of 15000+600000
+ 545413 words of font info for 113 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,9n,62p,1302b,277s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2023/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmss8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmsy10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/pala
-tino/uplb8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/up
-lr8a.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.p
-fb>
-Output written on AmNat_MS_ELVI.pdf (16 pages, 201520 bytes).
+ 57i,16n,62p,461b,290s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+</usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></
+usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
+sr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></usr/lo
+cal/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/
+texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive
+/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/t
+exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on AmNat_MS_ELVI.pdf (18 pages, 24167234 bytes).
 PDF statistics:
- 96 PDF objects out of 1000 (max. 8388607)
- 61 compressed objects within 1 object stream
+ 168 PDF objects out of 1000 (max. 8388607)
+ 114 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,4 +1,4 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Afkhami et~al.(2014)Afkhami, McIntyre, and
@@ -55,6 +55,12 @@ Benning, J.~W., and D.~A. Moeller. 2021{\natexlab{\emph{a}}}.
   plant’s geographic range margin.
 \newblock Ecology 102:e03254.
 
+\bibitem[{Berkhof et~al.(2000)Berkhof, Van~Mechelen, and
+  Hoijtink}]{berkhof2000posterior}
+Berkhof, J., I.~Van~Mechelen, and H.~Hoijtink. 2000.
+\newblock Posterior predictive checks: Principles and discussion.
+\newblock Computational Statistics 15:337--354.
+
 \bibitem[{Bronstein(1994)}]{bronstein1994conditional}
 Bronstein, J.~L. 1994.
 \newblock Conditional outcomes in mutualistic interactions.
@@ -93,17 +99,13 @@ Fowler, J.~C., M.~L. Donald, J.~L. Bronstein, and T.~E. Miller. 2023.
   species' range limits.
 \newblock Ecological Monographs 93:e1558.
 
-\bibitem[{Garcia and Gerardo(2014)}]{garcia2014symbiont}
-Garcia, J.~R., and N.~M. Gerardo. 2014.
-\newblock The symbiont side of symbiosis: do microbes really benefit?
-\newblock Frontiers in Microbiology 5:510.
-
-\bibitem[{Giauque et~al.(2019)Giauque, Connor, and
-  Hawkes}]{giauque2019endophyte}
-Giauque, H., E.~W. Connor, and C.~V. Hawkes. 2019.
-\newblock Endophyte traits relevant to stress tolerance, resource use and
-  habitat of origin predict effects on host plants.
-\newblock New Phytologist 221:2239--2249.
+\bibitem[{Gelman et~al.(2000)Gelman, Goegebeur, Tuerlinckx, and
+  Van~Mechelen}]{gelman2000diagnostic}
+Gelman, A., Y.~Goegebeur, F.~Tuerlinckx, and I.~Van~Mechelen. 2000.
+\newblock Diagnostic checks for discrete data regression models using posterior
+  predictive simulations.
+\newblock Journal of the Royal Statistical Society: Series C (Applied
+  Statistics) 49:247--268.
 
 \bibitem[{Hoeksema and Bruna(2015)}]{hoeksema2015context}
 Hoeksema, J.~D., and E.~M. Bruna. 2015.
@@ -116,6 +118,23 @@ Laughton, A.~M., M.~H. Fan, and N.~M. Gerardo. 2014.
 \newblock The combined effects of bacterial symbionts and aging on life history
   traits in the pea aphid, acyrthosiphon pisum.
 \newblock Applied and environmental microbiology 80:470--477.
+
+\bibitem[{Medvigy and Beaulieu(2012)}]{medvigy2012trends}
+Medvigy, D., and C.~Beaulieu. 2012.
+\newblock Trends in daily solar radiation and precipitation coefficients of
+  variation since 1984.
+\newblock Journal of Climate 25:1330--1339.
+
+\bibitem[{Meshram et~al.(2017)Meshram, Singh, and Meshram}]{meshram2017long}
+Meshram, S.~G., V.~P. Singh, and C.~Meshram. 2017.
+\newblock Long-term trend and variability of precipitation in chhattisgarh
+  state, india.
+\newblock Theoretical and Applied Climatology 129:729--744.
+
+\bibitem[{{R Core Team}(2023)}]{RCoreTeam}
+{R Core Team}. 2023.
+\newblock R: A Language and Environment for Statistical Computing.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
 
 \bibitem[{Rudgers et~al.(2020)Rudgers, Afkhami, Bell-Dereske, Chung, Crawford,
   Kivlin, Mann, and Nu{\~n}ez}]{rudgers2020climate}
@@ -135,6 +154,12 @@ Shaw, R.~B. 2011.
 \newblock Guide to Texas grasses.
 \newblock Texas A\&M University Press.
 
+\bibitem[{Silva and Zanella(2024)}]{silva2024robust}
+Silva, L.~A., and G.~Zanella. 2024.
+\newblock Robust leave-one-out cross-validation for high-dimensional bayesian
+  models.
+\newblock Journal of the American Statistical Association 119:2369--2381.
+
 \bibitem[{Sneck et~al.(2017)Sneck, Rudgers, Young, and
   Miller}]{sneck2017variation}
 Sneck, M.~E., J.~A. Rudgers, C.~A. Young, and T.~E. Miller. 2017.
@@ -142,9 +167,27 @@ Sneck, M.~E., J.~A. Rudgers, C.~A. Young, and T.~E. Miller. 2017.
   across host populations in heterogeneous environments.
 \newblock Microbial Ecology 74:640--653.
 
+\bibitem[{{Stan Development Team}(2024)}]{Rstan}
+{Stan Development Team}. 2024.
+\newblock {RStan}: the {R} interface to {Stan}.
+\newblock R package version 2.32.6.
+
 \bibitem[{Vega(2008)}]{vega2008insect}
 Vega, F.~E. 2008.
 \newblock Insect pathology and fungal endophytes.
 \newblock Journal of invertebrate pathology 98:277--279.
+
+\bibitem[{Vehtari et~al.(2017)Vehtari, Gelman, and
+  Gabry}]{vehtari2017practical}
+Vehtari, A., A.~Gelman, and J.~Gabry. 2017.
+\newblock Practical bayesian model evaluation using leave-one-out
+  cross-validation and waic.
+\newblock Statistics and computing 27:1413--1432.
+
+\bibitem[{Yule et~al.(2013)Yule, Miller, and Rudgers}]{yule2013costs}
+Yule, K.~M., T.~E. Miller, and J.~A. Rudgers. 2013.
+\newblock Costs, benefits, and loss of vertically transmitted symbionts affect
+  host population dynamics.
+\newblock Oikos 122:1512--1520.
 
 \end{thebibliography}

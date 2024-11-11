@@ -38,7 +38,6 @@
 % (Thanks to Vlastimil Krivan for pointing this out to us!)
 
 \title{Variation in the demographic effects of grass-endophyte symbiosis along an aridity gradient }
-
 % This version of the LaTeX template was last updated on
 % July 16, 2024.
 
@@ -78,11 +77,11 @@ Tom E.X. Miller$^{1}$\\}
 
 \bigskip
 
-\textit{Manuscript elements}: Figure~1, figure~2, table~1, appendix~A (for print; including figure~A1, figure~A2, and table~A1), supplemental PDF. Figure~2 is to print in color.
+%\textit{Manuscript elements}: Figure~1, figure~2, table~1, appendix~A (for print; including figure~A1, figure~A2, and table~A1), supplemental PDF. Figure~2 is to print in color.
 
 \bigskip
 
-\textit{Keywords}: Examples, model, template, guidelines.
+%\textit{Keywords}: Examples, model, template, guidelines.
 
 \bigskip
 
@@ -90,7 +89,7 @@ Tom E.X. Miller$^{1}$\\}
 
 \bigskip
 
-\noindent{\footnotesize Prepared using the suggested \LaTeX{} template for \textit{Am.\ Nat.}}
+%\noindent{\footnotesize Prepared using the suggested \LaTeX{} template for \textit{Am.\ Nat.}}
 
 \linenumbers{}
 \modulolinenumbers[1]
@@ -126,9 +125,9 @@ In contrast, if microbial symbiosis is costly for the host at range edge, then s
 Although context dependence, along with spatio-temporal variations in abiotic environmental conditions may reduce the effectiveness of the benefits provided by the symbiont to the host species, our understanding of the mechanisms that alter the intensity or likelihood of host-symbiont interactions across host species geographic range is limited.
 
 Ecological studies of plant-microbe symbiosis usually  investigate the interaction from the plant’s perspective and rarely  study how symbiont response to environmental variation might translate to its influence on host demographic performance across host range.
-%The presence of symbionts increases host growth and reproduction, outweighing their lower survival rates and resulting in a larger host population size over time.
+These studies showed that symbionts increase their host's growth and reproduction rates, which outweigh the host's lower survival rates and result in an overall increase in host population size over time \citep{yule2013costs}.
 %Much less is known about how the symbiont respond to environmental variation, and how this might translate to its influence on host demographic performance across host range \citep{garcia2014symbiont}. 
-Moreover, studies of plant-microbe symbiosis relied on  methods such as  such as inoculating sterile soil, excluding endophyte fungal hyphae by using fine mesh or rotating cores, and adding fungicide \citep{bennett2022costs}. 
+Moreover, studies of plant-microbe symbiosis relied on  methods  such as inoculating sterile soil, excluding endophyte fungal hyphae by using fine mesh or rotating cores, and adding fungicide \citep{bennett2022costs}. 
 Despite their value, all these approaches are often difficult to implement in field settings or on a large scale.
 As a result, the exact mechanisms by which symbionts drive host range limitation and expansion are not well understood, hindering our understanding of the potential cascading effects of symbionts on eco-evolutionary species demography and  range limitation in the context of global change.
 %Symbionts are promoting their own selfish fitness by manipulating their hosts' life history traits or resistance to stresses caused by abiotic and biotic variation \citep{kazenel2015mutualistic,giauque2019endophyte,saikkonen1998fungal}. 
@@ -142,7 +141,7 @@ As a result, the exact mechanisms by which symbionts drive host range limitation
 
 Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
 We also asked how does fungal growth affect host demography from range core to range edge. 
-To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \textcolor{blue}{[Describe ecology and natural history of grass-endophyte interactions]}.
+To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \jacob{[Describe ecology and natural history of grass-endophyte interactions]}{I am not sure If we need this}.
 Our experiment was design to test the following hypotheses:
 \begin{enumerate}
 \item We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
@@ -186,16 +185,32 @@ We stationed one HOBO MX2307 data logger at each site to collect temperature and
 \paragraph {Source populations and Identification of individual endophyte status} 
 Plants used  in the common garden experiment were derived from natural populations throughout the native range in the south-central US (fig.\ref{fig:site}, \jacob{Table X}{We need this table  in the Appendix}). 
 At each of these natural populations we collected seeds. 
-These seeds were planted at Rice University greenhouse.
+Some of the seeds of \emph{E. virginicus} were heat treated to produce endophyte negative plants ($E^-$) . 
+To do so, we placed these seeds  in a drying oven set at 60°C for approximately five days (120 hours). 
+While this method  the eliminates endophytes from all individuals, it does not affect seed viability. 
+All seeds (both heat-treated and non-heat-treated) were planted in the Rice University greenhouse.
 Seedlings were regularly fertilized every two weeks. 
 The seedlings were then vegetatively propagated to produce enough individuals for your experiment (N = 840).
 Before planting in the field, we confirmed the endophyte status ($E^+$ or $E^-$) of all  seedlings using either microscopy or an immunoblot assay. 
 This was necessary due to the varying success of the heat treatment and differences in the prevalence of endophytes between the natural populations. 
 Leaf tissues were stained with aniline blue lactic acid and viewed under a compound microscope at 200x-400x to identify fungal hyphae. 
 The immunoblot assay (Phytoscreen field tiller endophyte detection kit, Agrinostics Ltd. Co.) uses monoclonal antibodies that target proteins of Epichloë spp. and chromagen to visually indicate presence or absence. Both methods yield similar detection rates.  
-
-
 %The vegetatively cloned plants were distributed across all sites intentionally to allow for comparison of endophyte hyphae densities.
+
+\subsection*{Climatic data}
+To characterize the stress gradient with respect to  climatic conditions, we collected the hourly temperature and soil moisture at each site using the HOBO MX2307 data loggers. We used this hourly variable to calculate the daily mean temperature (°C) and soil moisture (\%)(fig. \ref{fig:climate}). 
+\jacob{We calculated the mean soil moisture and the coefficient of variation from the time the plants were placed on the ground to the time we collected demographic data}{I will change this  later}. 
+The coefficient of variation of soil moisture was estimated to capture season variability in climatic data \citep{medvigy2012trends,meshram2017long}. 
+
+\begin{figure}[h!]
+\includegraphics[width=1\textwidth]{climatesite.pdf}
+\caption{Climate variation  across common garden sites. 
+(a) Daily temperature, estimated from average hourly data collected by  HOBO data loggers. 
+(b) Daily  soil moisture, estimated  from average hourly data  collected by  HOBO data loggers. 
+}
+\label{fig:climate}
+\end{figure}
+
 \subsection*{Demographic data}
 We collected demographic data including survival, growth, and reproduction during June 2023, which coincided with the flowering season of \emph{E. virginicus}. 
 On each individual, survival of plants was recorded as a binary (death or alive) and the size of the plant was recorded as the number of living tillers, indicated by the presence of green coloration. 
@@ -220,15 +235,35 @@ We used the number of spikelets for these three tillers to estimate the number t
 %Using ImageJ, we set the scale using the microscope reticle to measure the visible area of the leaf peel within the cell and the total length of the hyphae fragments within the leaf peel.
 %This yielded an estimate of endophyte density in the units of length (mm) per area (mm2). 
 
-\subsection*{Candidate Models}
-To assess how stress associated with aridity and low precipitation affect plant-fungal mutualism, we developed five mixed-effects models for each vital rate. 
-Each vital rate was modeled with 10 candidates models. 
-These included XXX
+\subsection*{Models building and models selection}
+To assess how stress associated with aridity  affect plant-fungal mutualism, we developed four candidates models for each vital rate (survival, growth, flowering, fertility). 
+Each vital rate was modeled with  the  grand mean intercept ($\beta_{0}$), slopes for  variation in each covariate ($\beta_{1}$...$\beta_{3}$) as well as the interaction between covariates ($\beta_{4}$...$\beta_{6}$): 
+Each model includes normally distributed random effects for site-to-site  variation ($\phi \sim N(0,\ \sigma_{site})$), plot to plot variation ($\rho \sim N(0,\ \sigma_{site})$), and source-to-source variation that is related to the  provenance of the transplants used to establish the common garden ($\omega \sim N(0,\ \sigma_{source})$) (Eq.\ref{eq:candidates}).
+\begin{align}\label{eq:candidates}
+\begin{split}
+model1 = \beta_{0} + \beta_{1}T_{mean}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*T_{mean} + \beta_{5}H*E +  \beta_{6}H*T_{mean} + \phi + \omega + \rho  \\ 
+model2  = \beta_{0} + \beta_{1}T_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*T_{CV} + \beta_{5}H*E +  \beta_{6}H*T_{mean} +  \phi + \omega + \rho  \\
+model3  = \beta_{0} + \beta_{1}M_{mean}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_{mean} + \beta_{5}H*E +  \beta_{6}H*M_{mean} + \phi + \omega + \rho \\
+model4  = \beta_{0} + \beta_{1}M_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_{CV} + \beta_{5}H*E +  \beta_{6}H*M_{CV} ++ \phi + \omega + \rho 
+\end{split}
+\end{align}
+ 
+We modeled survival using a  Bernoulli distribution, growth with a Gaussian distribution, flower with a negative binomial,  fertility (number of spikelet) with a negative binomial distribution.
+To check whether the fitted models are  compatible with the observed data, we used the posterior predictive checks \citep{gelman2000diagnostic,berkhof2000posterior}. 
+All models make sense to explain the observed data (fig.\ref{sup:ppc_surv}, fig.\ref{sup:ppc_growth}, fig.\ref{sup:ppc_spikelet}, fig.\ref{sup:ppc_flowering}).
 
-In each of the mixed-effects models, we specified two random effects to account for heterogeneity among plot within site and heterogeneity among host source populations. The first random effect was a nested random effect (plot within site) and the second one was a random intercept effect (population). We modeled growth with a Gaussian distribution using the package lmertest  \textcolor{blue}{(Source)}. We modeled fertility (number of spikelet) with a zero-inflated negative binomial distribution using the package glmmTMB  \textcolor{blue}{(Source)}. We preferred the negative binomial in which the variance was modeled as a non-linear function of the mean (variance = m (1 + m/k)). For each vital rate, the first model was the intercept only model which is the null model. The second and the third models regressed vital rate against the additive effect of endophyte status and mean of soil moisture or coefficient of variation of soil moisture. The fourth and fifth models regressed vital rates against the interaction effect of endophyte status and mean of soil moisture or coefficient of variation of soil moisture (Appendix S1). We compared the five models using the Akaike Information Criterion (AIC) to select the best model \textcolor{blue}{(Source)}. 
+To select the best model for each vital rate, we compared the four models using the leave-one-out cross-validation (LOOCV)  \citep{vehtari2017practical}. 
+LOOCV combines both validation and training methods. 
+In this approach, one observation is used for validation while the training set consists of n-1 observations. 
+This process is repeated for each observation, resulting in n estimated models \citep{silva2024robust}. 
+The estimate of test error from LOOCV is calculated by averaging the errors across these n models (Eq.\ref{eq:Loo}).
+\begin{align}\label{eq:Loo}
+\begin{split}
+CV_{n}=\frac {1}{n} \sum^{n}_{i=1}{(y_{I}-\hat{y}_{I})^2}
+\end{split}
+\end{align}
 
-\subsection*{Model Fitting, Model Selection, and Parameter Estimation}
-
+All models were performed in R \citep{RCoreTeam} and Stan \citep{Rstan}.
 %%%%%%%%%%%%%%%%%%%%%
 % Acknowledgments
 %%%%%%%%%%%%%%%%%%%%%
@@ -236,10 +271,44 @@ In each of the mixed-effects models, we specified two random effects to account 
 % is under review as the Acknowledgments may reveal your identity.
 % If you remove this section, you will need to add it back in to your
 % final files after acceptance.
+\section*{Results}
+\begin{table}[h!]
+\caption{Candidate models of  \emph{E. virginicus} vital rates (growth, flowering, spikelet and survival).}
+\label{Table:models}
+\bigskip{}
+\centering
+\begin{tabular}{llll}\hline
+			    Vital rate   &      Model   &     $\Delta$elpd  &  $\Delta$se     \\ \hline
+			 \textbf{Survival} &    \textbf{model3}   &     \textbf{0.0} &     \textbf{ 0.0}    \\
+			Survival &     model2  & -0.5 &   0.5       \\
+			Survival &   model4    & -0.9    &   0.9\\
+			Survival & model1 & -2.2 & 1.9  \\
+		     \textbf{Growth} &   \textbf{model2}&  \textbf{0.0} &  \textbf{0.0} \\
+		    Growth & model4 & 0.0 &  0.8 \\
+		    Growth & model3 & -0.3 &  0.4\\
+		    Growth  &  model1& -0.4 & 0.4\\
+		     \textbf{Flowering} &   \textbf{model2}&  \textbf{0.0}  &  \textbf{0.0}  \\
+		    Flowering & model4 & -4.3 &  1.0\\
+		    Flowering & model3 & -6.5 &  1.4\\
+		    		     \textbf{Spiket} &   \textbf{model2}&  \textbf{0.0} &  \textbf{0.0}  \\
+		    Spiket & model3 & -0.5 &  0.6\\
+		    Spiket & model1 & -0.7&  1.2\\
+		    Spiket  &  model4 & -1.2 & 1.2\\\hline			    				 			     			     
+\end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+\includegraphics[width=1\textwidth]{Posterior_mean.pdf}
+\caption{Posterior mean estimates for each vital rate. 
+(a) Daily temperature, estimated from average hourly data collected by  HOBO data loggers. 
+(b) Daily  soil moisture, estimated  from average hourly data  collected by  HOBO data loggers. 
+}
+\label{fig:climate}
+\end{figure}
+
 
 \section*{Acknowledgments}
 
-OEC would like to thank Madlen Wilmes, Gyuri Barab\'{a}s, Flo D\'{e}barre, Vlastimil K\v{r}ivan, and Greg Dwyer for their comments and suggestions on this template.
 
 %%%%%%%%%%%%%%%%%%%%%
 % Statement of Authorship
@@ -251,80 +320,44 @@ OEC would like to thank Madlen Wilmes, Gyuri Barab\'{a}s, Flo D\'{e}barre, Vlast
 
 \section*{Statement of Authorship}
 
-OEC conceived the experiments, collected the data, and wrote the original draft.
-GHC provided specimens and analyzed the model.
-AQE oversaw data analysis and developed the code. 
-All authors reviewed and edited the writing at all stages of revision.
-
 \section*{Data and Code Availability}
-
-On initial submission, you may use this section to provide a URL for editors and reviewers that is `private for peer review'. After acceptance, this section must be updated with correct, working DOIs for data and code deposits (such as in Zenodo, Dryad, or DataVerse). An example statement could resemble the following: All data and code for this work are available from the Dryad Digital Repository, \citealt{CookEtAl2015}). 
-
-\section*{Appendix A: Additional Methods and Parameters}
-
-% In most cases, authors should typeset supplementary material in a separate,
-% author-supplied PDF. For author-supplied PDFs, please consult the
-% AmNat_supp_template.tex document, available from
-% https://www.journals.uchicago.edu/journals/an/instruct 
-%
-% If you want to use cross-references within the supplemental TeX file,
-% it may be helpful to \usepackage{xr} and include the command 
-% \externaldocument{name-of-supplemental-tex-file}
-%
-% The Appendix instructions below apply to cases in which
-% a brief appendix is to appear in print after the main body of the article.
-% That notably includes descriptions of methods, tables defining parameters,
-% and other material necessary for reproducing the MS's results.
-%
-% Please reset counters for the appendix (thus normally figure A1, 
-% figure A2, table A1, etc.).
-%
-% Most AmNat articles have no more than one print appendix. If your article
-% has more than one, counters for each appendix should match the letter of
-% that appendix. For example, tables in Appendix B should be numbered table B1, % table C2, etc. This applies to tables, equations, and figures.
-%
-% It's better not to use the \appendix command, because we have some
-% formatting peculiarities that \appendix conflicts with.
-
-\renewcommand{\theequation}{A\arabic{equation}}
-% redefine the command that creates the equation number.
+\newpage{}	
+\section*{Appendix A}
+\renewcommand{\thefigure}{A\arabic{figure}}
+\setcounter{figure}{0}
+	
 \renewcommand{\thetable}{A\arabic{table}}
 \setcounter{equation}{0}  % reset counter 
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-\subsection*{Fox--dog encounters through the ages}
+\begin{figure}[h!]
+\includegraphics{PPC_survival}
+\caption{Comparison of the observed survival data with the posterior predictions from the survival models for each climate variable}
+\label{sup:ppc_surv}
+\end{figure}
+\clearpage
 
-The quick red fox jumps over the lazy brown dog. The quick red fox has always jumped over the lazy brown dog. The quick red fox began jumping over the lazy brown dog in the 19th century and has never ceased from so jumping, as we shall see in figure~\ref{Fig:Jumps}. But there can be surprises (figure~\ref{Fig:JumpsOk}).
+\begin{figure}[h!]
+\includegraphics{PPC_growth}
+\caption{Comparison of the observed growth data with the posterior predictions from the growth models for each climate variable}
+\label{sup:ppc_growth}
+\end{figure}
+\clearpage
 
-If the order and location of figures is not otherwise clear, feel free to include explanatory dummy text like this:
+\begin{figure}[h!]
+\includegraphics{PPC_spikelet}
+\caption{Comparison of the observed spikelet data with the posterior predictions from the spikelet models for each climate variable}
+\label{sup:ppc_spikelet}
+\end{figure}
+\clearpage
 
-[Figure A1 goes here.]
-
-[Figure A2 goes here.]
-
-\subsection*{Further insights}
-
-Tables in the appendices can appear in the appendix text (see table~\ref{Table:Rivers} for an example), unlike appendix figure legends which should be grouped at the end of the document together with the other figure legends.
-
-\begin{table}[h]
-\caption{Various rivers, cities, and animals}
-\label{Table:Rivers}
-\centering
-\begin{tabular}{lll}\hline
-River        & City        & Animal            \\ \hline
-Chicago      & Chicago     & Raccoon           \\
-Des Plaines  & Joliet      & Coyote            \\
-Illinois     & Peoria      & Cardinal          \\
-Kankakee     & Bourbonnais & White-tailed deer \\
-Mississippi  & Galena      & Bald eagle        \\ \hline
-\end{tabular}
-\bigskip{}
-\\
-{\footnotesize Note: See table~\ref{Table:Founders} below for further table formatting hints.}
-\end{table}
-
-Lorem ipsum dolor sit amet, as we have seen in figures~\ref{Fig:Jumps} and \ref{Fig:JumpsOk}.
+\begin{figure}[h!]
+\includegraphics{PPC_flowering}
+\caption{Comparison of the observed  flowering data with the posterior predictions from the flowering  models for each climate variable}
+\label{sup:ppc_flowering}
+\end{figure}
+\clearpage
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -346,62 +379,10 @@ Lorem ipsum dolor sit amet, as we have seen in figures~\ref{Fig:Jumps} and \ref{
 
 \newpage{}
 
-\section*{Tables}
-\renewcommand{\thetable}{\arabic{table}}
-\setcounter{table}{0}
-
-\begin{table}[h]
-\caption{Founders of \textit{The~American Naturalist}}
-\label{Table:Founders}
-\centering
-\begin{tabular}{lll}\hline
-Early editor            & Years with the journal \\ \hline
-Alpheus S. Packard Jr.  & 1867--1886 \\
-Frederick W. Putnam     & 1867--1874 \\ 
-Edward S. Morse         & 1867--1871 \\ 
-Alpheus Hyatt           & 1867--1871 \\
-Edward Drinker Cope$^a$ & 1878--1897 \\
-J.~S. Kingsley          & 1887--1896 \\ \hline 
-\end{tabular}
-\bigskip{}
-\\
-{\footnotesize Note: Table titles should be short. Further details should go in a `notes' area after the tabular environment, like this. $^a$ Published the first description of \textit{Dimetrodon}.}
-\end{table}
-
 \newpage{}
-
-\section*{Figure legends}
-
-\begin{figure}[h!]
-%\includegraphics{horn-of-okapi}
-\caption{Figure legends can be longer than the titles of tables. However, they should not be excessively long---in most cases, they should be no more than 100 words each.}
-\label{Fig:OkapiHorn}
-\end{figure}
-
-
-
-\begin{figure}[h!]
-%\includegraphics{elegance}
-\caption{In this way, figure legends can be listed at the end of the document, with references that work, even though the graphic itself should be included for final files after acceptance. Instead, upload the relevant figure files separately to Editorial Manager; Editorial Manager should insert them at the end of the PDF automatically.}
-\label{Fig:AnotherFigure}
-\end{figure}
 
 % Figure legends for any print appendices you might have.
 
-\renewcommand{\thefigure}{A\arabic{figure}}
-\setcounter{figure}{0}
-
-\begin{figure}[h!]
-%\includegraphics{jumps20m}
-\caption{\textit{A}, the quick red fox proceeding to jump 20~m straight into the air over not one, but several lazy dogs. \textit{B}, the quick red fox landing gracefully despite the skepticism of naysayers.}
-\label{Fig:Jumps}
-\end{figure}
-
-\begin{figure}[h!]
-%\includegraphics{jumps20m}
-\caption{The quicker the red fox jumps, the likelier it is to land near an okapi. For further details, see \citet{LemKapEx07}.}
-\label{Fig:JumpsOk}
-\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -412,18 +393,9 @@ J.~S. Kingsley          & 1887--1896 \\ \hline
 
 %%%%% Include the text below if you have videos
 
-\renewcommand{\figurename}{Video} 
-\renewcommand{\thefigure}{S\arabic{figure}}
-\setcounter{figure}{0}
 
-\begin{figure}[h!]
-%\includegraphics{VideoScreengrab.jpg}
-\caption{Video legends can follow the same principles as figure legends. Counters should be set and reset so that videos and figures are enumerated separately.}
-\label{VideoExample}
-\end{figure}
 
-\renewcommand{\figurename}{Figure}
-\setcounter{figure}{1}
+
 
 %%%%% Include the above if you have videos
 
