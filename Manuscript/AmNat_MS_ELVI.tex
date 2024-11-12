@@ -111,7 +111,7 @@ Plant-microbe symbioses are widespread and ecologically important.
 These interactions are famously context-dependent, where the direction and strength of the interaction outcome depends on the environment in which it occurs \citep{fowler2023geographic,hoeksema2015context, bronstein1994conditional}.
 Under biotic stress (e.g., herbivory), endophyte symbiosis can benefit host plants by facilitating the production of secondary compounds that deter feeding or cause direct toxicity, thereby reducing insect growth, survival, and oviposition \citep{atala2022fungal,bastias2017epichloe,vega2008insect}.
 Similarly under abiotic stress (e.g., drought), symbionts can increase their host tolerance to drought \citep{clay2002evolutionary}.
-However, in many plant-microbe interactions, host protection is not guaranteed solely by the presence of a symbionts; rather, the density of the symbiont can determine the effectiveness of this protection \citep{laughton2014combined}. 
+\jacob{However, in many plant-microbe interactions, host protection is not guaranteed solely by the presence of a symbionts; rather, the density of the symbiont can determine the effectiveness of this protection}{I am not sure if we'll use the density data from Julia summer project.} \citep{laughton2014combined}. 
 Having a greater endophyte density could lead to high resource exploitation by the symbiont, which may be costly (reduction in  growth  or in reproductive) for the host \citep{faeth2009asexual}.
 %Thus, plant-microbe  interaction that are beneficial under drought can be parasitic under well-watered conditions \citep{giauque2019endophyte}.
 %This cost is often manifested by a reduction in host biomass or reproductive success \citep{faeth2009asexual}, particularly under harsh abiotic conditions \citep{cui2024review}. 
@@ -252,9 +252,9 @@ model4  = \beta_{0} + \beta_{1}M_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_
  
 We modeled survival using a  Bernoulli distribution, growth with a Gaussian distribution, flower with a negative binomial,  fertility (number of spikelet) with a negative binomial distribution.
 To check whether the fitted models are  compatible with the observed data, we used the posterior predictive checks \citep{gelman2000diagnostic,berkhof2000posterior}. 
-All models make sense to explain the observed data (fig.\ref{sup:ppc_surv}, fig.\ref{sup:ppc_growth}, fig.\ref{sup:ppc_spikelet}, fig.\ref{sup:ppc_flowering}).
+All models  do a good job of capturing relevant aspects of the data, such as means, standard deviations, and quantiles (fig.\ref{sup:ppc_surv}, fig.\ref{sup:ppc_growth}, fig.\ref{sup:ppc_spikelet}, fig.\ref{sup:ppc_flowering}).
 
-To select the best model for each vital rate, we compared the four models using the leave-one-out cross-validation (LOOCV)  \citep{vehtari2017practical}. 
+\jacob{To select the best model for each vital rate, we compared the four models using the leave-one-out cross-validation (LOOCV)} {I need to add something about  difference in  models} \citep{vehtari2017practical}. 
 LOOCV combines both validation and training methods. 
 In this approach, one observation is used for validation while the training set consists of n-1 observations. 
 This process is repeated for each observation, resulting in n estimated models \citep{silva2024robust}. 
@@ -306,6 +306,13 @@ All models were performed in R \citep{RCoreTeam} and Stan \citep{Rstan}.
 (b) Daily  soil moisture, estimated  from average hourly data  collected by  HOBO data loggers. 
 }
 \label{fig:climate}
+\end{figure}
+
+\begin{figure}[H]
+\includegraphics[width=0.9\textwidth]{Fig_temp_mean.pdf}
+\caption{Variation in vital rates across a temperature gradient.
+}
+\label{fig:vital}
 \end{figure}
 
 
