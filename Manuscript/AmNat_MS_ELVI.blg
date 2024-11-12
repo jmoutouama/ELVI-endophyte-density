@@ -3,51 +3,50 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: AmNat_MS_ELVI.aux
 The style file: amnatnat.bst
 Database file #1: ELVI.bib
-Repeated entry---line 451 of file ELVI.bib
+Repeated entry---line 469 of file ELVI.bib
  : @article{yule2013costs
  :                       ,
 I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "LemKapEx07"
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 30 entries,
+You've used 32 entries,
             3251 wiz_defined-function locations,
-            865 strings with 10750 characters,
-and the built_in function-call counts, 17829 in all, are:
-= -- 1555
-> -- 793
-< -- 17
-+ -- 274
-- -- 237
-* -- 1243
-:= -- 2925
-add.period$ -- 120
-call.type$ -- 30
-change.case$ -- 228
-chr.to.int$ -- 29
-cite$ -- 30
-duplicate$ -- 1260
-empty$ -- 1278
-format.name$ -- 327
-if$ -- 3533
+            872 strings with 11034 characters,
+and the built_in function-call counts, 18869 in all, are:
+= -- 1643
+> -- 844
+< -- 18
++ -- 291
+- -- 252
+* -- 1318
+:= -- 3101
+add.period$ -- 127
+call.type$ -- 32
+change.case$ -- 243
+chr.to.int$ -- 31
+cite$ -- 32
+duplicate$ -- 1335
+empty$ -- 1347
+format.name$ -- 350
+if$ -- 3735
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 252
-newline$ -- 154
-num.names$ -- 120
-pop$ -- 476
+missing$ -- 266
+newline$ -- 163
+num.names$ -- 128
+pop$ -- 508
 preamble$ -- 1
-purify$ -- 199
+purify$ -- 212
 quote$ -- 0
-skip$ -- 388
+skip$ -- 412
 stack$ -- 0
-substring$ -- 995
-swap$ -- 563
+substring$ -- 1035
+swap$ -- 595
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 267
+type$ -- 285
 warning$ -- 0
-while$ -- 140
+while$ -- 147
 width$ -- 0
-write$ -- 391
+write$ -- 414
 (There was 1 error message)

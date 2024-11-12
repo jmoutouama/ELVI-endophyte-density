@@ -120,14 +120,16 @@ Ultimately, these context-dependent costs and benefits may underlie the observed
 Context-dependence raises the hypothesis that plant-microbe interactions are likely to vary across environmental gradients, from range-core to range-edge, which could have significant consequences for host range expansion.
 If the benefits of microbial symbiosis strengthen under environmental stress then symbionts could make range-edge environments more suitable, possibly extending the host’s range limits \citep{allsup2023shifting,rudgers2020climate}.
 For instance, fungal endophytes improve the survival of \emph{Bromus laevipes} populations in dry conditions, enhancing their resistance to drought stress at the range edge and thereby extending the species' geographic range \citep{david2019soil,afkhami2014mutualist}.
-In contrast, if microbial symbiosis is costly for the host at range edge, then symbionts could limit host range \citep{benning2021microbes,benning2021plant,bennett2022costs}.
+Even if the symbiont does not improve host survival, it could still increase the host's population growth rate over time by enhancing the host's relative growth and reproduction, potentially outweighing the negative impact of lower survival rates \citep{yule2013costs}.
+However, if microbial symbiosis is costly for the host at range edge, then symbionts could limit host range \citep{benning2021microbes,benning2021plant,bennett2022costs}.
 %Mutualist limitation reduces population fitness and therefore limits range expansion in \emph{Medicago polymorpha} populations \citep{lopez2021microbial}. 
 Although context dependence, along with spatio-temporal variations in abiotic environmental conditions may reduce the effectiveness of the benefits provided by the symbiont to the host species, our understanding of the mechanisms that alter the intensity or likelihood of host-symbiont interactions across host species geographic range is limited.
 
 Ecological studies of plant-microbe symbiosis usually  investigate the interaction from the plant’s perspective and rarely  study how symbiont response to environmental variation might translate to its influence on host demographic performance across host range.
-These studies showed that symbionts increase their host's growth and reproduction rates, which outweigh the host's lower survival rates and result in an overall increase in host population size over time \citep{yule2013costs}.
+Moreover, studies on plant-microbe symbiosis often overlook the synergistic effects of abiotic and biotic factors on host dynamics across species ranges.
+%These studies showed that symbionts increase their host's growth and reproduction rates, which outweigh the host's lower survival rates and result in an overall increase in host population size over time \citep{yule2013costs}.
 %Much less is known about how the symbiont respond to environmental variation, and how this might translate to its influence on host demographic performance across host range \citep{garcia2014symbiont}. 
-Moreover, studies of plant-microbe symbiosis relied on  methods  such as inoculating sterile soil, excluding endophyte fungal hyphae by using fine mesh or rotating cores, and adding fungicide \citep{bennett2022costs}. 
+Finally, studies of plant-microbe symbiosis relied on  methods  such as inoculating sterile soil \citep{peacher2020inoculum}, excluding endophyte fungal hyphae by using fine mesh or rotating cores \citep{chung2019connecting}, and adding fungicide \citep{bennett2022costs}. 
 Despite their value, all these approaches are often difficult to implement in field settings or on a large scale.
 As a result, the exact mechanisms by which symbionts drive host range limitation and expansion are not well understood, hindering our understanding of the potential cascading effects of symbionts on eco-evolutionary species demography and  range limitation in the context of global change.
 %Symbionts are promoting their own selfish fitness by manipulating their hosts' life history traits or resistance to stresses caused by abiotic and biotic variation \citep{kazenel2015mutualistic,giauque2019endophyte,saikkonen1998fungal}. 
@@ -142,7 +144,7 @@ As a result, the exact mechanisms by which symbionts drive host range limitation
 Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
 We also asked how does fungal growth affect host demography from range core to range edge. 
 To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \jacob{[Describe ecology and natural history of grass-endophyte interactions]}{I am not sure If we need this}.
-Our experiment was design to test the following hypotheses:
+Our experiment was design to test the following \jacob{hypotheses}{ I need to update these hypotheses by adding the herbivory effect} :
 \begin{enumerate}
 \item We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
 \item We hypothesized that fungal growth in planta varied from range core to range edge. If endophyte growth is limited by host photosynthesis, then environments that are stressful for hosts may correspond to poor endophyte growth. Alternatively, if active regulation by the host is required to keep symbionts “in check”, then environments that are stressful for hosts may correspond to high endophyte growth.
@@ -272,7 +274,7 @@ All models were performed in R \citep{RCoreTeam} and Stan \citep{Rstan}.
 % If you remove this section, you will need to add it back in to your
 % final files after acceptance.
 \section*{Results}
-\begin{table}[h!]
+\begin{table}[H]
 \caption{Candidate models of  \emph{E. virginicus} vital rates (growth, flowering, spikelet and survival).}
 \label{Table:models}
 \bigskip{}
@@ -297,7 +299,7 @@ All models were performed in R \citep{RCoreTeam} and Stan \citep{Rstan}.
 \end{tabular}
 \end{table}
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \includegraphics[width=1\textwidth]{Posterior_mean.pdf}
 \caption{Posterior mean estimates for each vital rate. 
 (a) Daily temperature, estimated from average hourly data collected by  HOBO data loggers. 

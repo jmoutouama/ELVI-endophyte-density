@@ -1,4 +1,4 @@
-\begin{thebibliography}{30}
+\begin{thebibliography}{32}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Afkhami et~al.(2014)Afkhami, McIntyre, and
@@ -66,6 +66,12 @@ Bronstein, J.~L. 1994.
 \newblock Conditional outcomes in mutualistic interactions.
 \newblock Trends in ecology \& evolution 9:214--217.
 
+\bibitem[{Chung et~al.(2019)Chung, Collins, and Rudgers}]{chung2019connecting}
+Chung, Y.~A., S.~L. Collins, and J.~A. Rudgers. 2019.
+\newblock Connecting plant--soil feedbacks to long-term stability in a desert
+  grassland.
+\newblock Ecology 100:e02756.
+
 \bibitem[{Church(1958)}]{church1958artificial}
 Church, G.~L. 1958.
 \newblock Artificial hybrids of elymus virginicus with e. canadensis,
@@ -130,6 +136,11 @@ Meshram, S.~G., V.~P. Singh, and C.~Meshram. 2017.
 \newblock Long-term trend and variability of precipitation in chhattisgarh
   state, india.
 \newblock Theoretical and Applied Climatology 129:729--744.
+
+\bibitem[{Peacher and Meiners(2020)}]{peacher2020inoculum}
+Peacher, M.~D., and S.~J. Meiners. 2020.
+\newblock Inoculum handling alters the strength and direction of plant--microbe
+  interactions.
 
 \bibitem[{{R Core Team}(2023)}]{RCoreTeam}
 {R Core Team}. 2023.

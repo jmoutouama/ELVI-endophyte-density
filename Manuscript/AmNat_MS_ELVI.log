@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  10 NOV 2024 20:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  11 NOV 2024 14:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -306,7 +306,7 @@ e-density/Figure//clim_map_v1.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//clim_map_v1.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 162.
+ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 164.
 (pdftex.def)             Requested size: 469.75502pt x 341.64957pt.
 
 
@@ -315,7 +315,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
 yte-density/Figure//clim_map_v1.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
-189.
+191.
 
 (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
@@ -327,97 +327,90 @@ e-density/Figure//climatesite.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//climatesite.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//climatesite.pdf  used on input line 206.
+ithub/ELVI-endophyte-density/Figure//climatesite.pdf  used on input line 208.
 (pdftex.def)             Requested size: 469.75502pt x 260.98232pt.
  [8 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//climatesite.pdf>] [9]
+-density/Figure//climatesite.pdf>] [9] [10]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//Posterior_mean.pdf, id=53, 578.16pt x 505.89pt>
+sity/Figure//Posterior_mean.pdf, id=57, 578.16pt x 505.89pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//Posterior_mean.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//Posterior_mean.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 301
+ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 303
 .
 (pdftex.def)             Requested size: 469.75502pt x 411.0346pt.
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[10]
-Overfull \vbox (7.88277pt too high) has occurred while \output is active []
-
-
-[11 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//Posterior_mean.pdf>]
+ [11] [12 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-end
+ophyte-density/Figure//Posterior_mean.pdf>]
+[13]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_survival.pdf, id=69, 433.62pt x 361.35pt>
+sity/Figure//PPC_survival.pdf, id=76, 433.62pt x 361.35pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_survival.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_survival.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 335.
+ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 337.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [12 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+ [14 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_survival.pdf>]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_growth.pdf, id=82, 433.62pt x 361.35pt>
+sity/Figure//PPC_growth.pdf, id=89, 433.62pt x 361.35pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_growth.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_growth.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 342.
+ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 344.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
-
-[13
+ [15
 
  </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
 nsity/Figure//PPC_growth.pdf>]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_spikelet.pdf, id=96, 433.62pt x 361.35pt>
+sity/Figure//PPC_spikelet.pdf, id=102, 433.62pt x 361.35pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_spikelet.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_spikelet.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 349.
+ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 351.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [14
+
+[16
 
  </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
 nsity/Figure//PPC_spikelet.pdf>]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_flowering.pdf, id=109, 433.62pt x 361.35pt>
+sity/Figure//PPC_flowering.pdf, id=115, 433.62pt x 361.35pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_flowering.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_flowering.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 356.
+ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 358.
 
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [15
+ [17
 
  </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
-nsity/Figure//PPC_flowering.pdf>] (./AmNat_MS_ELVI.bbl [16
+nsity/Figure//PPC_flowering.pdf>]
+(./AmNat_MS_ELVI.bbl [18
 
-] [17]) [18]
-(./AmNat_MS_ELVI.aux)
+] [19]) [20] (./AmNat_MS_ELVI.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4418 strings out of 476025
- 70731 string characters out of 5790018
+ 4426 strings out of 476025
+ 70912 string characters out of 5790018
  1862388 words of memory out of 5000000
- 24782 multiletter control sequences out of 15000+600000
+ 24790 multiletter control sequences out of 15000+600000
  545413 words of font info for 113 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,16n,62p,461b,290s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,16n,62p,484b,286s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></
 usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
@@ -426,10 +419,10 @@ cal/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/
 texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive
 /2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/t
 exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on AmNat_MS_ELVI.pdf (18 pages, 24167234 bytes).
+Output written on AmNat_MS_ELVI.pdf (20 pages, 24168160 bytes).
 PDF statistics:
- 168 PDF objects out of 1000 (max. 8388607)
- 114 compressed objects within 2 object streams
+ 175 PDF objects out of 1000 (max. 8388607)
+ 119 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
