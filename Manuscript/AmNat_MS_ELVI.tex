@@ -55,7 +55,7 @@ Malcolm Sherwood$^{1}$\\
 Emily Chong$^{1}$\\
 Dajanae Pearson$^{1}$\\
 Alexandra Jimenez Martín$^{1}$\\
-Josh Fowler$^{1}$\\
+Josh Fowler$^{2}$\\
 Ali Campbell$^{1}$\\
 Chris Oxley$^{1}$\\
 Karl Schrader$^{1}$\\
@@ -143,7 +143,7 @@ As a result, the exact mechanisms by which symbionts drive host range limitation
 
 Working across a precipitation gradient in the south-central US, we asked how the demographic effects of endophyte symbiosis varied from core to edge of the host range.
 We also asked how does fungal growth affect host demography from range core to range edge. 
-To answer, these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \jacob{[Describe ecology and natural history of grass-endophyte interactions]}{I am not sure If we need this}.
+To answer these questions, we studied the symbiotic association between a cool-season grass species (\emph{Elymus virginicus}) and its vertically transmitted fungal symbiont Epichloë elymi. \jacob{[Describe ecology and natural history of grass-endophyte interactions]}{I am not sure If we need this}.
 Our experiment was design to test the following \jacob{hypotheses}{ I need to update these hypotheses by adding the herbivory effect} :
 \begin{enumerate}
 \item We hypothesized that stress associated with aridity and low precipitation would strengthen the plant-fungal mutualism, such that the fitness benefits of endophyte symbiosis are maximized at the range edge. 
@@ -189,7 +189,7 @@ Plants used  in the common garden experiment were derived from natural populatio
 At each of these natural populations we collected seeds. 
 Some of the seeds of \emph{E. virginicus} were heat treated to produce endophyte negative plants ($E^-$) . 
 To do so, we placed these seeds  in a drying oven set at 60°C for approximately five days (120 hours). 
-While this method  the eliminates endophytes from all individuals, it does not affect seed viability. 
+While this method eliminates the endophytes from all individuals, it does not affect seed viability. 
 All seeds (both heat-treated and non-heat-treated) were planted in the Rice University greenhouse.
 Seedlings were regularly fertilized every two weeks. 
 The seedlings were then vegetatively propagated to produce enough individuals for your experiment (N = 840).
@@ -244,13 +244,13 @@ Each model includes normally distributed random effects for site-to-site  variat
 \begin{align}\label{eq:candidates}
 \begin{split}
 model1 = \beta_{0} + \beta_{1}T_{mean}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*T_{mean} + \beta_{5}H*E +  \beta_{6}H*T_{mean} + \phi + \omega + \rho  \\ 
-model2  = \beta_{0} + \beta_{1}T_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*T_{CV} + \beta_{5}H*E +  \beta_{6}H*T_{mean} +  \phi + \omega + \rho  \\
+model2  = \beta_{0} + \beta_{1}T_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*T_{CV} + \beta_{5}H*E +  \beta_{6}H*T_{CV} +  \phi + \omega + \rho  \\
 model3  = \beta_{0} + \beta_{1}M_{mean}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_{mean} + \beta_{5}H*E +  \beta_{6}H*M_{mean} + \phi + \omega + \rho \\
-model4  = \beta_{0} + \beta_{1}M_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_{CV} + \beta_{5}H*E +  \beta_{6}H*M_{CV} ++ \phi + \omega + \rho 
+model4  = \beta_{0} + \beta_{1}M_{CV}  + \beta_{2}E + \beta_{3}H + \beta_{4}E*M_{CV} + \beta_{5}H*E +  \beta_{6}H*M_{CV} + \phi + \omega + \rho 
 \end{split}
 \end{align}
  
-We modeled survival using a  Bernoulli distribution, growth with a Gaussian distribution, flower with a negative binomial,  fertility (number of spikelet) with a negative binomial distribution.
+We modeled survival using a  Bernoulli distribution, growth with a Gaussian distribution, flower with a negative binomial and fertility (number of spikelet) with a negative binomial distribution.
 To check whether the fitted models are  compatible with the observed data, we used the posterior predictive checks \citep{gelman2000diagnostic,berkhof2000posterior}. 
 All models  do a good job of capturing relevant aspects of the data, such as means, standard deviations, and quantiles (fig.\ref{sup:ppc_surv}, fig.\ref{sup:ppc_growth}, fig.\ref{sup:ppc_spikelet}, fig.\ref{sup:ppc_flowering}).
 
@@ -292,6 +292,7 @@ All models were performed in R \citep{RCoreTeam} and Stan \citep{Rstan}.
 		     \textbf{Flowering} &   \textbf{model2}&  \textbf{0.0}  &  \textbf{0.0}  \\
 		    Flowering & model4 & -4.3 &  1.0\\
 		    Flowering & model3 & -6.5 &  1.4\\
+		     Flowering & model3 & -6.5 &  1.4\\
 		    		     \textbf{Spiket} &   \textbf{model2}&  \textbf{0.0} &  \textbf{0.0}  \\
 		    Spiket & model3 & -0.5 &  0.6\\
 		    Spiket & model1 & -0.7&  1.2\\

@@ -930,10 +930,10 @@ ppc_dens_overlay(data_sites_grow_temp_mean$y_g, y_g_tm_sim)+
   ggtitle(("CV soil moisture"))+
   theme_bw()+
   theme(legend.position = "none")->ppc_grow_water_cv
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_growth.pdf",useDingbats = F,height=5,width=6)
-multiplot(ppc_grow_temp_mean,ppc_grow_temp_cv,ppc_grow_water_mean,
-          ppc_grow_water_cv,cols=2)
-dev.off()
+# pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_growth.pdf",useDingbats = F,height=5,width=6)
+# multiplot(ppc_grow_temp_mean,ppc_grow_temp_cv,ppc_grow_water_mean,
+#           ppc_grow_water_cv,cols=2)
+# dev.off()
 
 bayesplot::ppc_dens_overlay(data_sites_flow_temp_mean$y_f, y_f_tm_sim)+
   xlab("Flowering")+
@@ -1631,27 +1631,25 @@ data_summary <- function(data, varname, groupnames){
   data_sum <- rename(data_sum, c("mean" = varname))
   return(data_sum)
 }
+# Temperature
 ## Survival
 demography_climate_elvi_surv %>% 
   filter(Herbivory=="1")->elvi_surv_no_herb
-demography_climate_elvi_surv %>% 
-  filter(Herbivory=="2")->elvi_surv_herb
-
 elvi_surv_no_herb_plot <- data_summary(elvi_surv_no_herb, varname="surv_t1", 
                                        groupnames=c("Endo", "temp_mean"))
 # Convert dose to a factor variable
 elvi_surv_no_herb_plot$temp_mean=round(elvi_surv_no_herb_plot$temp_mean,2)
 elvi_surv_no_herb_plot$temp_mean=as.factor(elvi_surv_no_herb_plot$temp_mean)
 elvi_surv_no_herb_plot$Endo=as.factor(elvi_surv_no_herb_plot$Endo)
-#head(elvi_surv_no_herb_plot)
 
+demography_climate_elvi_surv %>% 
+  filter(Herbivory=="2")->elvi_surv_herb
 elvi_surv_herb_plot <- data_summary(elvi_surv_herb, varname="surv_t1", 
                                        groupnames=c("Endo", "temp_mean"))
 # Convert dose to a factor variable
 elvi_surv_herb_plot$temp_mean=round(elvi_surv_herb_plot$temp_mean,2)
 elvi_surv_herb_plot$temp_mean=as.factor(elvi_surv_herb_plot$temp_mean)
 elvi_surv_herb_plot$Endo=as.factor(elvi_surv_herb_plot$Endo)
-#head(elvi_surv_no_herb_plot)
 
 sur_h<- ggplot(elvi_surv_no_herb_plot, aes(x=temp_mean, y=surv_t1, group=Endo, color=Endo)) + 
   geom_line() +
@@ -1682,9 +1680,6 @@ surv<- ggplot(elvi_surv_herb_plot, aes(x=temp_mean, y=surv_t1, group=Endo, color
 
 ## Growth
 demography_climate_elvi_grow %>% 
-  group_by(Site,Plot,Endo,Herbivory)->elvi_grow_herb
-
-demography_climate_elvi_grow %>% 
   filter(Herbivory=="1")->elvi_grow_no_herb
 
 demography_climate_elvi_grow %>% 
@@ -1696,16 +1691,12 @@ elvi_grow_no_herb_plot <- data_summary(elvi_grow_no_herb, varname="grow",
 elvi_grow_no_herb_plot$temp_mean=round(elvi_grow_no_herb_plot$temp_mean,2)
 elvi_grow_no_herb_plot$temp_mean=as.factor(elvi_grow_no_herb_plot$temp_mean)
 elvi_grow_no_herb_plot$Endo=as.factor(elvi_grow_no_herb_plot$Endo)
-head(elvi_grow_no_herb_plot)
-
 elvi_grow_herb_plot <- data_summary(elvi_grow_herb, varname="grow", 
                     groupnames=c("Endo", "temp_mean"))
 # Convert dose to a factor variable
 elvi_grow_herb_plot$temp_mean=round(elvi_grow_herb_plot$temp_mean,2)
 elvi_grow_herb_plot$temp_mean=as.factor(elvi_grow_herb_plot$temp_mean)
 elvi_grow_herb_plot$Endo=as.factor(elvi_grow_herb_plot$Endo)
-head(elvi_grow_herb_plot)
-
 grow_h<- ggplot(elvi_grow_no_herb_plot, aes(x=temp_mean, y=grow, group=Endo, color=Endo)) + 
   geom_line() +
   geom_point(size = 3)+
@@ -1748,15 +1739,12 @@ elvi_flow_no_herb_plot <- data_summary(elvi_flow_no_herb, varname="flow_t1",
 elvi_flow_no_herb_plot$temp_mean=round(elvi_flow_no_herb_plot$temp_mean,2)
 elvi_flow_no_herb_plot$temp_mean=as.factor(elvi_flow_no_herb_plot$temp_mean)
 elvi_flow_no_herb_plot$Endo=as.factor(elvi_flow_no_herb_plot$Endo)
-head(elvi_flow_no_herb_plot)
-
 elvi_flow_herb_plot <- data_summary(elvi_flow_herb, varname="flow_t1", 
                                     groupnames=c("Endo", "temp_mean"))
 # Convert dose to a factor variable
 elvi_flow_herb_plot$temp_mean=round(elvi_flow_herb_plot$temp_mean,2)
 elvi_flow_herb_plot$temp_mean=as.factor(elvi_flow_herb_plot$temp_mean)
 elvi_flow_herb_plot$Endo=as.factor(elvi_flow_herb_plot$Endo)
-head(elvi_flow_herb_plot)
 
 flow_h<- ggplot(elvi_flow_no_herb_plot, aes(x=temp_mean, y=flow_t1, group=Endo, color=Endo)) + 
   geom_line() +
@@ -1796,16 +1784,12 @@ elvi_spi_no_herb_plot <- data_summary(elvi_spi_no_herb, varname="spikelet_t1",
 elvi_spi_no_herb_plot$temp_mean=round(elvi_spi_no_herb_plot$temp_mean,2)
 elvi_spi_no_herb_plot$temp_mean=as.factor(elvi_spi_no_herb_plot$temp_mean)
 elvi_spi_no_herb_plot$Endo=as.factor(elvi_spi_no_herb_plot$Endo)
-head(elvi_spi_no_herb_plot)
-
 elvi_spi_herb_plot <- data_summary(elvi_spi_herb, varname="spikelet_t1", 
                                     groupnames=c("Endo", "temp_mean"))
 # Convert dose to a factor variable
 elvi_spi_herb_plot$temp_mean=round(elvi_spi_herb_plot$temp_mean,2)
 elvi_spi_herb_plot$temp_mean=as.factor(elvi_spi_herb_plot$temp_mean)
 elvi_spi_herb_plot$Endo=as.factor(elvi_spi_herb_plot$Endo)
-head(elvi_spi_herb_plot)
-
 
 spi_h<- ggplot(elvi_spi_no_herb_plot, aes(x=temp_mean, y=spikelet_t1, group=Endo, color=Endo)) + 
   geom_line() +
@@ -1837,4 +1821,351 @@ pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-
 ggarrange(grow_h, grow + rremove("ylab"),flow_h,flow+ rremove("ylab"),spi_h,spi + rremove("ylab"), ncol = 2, nrow = 3)
 dev.off()
 
+
+# Temperature CGV
+## Survival
+elvi_surv_no_herb_plot_t_cv <- data_summary(elvi_surv_no_herb, varname="surv_t1", 
+                                       groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_surv_no_herb_plot_t_cv$temp_cv=round(elvi_surv_no_herb_plot_t_cv$temp_cv,2)
+elvi_surv_no_herb_plot_t_cv$temp_cv=as.factor(elvi_surv_no_herb_plot_t_cv$temp_cv)
+elvi_surv_no_herb_plot_t_cv$Endo=as.factor(elvi_surv_no_herb_plot_t_cv$Endo)
+
+elvi_surv_herb_plot_t_cv <- data_summary(elvi_surv_herb, varname="surv_t1", 
+                                    groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_surv_herb_plot_t_cv$temp_cv=round(elvi_surv_herb_plot_t_cv$temp_cv,2)
+elvi_surv_herb_plot_t_cv$temp_cv=as.factor(elvi_surv_herb_plot_t_cv$temp_cv)
+elvi_surv_herb_plot_t_cv$Endo=as.factor(elvi_surv_herb_plot_t_cv$Endo)
+
+sur_h_t_cv<- ggplot(elvi_surv_no_herb_plot_t_cv, aes(x=temp_cv, y=surv_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=surv_t1-sd, ymax=surv_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = "Survival")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = c(0.2, 0.2),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+surv_t_cv<- ggplot(elvi_surv_herb_plot_t_cv, aes(x=temp_cv, y=surv_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=surv_t1-sd, ymax=surv_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+
+## Growth
+elvi_grow_no_herb_plot_t_cv <- data_summary(elvi_grow_no_herb, varname="grow", 
+                                       groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_grow_no_herb_plot_t_cv$temp_cv=round(elvi_grow_no_herb_plot_t_cv$temp_cv,2)
+elvi_grow_no_herb_plot_t_cv$temp_cv=as.factor(elvi_grow_no_herb_plot_t_cv$temp_cv)
+elvi_grow_no_herb_plot_t_cv$Endo=as.factor(elvi_grow_no_herb_plot_t_cv$Endo)
+
+elvi_grow_herb_plot_t_cv <- data_summary(elvi_grow_herb, varname="grow", 
+                                    groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_grow_herb_plot_t_cv$temp_cv=round(elvi_grow_herb_plot_t_cv$temp_cv,2)
+elvi_grow_herb_plot_t_cv$temp_cv=as.factor(elvi_grow_herb_plot_t_cv$temp_cv)
+elvi_grow_herb_plot_t_cv$Endo=as.factor(elvi_grow_herb_plot_t_cv$Endo)
+
+grow_h_t_cv<- ggplot(elvi_grow_no_herb_plot_t_cv, aes(x=temp_cv, y=grow, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=grow-sd, ymax=grow+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="Fenced", x="Temperature (CV)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = c(0.2, 0.23),
+        plot.title = element_text(face="bold",hjust = 0.5),
+        legend.title=element_text(size=10),
+        legend.text=element_text(size=10),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "grey90"))
+
+grow_t_cv<- ggplot(elvi_grow_herb_plot_t_cv, aes(x=temp_cv, y=grow, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=grow-sd, ymax=grow+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="Unfenced", x="Temperature (CV)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        plot.title = element_text(face="bold",hjust = 0.5),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+## inflorescence
+elvi_flow_no_herb_plot_t_cv <- data_summary(elvi_flow_no_herb, varname="flow_t1", 
+                                       groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_flow_no_herb_plot_t_cv$temp_cv=round(elvi_flow_no_herb_plot_t_cv$temp_cv,2)
+elvi_flow_no_herb_plot_t_cv$temp_cv=as.factor(elvi_flow_no_herb_plot_t_cv$temp_cv)
+elvi_flow_no_herb_plot_t_cv$Endo=as.factor(elvi_flow_no_herb_plot_t_cv$Endo)
+
+elvi_flow_herb_plot_t_cv <- data_summary(elvi_flow_herb, varname="flow_t1", 
+                                    groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_flow_herb_plot_t_cv$temp_cv=round(elvi_flow_herb_plot_t_cv$temp_cv,2)
+elvi_flow_herb_plot_t_cv$temp_cv=as.factor(elvi_flow_herb_plot_t_cv$temp_cv)
+elvi_flow_herb_plot_t_cv$Endo=as.factor(elvi_flow_herb_plot_t_cv$Endo)
+
+flow_h_cv<- ggplot(elvi_flow_herb_plot_t_cv, aes(x=temp_cv, y=flow_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=flow_t1-sd, ymax=flow_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = "# Inflorescences")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray95"))
+
+flow_cv<- ggplot(elvi_flow_herb_plot_t_cv, aes(x=temp_cv, y=flow_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=flow_t1-sd, ymax=flow_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = " # Inflorescences")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+## spikelet
+
+elvi_spi_no_herb_plot_t_cv <- data_summary(elvi_spi_no_herb, varname="spikelet_t1", 
+                                      groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_spi_no_herb_plot_t_cv$temp_cv=round(elvi_spi_no_herb_plot_t_cv$temp_cv,2)
+elvi_spi_no_herb_plot_t_cv$temp_cv=as.factor(elvi_spi_no_herb_plot_t_cv$temp_cv)
+elvi_spi_no_herb_plot_t_cv$Endo=as.factor(elvi_spi_no_herb_plot_t_cv$Endo)
+
+elvi_spi_herb_plot_t_cv <- data_summary(elvi_spi_herb, varname="spikelet_t1", 
+                                   groupnames=c("Endo", "temp_cv"))
+# Convert dose to a factor variable
+elvi_spi_herb_plot_t_cv$temp_cv=round(elvi_spi_herb_plot_t_cv$temp_cv,2)
+elvi_spi_herb_plot_t_cv$temp_cv=as.factor(elvi_spi_herb_plot_t_cv$temp_cv)
+elvi_spi_herb_plot_t_cv$Endo=as.factor(elvi_spi_herb_plot_t_cv$Endo)
+
+spi_h_t_cv<- ggplot(elvi_spi_no_herb_plot_t_cv, aes(x=temp_cv, y=spikelet_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=spikelet_t1-sd, ymax=spikelet_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = "# Spikelets")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+spi_t_cv<- ggplot(elvi_spi_herb_plot_t_cv, aes(x=temp_cv, y=spikelet_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=spikelet_t1-sd, ymax=spikelet_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Temperature (CV)", y = "# Spikelets")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Fig_temp_cv.pdf",useDingbats = F,height=8.5,width=6)
+ggarrange(grow_h_t_cv, grow_t_cv + rremove("ylab"),flow_h_cv,flow_cv+ rremove("ylab"),spi_h_t_cv,spi_h_t_cv + rremove("ylab"), ncol = 2, nrow = 3)
+dev.off()
+
+# Soil moisture
+## Survival
+elvi_surv_no_herb_plot_w <- data_summary(elvi_surv_no_herb, varname="surv_t1", 
+                                       groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_surv_no_herb_plot_w$water_mean=round(elvi_surv_no_herb_plot_w$water_mean,2)
+elvi_surv_no_herb_plot_w$water_mean=as.factor(elvi_surv_no_herb_plot_w$water_mean)
+elvi_surv_no_herb_plot_w$Endo=as.factor(elvi_surv_no_herb_plot_w$Endo)
+
+elvi_surv_herb_plot_w <- data_summary(elvi_surv_herb, varname="surv_t1", 
+                                    groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_surv_herb_plot_w$water_mean=round(elvi_surv_herb_plot_w$water_mean,2)
+elvi_surv_herb_plot_w$water_mean=as.factor(elvi_surv_herb_plot_w$water_mean)
+elvi_surv_herb_plot_w$Endo=as.factor(elvi_surv_herb_plot_w$Endo)
+
+sur_h_w<- ggplot(elvi_surv_no_herb_plot_w, aes(x=water_mean, y=surv_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=surv_t1-sd, ymax=surv_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%) ", y = "Survival")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = c(0.2, 0.2),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+surv_w<- ggplot(elvi_surv_herb_plot_w, aes(x=water_mean, y=surv_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=surv_t1-sd, ymax=surv_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+
+## Growth
+elvi_grow_no_herb_plot_w <- data_summary(elvi_grow_no_herb, varname="grow", 
+                                       groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_grow_no_herb_plot_w$water_mean=round(elvi_grow_no_herb_plot_w$water_mean,2)
+elvi_grow_no_herb_plot_w$water_mean=as.factor(elvi_grow_no_herb_plot_w$water_mean)
+elvi_grow_no_herb_plot_w$Endo=as.factor(elvi_grow_no_herb_plot_w$Endo)
+
+elvi_grow_herb_plot_w <- data_summary(elvi_grow_herb, varname="grow", 
+                                    groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_grow_herb_plot_w$water_mean=round(elvi_grow_herb_plot_w$water_mean,2)
+elvi_grow_herb_plot_w$water_mean=as.factor(elvi_grow_herb_plot_w$water_mean)
+elvi_grow_herb_plot_w$Endo=as.factor(elvi_grow_herb_plot_w$Endo)
+grow_h_w<- ggplot(elvi_grow_no_herb_plot_w, aes(x=water_mean, y=grow, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=grow-sd, ymax=grow+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="Fenced", x="TSoil moisture (%)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = c(0.4, 0.23),
+        plot.title = element_text(face="bold",hjust = 0.5),
+        legend.title=element_text(size=10),
+        legend.text=element_text(size=10),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "grey90"))
+
+grow_w<- ggplot(elvi_grow_herb_plot_w, aes(x=water_mean, y=grow, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=grow-sd, ymax=grow+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="Unfenced", x="Soil moisture (%)", y = "Growth")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        plot.title = element_text(face="bold",hjust = 0.5),
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+## inflorescence
+elvi_flow_no_herb_plot_w <- data_summary(elvi_flow_no_herb, varname="flow_t1", 
+                                       groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_flow_no_herb_plot_w$water_mean=round(elvi_flow_no_herb_plot_w$water_mean,2)
+elvi_flow_no_herb_plot_w$water_mean=as.factor(elvi_flow_no_herb_plot_w$water_mean)
+elvi_flow_no_herb_plot_w$Endo=as.factor(elvi_flow_no_herb_plot_w$Endo)
+
+elvi_flow_herb_plot_w <- data_summary(elvi_flow_herb, varname="flow_t1", 
+                                    groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_flow_herb_plot_w$water_mean=round(elvi_flow_herb_plot_w$water_mean,2)
+elvi_flow_herb_plot_w$water_mean=as.factor(elvi_flow_herb_plot_w$water_mean)
+elvi_flow_herb_plot_w$Endo=as.factor(elvi_flow_herb_plot_w$Endo)
+
+flow_h_w<- ggplot(elvi_flow_no_herb_plot_w, aes(x=water_mean, y=flow_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=flow_t1-sd, ymax=flow_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%)", y = "# Inflorescences")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray95"))
+
+flow_w<- ggplot(elvi_flow_herb_plot_w, aes(x=water_mean, y=flow_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=flow_t1-sd, ymax=flow_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%)", y = " # Inflorescences")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+## spikelet
+elvi_spi_no_herb_plot_w <- data_summary(elvi_spi_no_herb, varname="spikelet_t1", 
+                                      groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_spi_no_herb_plot_w$water_mean=round(elvi_spi_no_herb_plot_w$water_mean,2)
+elvi_spi_no_herb_plot_w$water_mean=as.factor(elvi_spi_no_herb_plot_w$water_mean)
+elvi_spi_no_herb_plot_w$Endo=as.factor(elvi_spi_no_herb_plot_w$Endo)
+elvi_spi_herb_plot_w <- data_summary(elvi_spi_herb, varname="spikelet_t1", 
+                                   groupnames=c("Endo", "water_mean"))
+# Convert dose to a factor variable
+elvi_spi_herb_plot_w$water_mean=round(elvi_spi_herb_plot_w$water_mean,2)
+elvi_spi_herb_plot_w$water_mean=as.factor(elvi_spi_herb_plot_w$water_mean)
+elvi_spi_herb_plot_w$Endo=as.factor(elvi_spi_herb_plot_w$Endo)
+
+spi_h_w<- ggplot(elvi_spi_no_herb_plot_w, aes(x=water_mean, y=spikelet_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=spikelet_t1-sd, ymax=spikelet_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%)", y = "# Spikelets")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+spi_w<- ggplot(elvi_spi_herb_plot_w, aes(x=water_mean, y=spikelet_t1, group=Endo, color=Endo)) + 
+  geom_line() +
+  geom_point(size = 3)+
+  guides(color = guide_legend(title = "Endophyte")) +
+  geom_errorbar(aes(ymin=spikelet_t1-sd, ymax=spikelet_t1+sd), width=.3,
+                position=position_dodge(0.03))+
+  labs(title="", x="Soil moisture (%)", y = "# Spikelets")+
+  theme_bw() +
+  scale_color_manual(name="Endophyte",labels=c("1" = expression(E^"-"), "2"=expression(E^"+")), values=c('#999999','#E69F00'))+
+  theme(legend.position = "none",
+        legend.direction = "vertical",
+        legend.background = element_rect(color = "black", linetype = "blank",fill = "gray90"))
+
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Fig_water_mean.pdf",useDingbats = F,height=8.5,width=6)
+ggarrange(grow_h_w, grow_w + rremove("ylab"),flow_h_w,flow_w + rremove("ylab"),spi_h_w,spi_w + rremove("ylab"), ncol = 2, nrow = 3)
+dev.off()
 

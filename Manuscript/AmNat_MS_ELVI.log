@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  12 NOV 2024 16:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  13 NOV 2024 16:29
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -338,7 +338,7 @@ e-density/Figure//Posterior_mean.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//Posterior_mean.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 303
+ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 304
 .
 (pdftex.def)             Requested size: 469.75502pt x 411.0346pt.
  [11]
@@ -349,7 +349,7 @@ e-density/Figure//Fig_temp_mean.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//Fig_temp_mean.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//Fig_temp_mean.pdf  used on input line 312.
+ithub/ELVI-endophyte-density/Figure//Fig_temp_mean.pdf  used on input line 313.
 
 (pdftex.def)             Requested size: 422.77664pt x 598.96802pt.
  [12 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
@@ -366,7 +366,7 @@ e-density/Figure//PPC_survival.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_survival.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 344.
+ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 345.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
  [15 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//PPC_survival.pdf>]
@@ -377,7 +377,7 @@ e-density/Figure//PPC_growth.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_growth.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 351.
+ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 352.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
 
 [16
@@ -391,7 +391,7 @@ e-density/Figure//PPC_spikelet.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_spikelet.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 358.
+ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 359.
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
  [17
 
@@ -404,7 +404,7 @@ e-density/Figure//PPC_flowering.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PPC_flowering.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 365.
+ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 366.
 
 (pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
  [18
@@ -434,7 +434,7 @@ cal/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/
 texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive
 /2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/t
 exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on AmNat_MS_ELVI.pdf (21 pages, 24179173 bytes).
+Output written on AmNat_MS_ELVI.pdf (21 pages, 24179162 bytes).
 PDF statistics:
  185 PDF objects out of 1000 (max. 8388607)
  126 compressed objects within 2 object streams
