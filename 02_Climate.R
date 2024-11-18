@@ -12,6 +12,7 @@ library(stringr)
 library(magrittr)
 library(readxl)# read excel data
 library(ggsci) # package for color blind color in ggplot 2
+library(corrplot)# visualize the correlation  
 # Path to acess the data
 jacob_path <- "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density"
 #jacob_path<-"D:/ELVI-endophyte-density"
@@ -86,7 +87,6 @@ dat2324_t_t1_herb_ELVI %>%
   filter(Site %in% c("BAS","BFL","COL","HUN","LAF","SON"))->dat2324_t_t1_herb_ELVI_clean
 #view(dat2324_t_t1_herb_ELVI_clean)
 #dim(dat2324_t_t1_herb_ELVI_clean)
-
 ## Find the starting and ending dates are correct
 dat2324_t_t1_herb_ELVI_clean %>% 
   dplyr::select(Site,Species,date_23,date_24) %>% 
@@ -141,7 +141,7 @@ HOBO_daily %>%
 HOBO_daily %>% 
   filter(site=="LAF" & longdate>as.Date("2023-06-13") & longdate<as.Date("2024-06-06"))->HOBO_LAF
 HOBO_daily %>% 
-  filter(site=="SON" & longdate>as.Date("2023-06-28") & longdate<as.Date("2024-06-28"))->HOBO_SON
+  filter(site=="SON" & longdate>as.Date("2023-06-28") & longdate<as.Date("2024-06-25"))->HOBO_SON
 
 HOBO_daily_all_sites<-rbind(HOBO_BAS,HOBO_BFL,HOBO_COL,HOBO_HUN,HOBO_LAF,HOBO_SON)
 #unique(HOBO_daily_all_sites$site)
@@ -150,6 +150,13 @@ HOBO_daily_all_sites %>%
   group_by(site) %>% 
   summarise(mean_temp=mean(daily_mean_temp),
             mean_moisture=mean(daily_mean_moist))->hobo_means
+hobo_means<-as.data.frame(hobo_means)
+
+par(mfrow=c(1,2))
+barplot(hobo_means[order(hobo_means[,2],decreasing=FALSE),][,2],names.arg=hobo_means[order(hobo_means[,1],decreasing=FALSE),][,1],col="#E69F00",xlab="Soil temperature (°C)", ylab="Mean",main="")
+barplot(hobo_means[order(hobo_means[,3],decreasing=FALSE),][,2],names.arg=hobo_means[order(hobo_means[,1],decreasing=FALSE),][,1],col="#E69F00",xlab="Soil moisture", ylab="Mean",main="")
+dev.off()
+
 
 data_plotclim<-data.frame(site=c(HOBO_daily_all_sites$site,HOBO_daily_all_sites$site),daily_mean_clim=c(HOBO_daily_all_sites$daily_mean_temp,HOBO_daily_all_sites$daily_mean_moist),date=c(HOBO_daily_all_sites$longdate,HOBO_daily_all_sites$longdate),clim=c(rep("temp",nrow(HOBO_daily_all_sites)),rep("water",nrow(HOBO_daily_all_sites))))
 #HOBO_daily_all_sites$site <- factor(HOBO_daily_all_sites$site,levels = c("LAF", "HUN", "BAS", "COL", "BFL"))
@@ -158,14 +165,12 @@ site_names <- c("LAF"="Lafayette",
                  "HUN"="Huntville",
                  "BAS"="Bastrop",
                 "COL"="College Station",
-                "BFL" ="Brackenridge")
+                "BFL" ="Brackenridge",
+                "SON" ="Sonora")
 
-cbp1 <- c("#E69F00", "#009E73", "#0072B2", "#D55E00", "#CC79A7")
-
-
+cbp1 <- c("#E69F00", "#009E73", "#0072B2", "#D55E00", "#CC79A7","#F0E442")
 
 HOBO_daily_all_sites %>% 
-  #mutate(site = ordered(site, levels=c("BFL","BAS","COL","HUN","LAF"))) %>%
   ggplot(aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_temp))+
   geom_line(aes(colour=site))+
   ggtitle("a")+
@@ -176,7 +181,7 @@ HOBO_daily_all_sites %>%
         axis.text.x = element_text(size=4.5,color="black", angle=0),
         plot.title =element_text(size=14, color="black",angle=0))+
   labs( y="Daily soil temperature  (°C)", x="")+
-  facet_grid(~site,labeller = labeller(site=site_names))+
+  facet_grid(~factor(site,levels=c("LAF","HUN","COL","BAS","BFL","SON")))+
   geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=site))->figtempsite
 
 
@@ -192,7 +197,7 @@ HOBO_daily_all_sites %>%
         axis.text.x = element_text(size=4.55, color="black",angle=0),
         plot.title =element_text(size=14, color="black",angle=0))+
   labs( y="Daily soil moisture (wfv)", x="")+
-  facet_grid(~site,labeller = labeller(site=site_names))+
+  facet_grid(~factor(site,levels=c("LAF","HUN","COL","BAS","BFL","SON")))+
   geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=site))->figmoistsite
 
 # Prism data ----
@@ -262,14 +267,21 @@ climate_garden %>%
   filter(Site=="HUN" & longdate>as.Date("2023-06-07") & longdate<as.Date("2024-06-04"))->climate_garden_HUN
 climate_garden %>% 
   filter(Site=="LAF" & longdate>as.Date("2023-06-13") & longdate<as.Date("2024-06-06"))->climate_garden_LAF
+climate_garden %>% 
+  filter(Site=="SON" & longdate>as.Date("2023-06-28") & longdate<as.Date("2024-06-25"))->climate_garden_SON
 
-climate_garden_daily_prism<-rbind(climate_garden_BAS,climate_garden_BFL,climate_garden_COL,climate_garden_HUN,climate_garden_LAF)
+climate_garden_daily_prism<-rbind(climate_garden_BAS,climate_garden_BFL,climate_garden_COL,climate_garden_HUN,climate_garden_LAF,climate_garden_SON)
 
 ## Plot the daily trend for temperature and soil moisture from start to end
 climate_garden_daily_prism %>% 
   group_by(Site) %>% 
   summarise(mean_temp=mean(tmean),
             mean_ppt=mean(ppt))->prism_means
+prism_means<-as.data.frame(prism_means)
+par(mfrow=c(1,2))
+barplot(prism_means[order(prism_means[,2],decreasing=FALSE),][,2],names.arg=prism_means[order(prism_means[,1],decreasing=FALSE),][,1],col="#E69F00",xlab="Air temperature (°C)", ylab="Mean",main="")
+barplot(prism_means[order(prism_means[,3],decreasing=FALSE),][,2],names.arg=prism_means[order(prism_means[,1],decreasing=FALSE),][,1],col="#E69F00",xlab="Precipitation", ylab="Mean",main="")
+dev.off()
 
 climate_garden_daily_prism %>% 
   #mutate(site = ordered(site, levels=c("BFL","BAS","COL","HUN","LAF"))) %>%
@@ -283,10 +295,11 @@ climate_garden_daily_prism %>%
         axis.text.x = element_text(size=4.5,color="black", angle=0),
         plot.title =element_text(size=14, color="black",angle=0))+
   labs( y="Daily air temperature  (°C)", x="")+
-  facet_grid(~Site,labeller = labeller(Site=site_names))+
+  facet_grid(~factor(Site,levels=c("LAF","HUN","COL","BAS","BFL","SON")))+
   geom_hline(data=prism_means,aes(yintercept = mean_temp,colour=Site))->figtempsite_prism
 
 climate_garden_daily_prism %>% 
+  filter(ppt < 80) %>% 
   #mutate(site = ordered(site, levels=c("BFL","BAS","COL","HUN","LAF"))) %>%
   ggplot(aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=ppt))+
   geom_line(aes(colour=Site))+
@@ -298,14 +311,16 @@ climate_garden_daily_prism %>%
         axis.text.x = element_text(size=4.5,color="black", angle=0),
         plot.title =element_text(size=14, color="black",angle=0))+
   labs( y="Daily precipitation  (°C)", x="Month")+
-  facet_grid(~Site,labeller = labeller(Site=site_names))+
+  #ylim=c(0,100)+
+  #facet_grid(~Site,labeller = labeller(Site=site_names))+
+  facet_grid(~factor(Site,levels=c("LAF","HUN","COL","BAS","BFL","SON")))+
   geom_hline(data=prism_means,aes(yintercept = mean_temp,colour=Site))->figpptsite_prism
 
 # Regression to find the relationship between prism data and HOBO data
 dat_reg<-data.frame(climate_garden_daily_prism,HOBO_daily_all_sites)
 dat_reg<-dat_reg[,-c(1,2,3,4,7,8,9)]
 corr_dat_reg <- cor(dat_reg)
-library(corrplot)
+
 corrplot(corr_dat_reg, tl.col = "brown", tl.srt = 45, bg = "White",
          title = "",
          type = "lower")
@@ -320,7 +335,7 @@ pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-
   theme(axis.text.x = element_text(size=4.5,color="black", angle=0))->Figregresion_temp)
 dev.off()
 
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =10,width=9,useDingbats = F)
-(Figclimatesite<-ggpubr::ggarrange(figtempsite,figmoistsite,figtempsite_prism,figpptsite_prism,common.legend = FALSE,ncol = 1, nrow = 4))
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =10,width=12,useDingbats = F)
+(Figclimatesite<-ggpubr::ggarrange(figtempsite,figtempsite_prism,figmoistsite,figpptsite_prism,common.legend = FALSE,ncol = 1, nrow = 4))
 dev.off()
 
