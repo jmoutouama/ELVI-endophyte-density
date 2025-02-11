@@ -13,6 +13,7 @@ library(magrittr)
 library(readxl)# read excel data
 library(ggsci) # package for color blind color in ggplot 2
 library(corrplot)# visualize the correlation  
+library(terra)
 # Path to acess the data
 jacob_path <- "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density"
 #jacob_path<-"D:/ELVI-endophyte-density"
@@ -87,6 +88,17 @@ dat2324_t_t1_herb_ELVI %>%
   filter(Site %in% c("BAS","BFL","COL","HUN","LAF","SON"))->dat2324_t_t1_herb_ELVI_clean
 #view(dat2324_t_t1_herb_ELVI_clean)
 #dim(dat2324_t_t1_herb_ELVI_clean)
+
+unique(dat2324_t_t1_herb_ELVI_clean$Site)
+dat2324_t_t1_herb_ELVI_clean %>% 
+  filter(Site=="SON"& tiller_t>0)->SON
+
+SON<-as.data.frame(SON)
+view(SON)
+
+print(SON)  
+head(SON)
+tail(SON)
 ## Find the starting and ending dates are correct
 dat2324_t_t1_herb_ELVI_clean %>% 
   dplyr::select(Site,Species,date_23,date_24) %>% 
@@ -95,6 +107,7 @@ dat2324_t_t1_herb_ELVI_clean %>%
   mutate(duration=difftime(mdy(date_24),mdy(date_23),units = "days"))->census_dates
 
 # HOBO data ----
+## Annual data ----
 ## format date and separate year-month-day
 list.files(
   path = paste0(choose_path, "/Data/HOBO data/"),
@@ -160,7 +173,6 @@ dev.off()
 
 data_plotclim<-data.frame(site=c(HOBO_daily_all_sites$site,HOBO_daily_all_sites$site),daily_mean_clim=c(HOBO_daily_all_sites$daily_mean_temp,HOBO_daily_all_sites$daily_mean_moist),date=c(HOBO_daily_all_sites$longdate,HOBO_daily_all_sites$longdate),clim=c(rep("temp",nrow(HOBO_daily_all_sites)),rep("water",nrow(HOBO_daily_all_sites))))
 #HOBO_daily_all_sites$site <- factor(HOBO_daily_all_sites$site,levels = c("LAF", "HUN", "BAS", "COL", "BFL"))
-
 site_names <- c("LAF"="Lafayette",
                  "HUN"="Huntville",
                  "BAS"="Bastrop",
@@ -169,6 +181,22 @@ site_names <- c("LAF"="Lafayette",
                 "SON" ="Sonora")
 
 cbp1 <- c("#E69F00", "#009E73", "#0072B2", "#D55E00", "#CC79A7","#F0E442")
+
+# Regression between soil temperature and soil moisture
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Figregresion_temp_soil.pdf",height =5,width=5,useDingbats = F)
+HOBO_daily_all_sites %>% 
+  ggplot(aes(x=daily_mean_temp,y=daily_mean_moist))+
+  geom_point(alpha=0.1,size=5,col="#0072B2")+
+  geom_smooth(method = "lm",col="#0072B2",size=1.2)+
+  stat_cor(label.x = -5, label.y = 0.4)+
+  theme_bw()+ 
+  theme(legend.position = "none",
+        axis.text.x = element_text(size=4.5,color="black", angle=0),
+        plot.title =element_text(size=14, color="black",angle=0))+
+  labs( y="Daily soil moisture (°C)", x="Daily soil temperature (°C)")
+dev.off()
+
+
 
 HOBO_daily_all_sites %>% 
   ggplot(aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_temp))+
@@ -185,22 +213,55 @@ HOBO_daily_all_sites %>%
   geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=site))->figtempsite
 
 
-
-HOBO_daily_all_sites %>%   
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =3,width=11,useDingbats = F)
+(HOBO_daily_all_sites %>%   
   ggplot(aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_moist))+
   geom_line(aes(colour=site))+
-  ggtitle("c")+
+  ggtitle("")+
   # scale_color_manual(values = cbp1)+
   # scale_fill_manual(values = cbp1)+
   theme_bw()+ 
   theme(legend.position = "none",
-        axis.text.x = element_text(size=4.55, color="black",angle=0),
+        axis.text.x = element_text(size=4, color="black",angle=0),
         plot.title =element_text(size=14, color="black",angle=0))+
   labs( y="Daily soil moisture (wfv)", x="")+
   facet_grid(~factor(site,levels=c("LAF","HUN","COL","BAS","BFL","SON")))+
-  geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=site))->figmoistsite
+  geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=site))->figmoistsite)
+dev.off()
+## Seasonal data ----
+# Split longdate into year, month and day
+tidyr::separate(HOBO_daily_all_sites,
+  'longdate',
+  # Separate the ‘longdate’ column into separate columns for month, day and year using the separate() function.
+  into = c('year', 'month', 'day'),
+  sep = '-',
+  remove = FALSE
+) -> HOBO_daily_all_sites_date 
 
-# Prism data ----
+#str(HOBO_daily_all_sites_date)
+HOBO_daily_all_sites_date %>%
+  mutate_if(is.character, as.numeric) %>% 
+  filter(year=="2024")
+  mutate(season = case_when(
+    between(month, 1, 4) ~ "spring",
+    between(month, 5, 8) ~ "summer",
+    between(month, 9, 12) ~ "autumn"
+  )) %>% 
+  group_by(year,site,season) %>% 
+  summarize(tmean_s=mean(daily_mean_temp),
+            smean_s=mean(daily_mean_moist))->HOBO_daily_all_sites_season
+
+HOBO_daily_all_sites_season %>% 
+  ggplot(aes(x=site, y=tmean_s, fill=season)) + 
+  geom_bar(stat="identity", color="black", position=position_dodge())+
+  scale_fill_manual(values=c('#999999','#E69F00',"#56B4E9"))+
+  theme_bw()+
+  theme(
+      axis.text.x = element_text(size=10, color="black",angle=0),
+      plot.title =element_text(size=14, color="black",angle=0))+
+  labs( x="Site", y="Daily soil temperature  (°C)")
+
+# PRISM data ----
 # First, set a file path where prism data will be stored
 options(prism.path = '/Users/jm200/Documents/Prism ELVI/')
 # get_prism_dailys(type = "tmean",minDate="2023-01-10",maxDate = "2024-07-31", keepZip = TRUE)
@@ -327,15 +388,24 @@ corrplot(corr_dat_reg, tl.col = "brown", tl.srt = 45, bg = "White",
 
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Figregresion_temp.pdf",height =5,width=5,useDingbats = F)
 (dat_reg %>% 
-  ggplot(aes(tmean,daily_mean_temp))+
-  geom_point()+
-  geom_smooth(method = "lm",se=TRUE,fill = "blue", color = "blue")+
-  labs( y="Soil temperature (°C)", x="Air temperature (°C)")+
-  theme_bw()+
-  theme(axis.text.x = element_text(size=4.5,color="black", angle=0))->Figregresion_temp)
+    ggplot(aes(tmean,daily_mean_temp))+
+    geom_point()+
+    geom_smooth(method = "lm",se=TRUE,fill = "blue", color = "blue")+
+    labs( y="Soil temperature (°C)", x="Air temperature (°C)")+
+    theme_bw()+
+    theme(axis.text.x = element_text(size=4.5,color="black", angle=0))->Figregresion_temp)
 dev.off()
 
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =10,width=12,useDingbats = F)
-(Figclimatesite<-ggpubr::ggarrange(figtempsite,figtempsite_prism,figmoistsite,figpptsite_prism,common.legend = FALSE,ncol = 1, nrow = 4))
-dev.off()
+(dat_reg %>% 
+    ggplot(aes(ppt,daily_mean_moist))+
+    geom_point()+
+    geom_smooth(method = "lm",se=TRUE,fill = "blue", color = "blue")+
+    labs( y="Soil moisture", x="Precipitation (mm)")+
+    theme_bw()+
+    theme(axis.text.x = element_text(size=4.5,color="black", angle=0))->Figregresion_ppt)
+
+# pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =10,width=12,useDingbats = F)
+# (Figclimatesite<-ggpubr::ggarrange(figtempsite,figtempsite_prism,figmoistsite,figpptsite_prism,common.legend = FALSE,ncol = 1, nrow = 4))
+# dev.off()
+
 

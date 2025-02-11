@@ -88,21 +88,22 @@ jacob_path<-"/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-en
 choose_path<-jacob_path
 # Demographic data -----
 # Merge the demographic census
-datini<-read.csv("https://www.dropbox.com/scl/fi/exwmw8z8vp1qkf8inyeoq/Initialdata.csv?rlkey=kez08s92dgh9v0i08269kx1iq&dl=1", stringsAsFactors = F)
-dat23<-read.csv("https://www.dropbox.com/scl/fi/9ob0vpu2xdq8x7u48866s/census2023.csv?rlkey=i2loj3fezymq1p41bo5lsj3uj&dl=1", stringsAsFactors = F)
-dat24<-read.csv("https://www.dropbox.com/scl/fi/s8pnf1j7c85g6jwc944vw/census2024.csv?rlkey=kwt2x8k16q4w7gndm42komj6o&dl=1", stringsAsFactors = F)
-datherbivory<-read.csv("https://www.dropbox.com/scl/fi/suy4twdhy36el0k7ytqsi/herbivory.csv?rlkey=hs4xbjn1zrpnpitry30ng538d&dl=1", stringsAsFactors = F)
+datini<-read_csv(paste0(choose_path,"/Data/Initialdata.csv"))
+dat23<-read_csv(paste0(choose_path,"/Data/census2023.csv"))
+dat24<-read_csv(paste0(choose_path,"/Data/census2024.csv"))
+datherbivory<-read_csv(paste0(choose_path,"/Data/herbivory.csv"))
 # unique(datini$Site)
 # unique(datini$dat23)
 # unique(datini$dat24)
 # names(dat23)
 # calculate the total spikelet for each census
 dat23 %>% 
-  mutate(spikelet_23=round(rowMeans(across(Spikelet_A:Spikelet_C),na.rm=T)),digit=0)->dat23_spike
+  mutate(spikelet_23=rowSums(across(Spikelet_A:Spikelet_C)))->dat23_spike
 dat24 %>% 
-  mutate(spikelet_24=round(rowMeans(across(Spikelet_A:Spikelet_C),na.rm=T),digit=0),Inf_24=round(rowMeans(across(attachedInf_24:brokenInf_24),na.rm=T),digit=0))->dat24_spike
+  mutate(spikelet_24=rowSums(across(Spikelet_A:Spikelet_C)),Inf_24=rowSums(across(attachedInf_24:brokenInf_24)))->dat24_spike
 
 ## Merge the initial data with the 23 data and the 23 data with the 24 -----
+
 datini23 <- left_join(x = datini,y =dat23_spike,by=c("Tag_ID"))
 names(datini23)
 dat2324 <- left_join(x = datini23 ,y =dat24_spike,by=c("Tag_ID")) 
@@ -138,15 +139,25 @@ dat2324 %>%
 #names(dat2324_t_t1)
 ## Merge the demographic data with the herbivory data -----
 dat2324_t_t1_herb<-left_join(x=dat2324_t_t1,y=datherbivory,by=c("Site","Plot","Species"))# Merge the demographic data with the herbivory data
-head(dat2324_t_t1_herb)
+#unique(dat2324_t_t1_herb)
+#head(dat2324_t_t1_herb)
 #view(dat2324_t_t1_herb)
+# ELVLI data
+dat2324_t_t1_herb %>% 
+  filter(Species=="ELVI")->dat2324_t_t1_herb_ELVI
+#view(dat2324_t_t1_herb_ELVI)
+## Consider only 5 sites 
+dat2324_t_t1_herb_ELVI %>% 
+  filter(Site %in% c("BAS","BFL","COL","HUN","LAF"))->dat2324_t_t1_herb_ELVI_clean
+#view(dat2324_t_t1_herb_ELVI_clean)
+#dim(dat2324_t_t1_herb_ELVI_clean)
 
 ## Find the starting and ending dates are correct
-dat2324_t_t1_herb %>% 
+dat2324_t_t1_herb_ELVI_clean %>% 
   dplyr::select(Site,Species,date_23,date_24) %>% 
-  group_by(Site,Species) %>% 
+  group_by(Site) %>% 
   unique()->census_dates
- view(census_dates)
+
 # HOBO data ----
 ## format date and separate year-month-day
 list.files(path = paste0(choose_path,"/Data/HOBO data/"),  
@@ -175,44 +186,18 @@ hobo_data_full %>%
   summarise(daily_mean_moist=mean(water),daily_mean_temp=mean(temperature))->HOBO_daily
 
 ## to standardize census data with climatic data
+HOBO_daily %>% 
+  filter(site=="BAS" & longdate>"2023-06-22" & longdate<"2024-06-14")->HOBO_BAS
+HOBO_daily %>% 
+  filter(site=="BFL" & longdate>"2023-06-23" & longdate<"2024-06-14")->HOBO_BFL
+HOBO_daily %>% 
+  filter(site=="COL" & longdate>"2023-06-09" & longdate<"2024-06-25")->HOBO_COL
+HOBO_daily %>% 
+  filter(site=="HUN" & longdate>"2023-06-07" & longdate<"2024-06-04")->HOBO_HUN
+HOBO_daily %>% 
+  filter(site=="LAF" & longdate>"2023-06-13" & longdate<"2024-06-06")->HOBO_LAF
 
-HOBO_daily %>% 
-  filter(site=="BAS" & longdate>"2023-05-16" & longdate<"2024-05-8")->HOBO_BAS_AGHY
-HOBO_daily %>% 
-  filter(site=="BFL" & longdate>"2023-05-02" & longdate<"2024-05-23")->HOBO_BFL_AGHY
-HOBO_daily %>% 
-  filter(site=="COL" & longdate>"2023-05-07" & longdate<"2024-05-25")->HOBO_COL_AGHY
-HOBO_daily %>% 
-  filter(site=="HUN" & longdate>"2023-05-01" & longdate<"2024-05-07")->HOBO_HUN_AGHY
-HOBO_daily %>% 
-  filter(site=="LAF" & longdate>"2023-05-17" & longdate<"2024-06-06")->HOBO_LAF_AGHY
-
-HOBO_daily %>% 
-  filter(site=="BAS" & longdate>"2023-06-22" & longdate<"2024-06-14")->HOBO_BAS_ELVI
-HOBO_daily %>% 
-  filter(site=="BFL" & longdate>"2023-06-23" & longdate<"2024-06-14")->HOBO_BFL_ELVI
-HOBO_daily %>% 
-  filter(site=="COL" & longdate>"2023-06-09" & longdate<"2024-06-25")->HOBO_COL_ELVI
-HOBO_daily %>% 
-  filter(site=="HUN" & longdate>"2023-06-07" & longdate<"2024-06-04")->HOBO_HUN_ELVI
-HOBO_daily %>% 
-  filter(site=="LAF" & longdate>"2023-06-13" & longdate<"2024-06-06")->HOBO_LAF_ELVI
-
-HOBO_daily %>% 
-  filter(site=="BAS" & longdate>"2023-05-16" & longdate<"2024-05-8")->HOBO_BAS_POAU
-HOBO_daily %>% 
-  filter(site=="BFL" & longdate>"2023-05-02" & longdate<"2024-05-22")->HOBO_BFL_POAU
-HOBO_daily %>% 
-  filter(site=="COL" & longdate>"2023-05-07" & longdate<"2024-05-25")->HOBO_COL_POAU
-HOBO_daily %>% 
-  filter(site=="HUN" & longdate>"2023-05-01" & longdate<"2024-05-07")->HOBO_HUN_POAU
-HOBO_daily %>% 
-  filter(site=="LAF" & longdate>"2023-05-17" & longdate<"2024-06-06")->HOBO_LAF_POAU
-
-
-HOBO_daily_all_sites<-rbind(HOBO_BAS_AGHY,HOBO_BFL_AGHY,HOBO_COL_AGHY,HOBO_HUN_AGHY,HOBO_LAF_AGHY,
-                            HOBO_BAS_ELVI,HOBO_BFL_ELVI,HOBO_COL_ELVI,HOBO_HUN_ELVI,HOBO_LAF_ELVI,
-                            HOBO_BAS_POAU,HOBO_BFL_POAU,HOBO_COL_POAU,HOBO_HUN_POAU,HOBO_LAF_POAU)
+HOBO_daily_all_sites<-rbind(HOBO_BAS,HOBO_BFL,HOBO_COL,HOBO_HUN,HOBO_LAF)
 #unique(HOBO_daily_all_sites$site)
 ## Plot the daily trend for temperature and soil moisture from start to end
 HOBO_daily_all_sites %>% 
@@ -235,8 +220,8 @@ figtempsite<-ggplot(HOBO_daily_all_sites, aes(x=as.Date(longdate, format= "%Y - 
   theme(legend.position = "none",
         axis.text.x = element_text(size=4.5,color="black", angle=0))+
   labs( y="Daily temperature  (°C)", x="")+
-  facet_grid(~factor(as.factor(site),levels=c("HUN","LAF","COL", "BAS","BFL")))+
-  #facet_grid(~site,labeller = labeller(site=site_names))+
+  # facet_grid(~factor(site,levels=c("LAF", "HUN", "BAS", "COL" ,"KER" ,"BLF", "SON")))+
+  facet_grid(~site,labeller = labeller(site=site_names))+
   geom_hline(data=hobo_means,aes(yintercept = mean_temp,colour=site))
 
 figmoistsite<-ggplot(HOBO_daily_all_sites, aes(x=as.Date(longdate, format= "%Y - %m - %d"), y=daily_mean_moist))+
@@ -247,8 +232,7 @@ figmoistsite<-ggplot(HOBO_daily_all_sites, aes(x=as.Date(longdate, format= "%Y -
   theme(legend.position = "none",
         axis.text.x = element_text(size=4.55, color="black",angle=0))+
   labs( y="Daily soil moisture (wfv)", x="Month")+
-  facet_grid(~factor(as.factor(site),levels=c("LAF","BFL", "HUN", "BAS", "COL")))+
-  #facet_grid(~site,labeller = labeller(site=site_names))+
+  facet_grid(~site,labeller = labeller(site=site_names))+
   geom_hline(data=hobo_means,aes(yintercept = mean_moisture,colour=site))
 
 # pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/climatesite.pdf",height =5,width=9,useDingbats = F)
