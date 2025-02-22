@@ -38,6 +38,10 @@ library("ntbox")
 #   dyn.load('/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home/lib/server/libjvm.dylib')
 # }
 library("rJava")
+library(geosphere)
+library(oce)
+library(sf)
+library(ggplot2)
 set.seed(13)
 # Study area shapefile ----
 study_area<-terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
@@ -100,16 +104,16 @@ plot(US_worldclim_norm_stack)
 aghy_occ_raw <- gbif(genus="Agrostis",species="hyemalis",download=TRUE) 
 head(aghy_occ_raw) 
 #unique(aghy_occ_raw$basisOfRecord)
-aghy_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & basisOfRecord=="HUMAN_OBSERVATION")->aghy_occ
+# aghy_occ_raw %>% 
+#   filter(!is.na(lat) & !is.na(lon) & basisOfRecord=="HUMAN_OBSERVATION")->aghy_occ
 
 aghy_occ <- subset(aghy_occ_raw,(!is.na(lat))&(!is.na(lon))&basisOfRecord==HUMAN_OBSERVATION) # here we remove erroneous coordinates, where either the latitude or longitude is missing
 aghy_occ %>% 
   dplyr::select(country,lon, lat,year)%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
-  filter(year %in% (1901:2024) & as.numeric(longitude >=-106.6458) &  as.numeric(longitude <=-94.02083) & as.numeric(latitude >=25.85417) &  as.numeric(latitude <=32.5) & country=="United States") %>% 
+  filter(year %in% (1901:2024) & country=="United States") %>% 
   unique() %>% 
-  arrange(latitude)->aghy1
+  arrange(latitude)->aghy
 
 aghy_occ %>% 
   dplyr::select(country,lon, lat,year)%>% 
@@ -126,12 +130,8 @@ aghy_occ %>%
   arrange(latitude)->aghy3
 
 aghy<-rbind(aghy1,aghy2,aghy3)
-
+class(aghy)
 # Centroid
-library(geosphere)
-library(oce)
-library(sf)
-library(ggplot2)
 # Plot the polygon
 add.alpha <- function(col, alpha=1){
   if(missing(col))
