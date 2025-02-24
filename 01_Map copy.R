@@ -15,6 +15,7 @@ library(RColorBrewer)
 library(tidyverse)
 library(dismo)
 library(prism)
+library(rethinking)
 # Climatic data----
 ## Data from PRISM---- 
 # making a folder to store prism data
@@ -38,7 +39,8 @@ read.csv("https://www.dropbox.com/scl/fi/go448bqe9z6meisgkd6g9/source_pop.csv?rl
   arrange(latitude)->source ## source populations
 
 # Agrostis hyemalis-----
-aghy_occ_raw <- gbif(genus="Agrostis",species="hyemalis",download=TRUE) 
+#aghy_occ_raw <- gbif(genus="Agrostis",species="hyemalis",download=TRUE) 
+aghy_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/ijl1i7964qxzcxvm7blz8/aghy_occ_raw.rds?rlkey=msbs3xzkjc719uld8yw7hb6cj&dl=1"))
 head(aghy_occ_raw) 
 aghy_occ_raw %>% 
   filter(!is.na(lat) & !is.na(lon) & basisOfRecord=="HUMAN_OBSERVATION")->aghy_occ
@@ -67,13 +69,12 @@ aghy<-rbind(aghy1,aghy2,aghy3)
 
 # Elymus virginicus----
 #dir.create("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/occurence")
-elvi_occ_raw <- gbif(genus="Elymus",species="virginicus",download=TRUE) 
+#elvi_occ_raw <- gbif(genus="Elymus",species="virginicus",download=TRUE) 
+elvi_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/0ssa5gepxyz28b7ykw1x8/elvi_occ_raw.rds?rlkey=4dx0q4lw2112droh73hmh7xte&dl=1"))
 head(elvi_occ_raw) 
 elvi_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & basisOfRecord=="HUMAN_OBSERVATION")->elvi_occ
-names(elvi_occ)
-elvi_occ %>% 
   dplyr::select(country,lon, lat,year)%>% 
+  filter(!is.na(lat) & !is.na(lon)) %>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-106.6458) &  as.numeric(longitude <=-94.02083) & as.numeric(latitude >=25.85417) &  as.numeric(latitude <=33.5) & country=="United States") %>% 
   unique() %>% 
@@ -96,14 +97,12 @@ elvi_occ %>%
 elvi<-rbind(elvi1,elvi2,elvi3)
 
 # Poa autumnalis ---
-poa_occ_raw <- gbif(genus="Poa",species="autumnalis",download=TRUE) 
+#poa_occ_raw <- gbif(genus="Poa",species="autumnalis",download=TRUE) 
+poa_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/oip7ndyf0d99rqxcqxb0q/poa_occ_raw.rds?rlkey=920uql1gd4gahnh8utw9fz96l&dl=1"))
 head(poa_occ_raw) 
 poa_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & basisOfRecord=="HUMAN_OBSERVATION")->poa_occ
-names(poa_occ)
-names(poa_occ)
-poa_occ %>% 
   dplyr::select(country,lon, lat,year)%>% 
+  filter(!is.na(lat) & !is.na(lon))%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-106.6458) &  as.numeric(longitude <=-94.02083) & as.numeric(latitude >=25.85417) &  as.numeric(latitude <=33.5) & country=="United States") %>% 
   unique() %>% 
@@ -162,10 +161,12 @@ op<-par(mfrow = c(2,2), mar=c(0,1,3.75,1),oma = c(0, 1, 1, 0))
 #par(mar=c(5,0,4,0),mfrow=c(2,2))
 plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area,add=T)
-plot(aghy,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
+plot(study_area)
+plot(aghy,add=T,pch = 16,cex =0.6, col=col.alpha("blue4",0.3))
+plot(elvi,add=T,pch = 16,cex =0.6,col=col.alpha("grey50",0.3))
+plot(poa,add=T,pch = 16,cex =0.6,col=col.alpha("red",0.3))
 plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
+plot(source,add=T,pch = 23,col="black",bg="red",cex =1)
 mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
 
 plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip,cex.lab=1.2)

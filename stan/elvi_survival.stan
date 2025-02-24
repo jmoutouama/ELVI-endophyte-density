@@ -10,7 +10,7 @@ data {
   int<lower=0,upper=1> y_s[n_s]; // Survival at time t+1.
   vector[n_s] endo_s;  // endophyte status (positive=1, negative=0)
   vector[n_s] herb_s;  // herbivory  (herb=1, noherb=0)
-  vector[n_s] temp_s;  // temperature 
+  vector[n_s] clim_s;  // climate covariate 
   
 }
 
@@ -19,13 +19,13 @@ parameters {
   real b0_s;    
   real bendo_s;   
   real bherb_s; 
-  real btemp_s;  
-  real bendotemp_s;  
-  real bherbtemp_s; 
+  real bclim_s;  
+  real bendoclim_s;  
+  real bherbclim_s; 
   real bendoherb_s;  
-  //real btemp2_s;  
-  //real bendotemp2_s;
-  //real bherbtemp2_s;
+  //real bclim2_s;  
+  //real bendoclim2_s;
+  //real bherbclim2_s;
    
   //random effects
   real<lower=0> plot_tau_s; 
@@ -44,17 +44,17 @@ transformed parameters {
   for(isurv in 1:n_s){
     predS[isurv] = b0_s + 
                 //main effects
-               bendo_s * endo_s[isurv] + btemp_s * temp_s[isurv] + bherb_s * herb_s[isurv] +
+               bendo_s * endo_s[isurv] + bclim_s * clim_s[isurv] + bherb_s * herb_s[isurv] +
                 
                 //2-way interactions
-                bendotemp_s * temp_s[isurv] * endo_s[isurv] +
-                bherbtemp_s * temp_s[isurv] * herb_s[isurv] +
+                bendoclim_s * clim_s[isurv] * endo_s[isurv] +
+                bherbclim_s * clim_s[isurv] * herb_s[isurv] +
                 bendoherb_s * endo_s[isurv] * herb_s[isurv] +
 
                 //polynomial 2
-                //btemp2_s * pow(temp_s[isurv],2) +  
-                //bendotemp2_s * endo_s[isurv] * pow(temp_s[isurv],2) + 
-                //bherbtemp2_s * herb_s[isurv] * pow(temp_s[isurv],2) +
+                //bclim2_s * pow(clim_s[isurv],2) +  
+                //bendoclim2_s * endo_s[isurv] * pow(clim_s[isurv],2) + 
+                //bherbclim2_s * herb_s[isurv] * pow(clim_s[isurv],2) +
                 
                 //random effects
                 plot_rfx_s[plot_s[isurv]] +
@@ -70,13 +70,13 @@ model {
   b0_s ~ normal(0,3);    
   bendo_s ~ normal(0,3);   
   bherb_s ~ normal(0,3); 
-  btemp_s ~ normal(0,3);  
-  bendotemp_s ~ normal(0,3);  
-  bherbtemp_s ~ normal(0,3); 
+  bclim_s ~ normal(0,3);  
+  bendoclim_s ~ normal(0,3);  
+  bherbclim_s ~ normal(0,3); 
   bendoherb_s ~ normal(0,3); 
-  //btemp2_s ~ normal(0,3);  
-  //bendotemp2_s ~ normal(0,3);
-  //bherbtemp2_s ~ normal(0,3);
+  //bclim2_s ~ normal(0,3);  
+  //bendoclim2_s ~ normal(0,3);
+  //bherbclim2_s ~ normal(0,3);
   plot_tau_s ~ inv_gamma(1, 1);
   for (i in 1:n_plot_s){
     plot_rfx_s[i] ~ normal(0, plot_tau_s);

@@ -1,5 +1,5 @@
 #### Project: 
-#### PURPOSE: Estimating distance from range edge and from climatic niche center
+#### PURPOSE: Estimating distance from climatic niche center
 #### Note: GIS files are too large to provide in public repository
 #### AUTHOR: Jacob Moutouama
 #### DATE LAST MODIFIED: 
@@ -29,20 +29,20 @@ options(prism.path = '/Users/jm200/Documents/Prism Range limit/')
 # get_prism_monthlys(type = "tmean", years = 1990:2024, mon = 1:12, keepZip = FALSE)
 # get_prism_monthlys(type = "ppt", years = 1990:2024, mon = 1:12, keepZip = FALSE)
 # pulling out values to get normals for old and new time periods
-tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
-tmean_spring_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
-tmean_summer_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
-tmean_autumn_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
+tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024))))
+tmean_spring_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 1:4))))
+tmean_summer_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 5:8))))
+tmean_autumn_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 9:12))))
 
 # calculating standard deviation in temp
-tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
-tmean_spring_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
-tmean_summer_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
-tmean_autumn_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
+tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024))))
+tmean_spring_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 1:4))))
+tmean_summer_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 5:8))))
+tmean_autumn_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 9:12))))
 
 # calculating the cumulative precipitation for each year and for each season within the year
 ppt_annual <- ppt_spring <- ppt_summer <- ppt_autumn <- ppt_winter<- list()
-for(y in 1993:2023){
+for(y in 1994:2024){
   ppt_annual[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y))))
   ppt_spring[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 1:4))))
   ppt_summer[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 5:8))))
@@ -96,18 +96,20 @@ plot(US_land_clim_stack)
 # Agrostis hyemalis-----
 #aghy_occ_raw <- gbif(genus="Agrostis",species="hyemalis",download=TRUE) 
 aghy_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/ijl1i7964qxzcxvm7blz8/aghy_occ_raw.rds?rlkey=msbs3xzkjc719uld8yw7hb6cj&dl=1"))
-head(aghy_occ_raw) 
+names(aghy_occ_raw) 
 aghy_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year)  & country=="United States") %>% 
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & year %in% (1950:2024) & country=="United States" ) %>%
   unique() %>% 
   dplyr::select(country,lon, lat,year)%>% 
   arrange(lat)->aghy
-
+#dim(aghy)
+plot(US_land)
+points(aghy[,c("lon","lat")],pch=20,cex=0.5,col="red")
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs).
 # Random sample indexes
-train_index_aghy <- sample(1:nrow(aghy), 0.75 * nrow(aghy))
+train_index_aghy <- sample(1:nrow(aghy), 0.80 * nrow(aghy))
 test_index_aghy <- setdiff(1:nrow(aghy), train_index_aghy)
-# # Split occurences in train and test
+## Split occurences in train and test
 aghy_train <- aghy[train_index_aghy, ]
 aghy_test <- aghy[test_index_aghy, ]
 
@@ -122,19 +124,19 @@ aghy_etest<-na.omit(aghy_etest)
 aghy_etest <- aghy_etest[,-1]
 head(aghy_etest)
 
-env_varsL_aghy <- ntbox::correlation_finder(cor(aghy_etrain, method = "spearman"),threshold = 0.75,verbose = F)
+env_varsL_aghy <- ntbox::correlation_finder(cor(aghy_etrain, method = "spearman"),threshold = 0.70,verbose = F)
 env_vars_aghy <- env_varsL_aghy$descriptors
 print(env_vars_aghy )
 
 #Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- c(3,4,5)
+nvarstest <- 3
 ## This parameter is to specify the proportion of training points that will be used to fit the minimum volume ellipsoid (Van Aelst and Rousseeuw 2009).
 # Level
 level <- 0.99
 # This background data is just to compute the partial ROC test
 env_bg <- ntbox::sample_envbg(US_land_clim_stack,10000)
 ## For selecting the model we will use an arbitrary value of 6 percent of omission; it is not a rule but accepted omission rates are those bellow 10%. We will ask the function to return the partial ROC value (Peterson, Papes, and Soberon 2008)
-omr_criteria <- 0.06
+omr_criteria <- 0.05
 proc <- TRUE
 
 # Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
@@ -148,7 +150,7 @@ e_select_aghy <- ntbox::ellipsoid_selection(env_train = aghy_etrain,
                                             proc = proc)
 
 
-# Let’s see the first 20 rows of the results
+# Let’s see the first 10 rows of the results
 head(e_select_aghy,10)
 # With the following lines of code, I am going to display the model in the first row of the table
 # Best ellipsoid model for "omr_criteria" 
@@ -163,44 +165,23 @@ best_mod_aghy <- ntbox::cov_center(aghy_etrain[,bestvarcomb_aghy],
 # Projection model in geographic space
 #install.packages("rgl",dependencies = TRUE)
 library("RColorBrewer")
-mProj <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
+mProj_aghy <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
                              centroid = best_mod_aghy$centroid,
                              covar = best_mod_aghy$covariance,
                              level = 0.99,size = 3)
-pdf("/Users/jmoutouama/Dropbox/PhD Project/Chapter3/Demography Thunbergia/Figure/map_suitable_area.pdf",width=5,height=5)
-raster::plot(mProj$suitRaster)
-points(aghy[,c("lon","lat")],pch=20,cex=0.1)
-plot(US_land,add=T)
-dev.off()
-
-# mahalanobis distance 
-read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
-  unique() %>% 
-  arrange(latitude)->garden ## common garden populations
-
-garden_clim<- raster::extract(US_land_clim_stack,garden[,c("longitude","latitude")], df=TRUE)
-garden_clim <- garden_clim[,-1]
-mhd_aghy <- stats::mahalanobis(garden_clim[,bestvarcomb_aghy],center = best_mod_aghy$centroid,cov = best_mod_aghy$covariance)
-distance_aghy<-data.frame(garden,mhd_aghy)
-
-# Relation between distance from edge and distance from niche center 
-datreg<-data.frame(distance_aghy,distance=dist_edge_aghy[-8,2])
-plot(mhd_aghy ~ longitude, data=distance_aghy)
-cor.test(distance_aghy$longitude,distance_aghy$mhd_aghy)
 
 # Elymus virginicus---
 #elvi_occ_raw <- gbif(genus="Elymus",species="virginicus",download=TRUE) 
 #saveRDS(elvi_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/elvi_occ_raw.rds")
 elvi_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/0ssa5gepxyz28b7ykw1x8/elvi_occ_raw.rds?rlkey=4dx0q4lw2112droh73hmh7xte&dl=1"))
 elvi_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year)  & country=="United States") %>% 
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & year %in% (1950:2024) & country=="United States") %>% 
   unique() %>% 
   dplyr::select(country,lon, lat,year)%>% 
   arrange(lat)->elvi
-
+dim(elvi)
 plot(US_land)
-points(elvi[,c("lon","lat")],pch=20,cex=0.1)
-
+points(elvi[,c("lon","lat")],pch=20,cex=0.1,col="red")
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs).
 # Random sample indexes
 train_index_elvi <- sample(1:nrow(elvi), 0.80 * nrow(elvi))
@@ -220,20 +201,12 @@ elvi_etest<-na.omit(elvi_etest)
 elvi_etest <- elvi_etest[,-1]
 head(elvi_etest)
 
-env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"),threshold = 0.75,verbose = F)
+env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"),threshold = 0.70,verbose = F)
 env_vars_elvi <- env_varsL_elvi$descriptors
 print(env_vars_elvi )
 
 #Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- c(3,4,5)
-## This parameter is to specify the proportion of training points that will be used to fit the minimum volume ellipsoid (Van Aelst and Rousseeuw 2009).
-# Level
-level <- 0.99
-# This background data is just to compute the partial ROC test
-env_bg <- ntbox::sample_envbg(US_land_clim_stack,10000)
-## For selecting the model we will use an arbitrary value of 6 percent of omission; it is not a rule but accepted omission rates are those bellow 10%. We will ask the function to return the partial ROC value (Peterson, Papes, and Soberon 2008)
-omr_criteria <- 0.06
-proc <- TRUE
+nvarstest <- c(3,4)
 
 # Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_elvi <- ntbox::ellipsoid_selection(env_train = elvi_etrain,
@@ -246,8 +219,8 @@ e_select_elvi <- ntbox::ellipsoid_selection(env_train = elvi_etrain,
                                             proc = proc)
 
 
-# Let’s see the first 20 rows of the results
-head(e_select_elvi,20)
+# Let’s see the first 10 rows of the results
+head(e_select_elvi,10)
 # With the following lines of code, I am going to display the model in the first row of the table
 # Best ellipsoid model for "omr_criteria" 
 bestvarcomb_elvi <- stringr::str_split(e_select_elvi$fitted_vars,",")[[1]]
@@ -259,32 +232,10 @@ best_mod_elvi <- ntbox::cov_center(elvi_etrain[,bestvarcomb_elvi],
 
 
 # Projection model in geographic space
-#install.packages("rgl",dependencies = TRUE)
-library("RColorBrewer")
-mProj <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_elvi]],
+mProj_elvi <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_elvi]],
                              centroid = best_mod_elvi$centroid,
                              covar = best_mod_elvi$covariance,
                              level = 0.99,size = 3)
-pdf("/Users/jmoutouama/Dropbox/PhD Project/Chapter3/Demography Thunbergia/Figure/map_suitable_area.pdf",width=5,height=5)
-raster::plot(mProj$suitRaster)
-points(elvi[,c("lon","lat")],pch=20,cex=0.1)
-plot(US_land,add=T)
-dev.off()
-
-# mahalanobis distance 
-read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
-  unique() %>% 
-  arrange(latitude)->garden ## common garden populations
-
-garden_clim<- raster::extract(US_land_clim_stack,garden[,c("longitude","latitude")], df=TRUE)
-garden_clim <- garden_clim[,-1]
-mhd_elvi <- stats::mahalanobis(garden_clim[,bestvarcomb_elvi],center = best_mod_elvi$centroid,cov = best_mod_elvi$covariance)
-distance_elvi<-data.frame(garden,mhd_elvi)
-
-# Relation between distance from edge and distance from niche center 
-datreg<-data.frame(distance_elvi,distance=dist_edge_elvi[-8,2])
-plot(mhd_elvi ~ longitude, data=distance_elvi)
-cor.test(distance_elvi$longitude,distance_elvi$mhd_elvi)
 
 # Poa autumnalis---
 #poa_occ_raw <- gbif(genus="Poa",species="autumnalis",download=TRUE) 
@@ -295,13 +246,13 @@ poa_occ_raw %>%
   unique() %>% 
   dplyr::select(country,lon, lat,year)%>% 
   arrange(lat)->poa
-
-plot(US_land)
-points(poa[,c("lon","lat")],pch=20,cex=0.1)
+dim(poa)
+# plot(US_land)
+# points(poa[,c("lon","lat")],pch=20,cex=0.1)
 
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs).
 # Random sample indexes
-train_index_poa <- sample(1:nrow(poa), 0.75 * nrow(poa))
+train_index_poa <- sample(1:nrow(poa), 0.70 * nrow(poa))
 test_index_poa <- setdiff(1:nrow(poa), train_index_poa)
 # # Split occurences in train and test
 poa_train <- poa[train_index_poa, ]
@@ -318,20 +269,12 @@ poa_etest<-na.omit(poa_etest)
 poa_etest <- poa_etest[,-1]
 head(poa_etest)
 
-env_varsL_poa <- ntbox::correlation_finder(cor(poa_etrain, method = "spearman"),threshold = 0.75,verbose = F)
+env_varsL_poa <- ntbox::correlation_finder(cor(poa_etrain, method = "spearman"),threshold = 0.70,verbose = F)
 env_vars_poa <- env_varsL_poa$descriptors
 print(env_vars_poa )
 
 #Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- c(3,4,5)
-## This parameter is to specify the proportion of training points that will be used to fit the minimum volume ellipsoid (Van Aelst and Rousseeuw 2009).
-# Level
-level <- 0.99
-# This background data is just to compute the partial ROC test
-env_bg <- ntbox::sample_envbg(US_land_clim_stack,10000)
-## For selecting the model we will use an arbitrary value of 6 percent of omission; it is not a rule but accepted omission rates are those bellow 10%. We will ask the function to return the partial ROC value (Peterson, Papes, and Soberon 2008)
-omr_criteria <- 0.06
-proc <- TRUE
+nvarstest <- 3
 
 # Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_poa <- ntbox::ellipsoid_selection(env_train = poa_etrain,
@@ -344,8 +287,8 @@ e_select_poa <- ntbox::ellipsoid_selection(env_train = poa_etrain,
                                             proc = proc)
 
 
-# Let’s see the first 20 rows of the results
-head(e_select_poa,20)
+# Let’s see the first 10 rows of the results
+head(e_select_poa,10)
 # With the following lines of code, I am going to display the model in the first row of the table
 # Best ellipsoid model for "omr_criteria" 
 bestvarcomb_poa <- stringr::str_split(e_select_poa$fitted_vars,",")[[1]]
@@ -356,26 +299,108 @@ best_mod_poa <- ntbox::cov_center(poa_etrain[,bestvarcomb_poa],
                                    vars = 1:length(bestvarcomb_poa))
 
 
-# Projection model in geographic space
-#install.packages("rgl",dependencies = TRUE)
-library("RColorBrewer")
-mProj <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_poa]],
+# Projection model in geographic space")
+mProj_poa <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_poa]],
                              centroid = best_mod_poa$centroid,
                              covar = best_mod_poa$covariance,
                              level = 0.99,size = 3)
-pdf("/Users/jmoutouama/Dropbox/PhD Project/Chapter3/Demography Thunbergia/Figure/map_suitable_area.pdf",width=5,height=5)
-raster::plot(mProj$suitRaster)
-points(poa[,c("lon","lat")],pch=20,cex=0.1)
-plot(US_land,add=T)
-dev.off()
+
+# mahalanobis distance 
+read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
+  unique() %>% 
+  arrange(latitude)->garden ## common garden populations
+
+garden_clim<- raster::extract(US_land_clim_stack,garden[,c("longitude","latitude")], df=TRUE)
+garden_clim <- garden_clim[,-1]
+mhd_aghy <- stats::mahalanobis(garden_clim[,bestvarcomb_aghy],center = best_mod_aghy$centroid,cov = best_mod_aghy$covariance)
+distance_aghy<-data.frame(garden,distance=mhd_aghy)
+distance_aghy$Species<-rep("AGHY",length(mhd_aghy))
+
+plot(mhd_aghy ~ longitude, data=distance_aghy)
+cor.test(distance_aghy$longitude,distance_aghy$mhd_aghy)
+
+mhd_elvi <- stats::mahalanobis(garden_clim[,bestvarcomb_elvi],center = best_mod_elvi$centroid,cov = best_mod_elvi$covariance)
+distance_elvi<-data.frame(garden,distance=mhd_elvi)
+distance_elvi$Species<-rep("ELVI",length(mhd_elvi))
+
+plot(mhd_elvi ~ longitude, data=distance_elvi)
+cor.test(distance_elvi$longitude,distance_elvi$mhd_elvi)
 
 mhd_poa <- stats::mahalanobis(garden_clim[,bestvarcomb_poa],center = best_mod_poa$centroid,cov = best_mod_poa$covariance)
-distance_poa<-data.frame(garden,mhd_poa)
+distance_poa<-data.frame(garden,distance=mhd_poa)
+distance_poa$Species<-rep("POAA",length(mhd_poa))
 
-# Relation between distance from edge and distance from niche center 
 datreg<-data.frame(distance_poa,distance=dist_edge_poa[-8,2])
 plot(mhd_poa ~ longitude, data=distance_poa)
 cor.test(distance_poa$longitude,distance_poa$mhd_poa)
 
+distance_species<-bind_rows(distance_aghy,distance_elvi,distance_poa)
+Species.label<-c("AGHY","ELVI","POAA")
+names(Species.label)<-c("A. hyemalis","E. virginicus","P. autumnalis")
+
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/distance_vs_longitude.pdf",useDingbats = F,height=6,width=12)
+ggplot(distance_species, aes(x = longitude, y = distance))+
+  labs(x="Longitude",y="Mahalanobis distance")+
+  geom_point(aes(color = Species))+               
+  geom_smooth(aes(color = Species, fill = Species))+
+  facet_wrap(~Species, ncol = 3, nrow = 1,labeller=labeller(Species=c("AGHY"="A. hyemalis","ELVI"="E. virginicus","POAA"="P. autumnalis")))+
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+
+  theme_bw()+
+  theme(legend.position ="none",
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+    strip.text.x = element_text(size=12, color="black",
+                                   face="bold.italic"))
+dev.off() 
+
+#saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
 
 
+read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
+  unique() %>% 
+  arrange(latitude)->garden_map ## common garden population
+read.csv("https://www.dropbox.com/scl/fi/go448bqe9z6meisgkd6g9/source_pop.csv?rlkey=oeutzzf4lgo616zeam06tul8t&dl=1", stringsAsFactors = F) %>% 
+  dplyr::select(latitude,longitude) %>% 
+  unique() %>% 
+  arrange(latitude)->source_map ## source populations
+
+sp::coordinates(garden_map) <- ~ longitude + latitude
+sp::coordinates(source_map) <- ~ longitude + latitude
+CRS1 <- CRS("+init=epsg:4326") # WGS 84
+crs(garden_map) <- CRS1
+crs(source_map) <- CRS1
+cuts = round(seq(0, 1, length.out=20),2)
+
+
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/SDM.pdf",width=12,height=10,useDingbats = F)
+par(mar=c(5,5,2,3),mfrow=c(2,2))
+raster::plot(mProj_aghy$suitRaster,main="",xlab="Longitude", ylab="Latitude",cex.lab=1.5,breaks=cuts,col=terrain.colors(20),legend=FALSE)
+points(aghy[,c("lon","lat")],pch=23,cex=0.3,col="grey")
+plot(garden_map,add=T,pch = 3,col="black",cex =2)
+#plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
+mtext("A",side = 3, adj = 0,cex=1.25)
+mtext(~ italic("A. hyemalis"),side = 3, adj = 0.5,cex=1.2,line=0.3)
+raster::plot(mProj_elvi$suitRaster,main="",xlab="Longitude", ylab="",cex.lab=1.5,breaks=cuts,col=terrain.colors(20),legend=FALSE)
+points(elvi[,c("lon","lat")],pch=23,cex=0.3,col="grey")
+plot(garden_map,add=T,pch = 3,col="black",cex =2)
+#plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
+mtext("B",side = 3, adj = 0,cex=1.25)
+mtext(~ italic("E. virginicus"),side = 3, adj = 0.5,cex=1.2,line=0.3)
+raster::plot(mProj_poa$suitRaster,xlab="Longitude", ylab="Latitude",cex.lab=1.5,breaks=cuts,col=terrain.colors(20))
+points(poa[,c("lon","lat")],pch=23,cex=0.3,col="grey")
+plot(garden_map,add=T,pch = 3,col="black",cex =2)
+#plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
+mtext("C",side = 3, adj = 0,cex=1.25)
+mtext(~ italic("P. autumnalis"),side = 3, adj = 0.5,cex=1.2,line=0.3)
+legend(-119, 25.5, 
+       legend=c( "GBIF occurences","Common garden sites"),
+       pch = c(23,3),
+       pt.cex=c(1.5,1.5),
+       col = c("grey50","black"),
+       pt.bg=c("grey","black"),
+       cex = 1, 
+       bty = "n", 
+       horiz = F , 
+)
+dev.off()
