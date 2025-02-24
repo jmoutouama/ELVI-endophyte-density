@@ -1,6 +1,5 @@
 #### Project: 
-#### PURPOSE: Estimating distance from climatic niche center
-#### Note: GIS files are too large to provide in public repository
+#### PURPOSE: Estimating distance from climatic niche center (Mahalanobis distance)
 #### AUTHOR: Jacob Moutouama
 #### DATE LAST MODIFIED: 
 # remove objects and clear workspace
@@ -18,6 +17,7 @@ library(raster)
 library(rgl)
 library(stringr)
 library(prism)
+library("RColorBrewer")
 #Set seed 13
 set.seed(13)
 # Climatic data----
@@ -164,7 +164,6 @@ best_mod_aghy <- ntbox::cov_center(aghy_etrain[,bestvarcomb_aghy],
 
 # Projection model in geographic space
 #install.packages("rgl",dependencies = TRUE)
-library("RColorBrewer")
 mProj_aghy <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
                              centroid = best_mod_aghy$centroid,
                              covar = best_mod_aghy$covariance,
@@ -242,7 +241,7 @@ mProj_elvi <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_elvi]],
 #saveRDS(poa_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/poa_occ_raw.rds")
 poa_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/oip7ndyf0d99rqxcqxb0q/poa_occ_raw.rds?rlkey=920uql1gd4gahnh8utw9fz96l&dl=1"))
 poa_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year)  & country=="United States") %>% 
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & year %in% (1950:2024) & country=="United States") %>% 
   unique() %>% 
   dplyr::select(country,lon, lat,year)%>% 
   arrange(lat)->poa
@@ -317,25 +316,24 @@ distance_aghy<-data.frame(garden,distance=mhd_aghy)
 distance_aghy$Species<-rep("AGHY",length(mhd_aghy))
 
 plot(mhd_aghy ~ longitude, data=distance_aghy)
-cor.test(distance_aghy$longitude,distance_aghy$mhd_aghy)
+cor.test(distance_aghy$longitude,distance_aghy$distance)
 
 mhd_elvi <- stats::mahalanobis(garden_clim[,bestvarcomb_elvi],center = best_mod_elvi$centroid,cov = best_mod_elvi$covariance)
 distance_elvi<-data.frame(garden,distance=mhd_elvi)
 distance_elvi$Species<-rep("ELVI",length(mhd_elvi))
 
 plot(mhd_elvi ~ longitude, data=distance_elvi)
-cor.test(distance_elvi$longitude,distance_elvi$mhd_elvi)
+cor.test(distance_elvi$longitude,distance_elvi$distance)
 
 mhd_poa <- stats::mahalanobis(garden_clim[,bestvarcomb_poa],center = best_mod_poa$centroid,cov = best_mod_poa$covariance)
 distance_poa<-data.frame(garden,distance=mhd_poa)
-distance_poa$Species<-rep("POAA",length(mhd_poa))
+distance_poa$Species<-rep("POAU",length(mhd_poa))
 
-datreg<-data.frame(distance_poa,distance=dist_edge_poa[-8,2])
 plot(mhd_poa ~ longitude, data=distance_poa)
-cor.test(distance_poa$longitude,distance_poa$mhd_poa)
+cor.test(distance_poa$longitude,distance_poa$distance)
 
 distance_species<-bind_rows(distance_aghy,distance_elvi,distance_poa)
-Species.label<-c("AGHY","ELVI","POAA")
+Species.label<-c("AGHY","ELVI","POAU")
 names(Species.label)<-c("A. hyemalis","E. virginicus","P. autumnalis")
 
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/distance_vs_longitude.pdf",useDingbats = F,height=6,width=12)
@@ -354,7 +352,7 @@ ggplot(distance_species, aes(x = longitude, y = distance))+
                                    face="bold.italic"))
 dev.off() 
 
-#saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
+saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
 
 
 read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 

@@ -10,7 +10,7 @@ data {
   int<lower=0,upper=1> y_s[n_s]; // Survival at time t+1.
   vector[n_s] endo_s;  // endophyte status (positive=1, negative=0)
   vector[n_s] herb_s;  // herbivory  (herb=1, noherb=0)
-  vector[n_s] clim_s;  // climate covariate 
+  vector[n_s] clim_s;  // climate covariate (preciptation, pet, spei or Mahalanobis Distance)
   
 }
 
