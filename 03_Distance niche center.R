@@ -341,7 +341,7 @@ ggplot(distance_species, aes(x = longitude, y = distance))+
   labs(x="Longitude",y="Mahalanobis distance")+
   geom_point(aes(color = Species))+               
   geom_smooth(aes(color = Species, fill = Species))+
-  facet_wrap(~Species, ncol = 3, nrow = 1,labeller=labeller(Species=c("AGHY"="A. hyemalis","ELVI"="E. virginicus","POAA"="P. autumnalis")))+
+  facet_wrap(~Species, ncol = 3, nrow = 1,labeller=labeller(Species=c("AGHY"="A. hyemalis","ELVI"="E. virginicus","POAU"="P. autumnalis")))+
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+
   scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))+
   theme_bw()+
