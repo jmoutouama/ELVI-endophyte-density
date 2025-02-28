@@ -67,25 +67,25 @@ transformed parameters {
 model {
   // priors on parameters
   //Survival
-  b0_s ~ normal(0,3);    
-  bendo_s ~ normal(0,3);   
-  bherb_s ~ normal(0,3); 
-  bclim_s ~ normal(0,3);  
-  bendoclim_s ~ normal(0,3);  
-  bherbclim_s ~ normal(0,3); 
-  bendoherb_s ~ normal(0,3); 
-  //bclim2_s ~ normal(0,3);  
-  //bendoclim2_s ~ normal(0,3);
-  //bherbclim2_s ~ normal(0,3);
-  plot_tau_s ~ inv_gamma(1, 1);
+  b0_s ~ normal(0,100);    
+  bendo_s ~ normal(0,100);   
+  bherb_s ~ normal(0,100); 
+  bclim_s ~ normal(0,100);  
+  bendoclim_s ~ normal(0,100);  
+  bherbclim_s ~ normal(0,100); 
+  bendoherb_s ~ normal(0,100); 
+  //bclim2_s ~ normal(0,5);  
+  //bendoclim2_s ~ normal(0,5);
+  //bherbclim2_s ~ normal(0,5);
+  plot_tau_s ~ inv_gamma(0.1, 0.1);
   for (i in 1:n_plot_s){
     plot_rfx_s[i] ~ normal(0, plot_tau_s);
   }
-  pop_tau_s ~ inv_gamma(1, 1);
+  pop_tau_s ~ inv_gamma(0.1, 0.1);
   for (i in 1:n_pops){
     pop_rfx_s[i] ~ normal(0, pop_tau_s);
   }
-  site_tau_s ~ inv_gamma(1, 1);
+  site_tau_s ~ inv_gamma(0.1, 0.1);
   for (i in 1:n_sites){
     site_rfx_s[i] ~ normal(0, site_tau_s);
   }
