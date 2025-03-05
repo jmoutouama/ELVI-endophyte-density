@@ -239,8 +239,8 @@ data_sites_surv_aghy_distance <- list( n_sites    = demography_aghy_surv$Site %>
 ## Running the stan model
 
 sim_pars <- list(
-  warmup = 4000,
-  iter = 16000,
+  warmup = 1000,
+  iter = 4000,
   thin = 2,
   chains = 4
 )
