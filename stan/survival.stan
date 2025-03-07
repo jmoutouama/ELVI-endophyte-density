@@ -51,9 +51,9 @@ transformed parameters {
 
   // prediction for survival
   for(isurv in 1:n_s){
-    predS[isurv] = b0_s + 
+    predS[isurv] = b0_s[species_s[isurv]] + 
                 //main effects
-                bendo_s * endo_s[isurv] + bclim_s * clim_s[isurv] + bherb_s * herb_s[isurv] + bspecies_s * species_s[isurv] + 
+                bendo_s[species_s[isurv]] * endo_s[isurv] + bclim_s[species_s[isurv]] * clim_s[isurv] + bherb_s[species_s[isurv]] * herb_s[isurv] + 
                 
                 //2-way interactions
                 bendoclim_s * clim_s[isurv] * endo_s[isurv] +
@@ -74,8 +74,7 @@ transformed parameters {
                 //random effects
                 plot_rfx_s[plot_s[isurv]] +
                 pop_rfx_s[pop_s[isurv]]+
-                site_rfx_s[site_s[isurv]]+
-                species_rfx_s[species_s[isurv]];
+                site_rfx_s[site_s[isurv]];
     }
 
 }
@@ -109,10 +108,6 @@ model {
   site_tau_s ~ inv_gamma(0.1, 0.1);
   for (i in 1:n_sites){
     site_rfx_s[i] ~ normal(0, site_tau_s);
-  }
-  species_tau_s ~ inv_gamma(0.1, 0.1);
-  for (i in 1:n_species){
-    species_rfx_s[i] ~ normal(0, species_tau_s);
   }
 
   // sampling  
