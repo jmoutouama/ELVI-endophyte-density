@@ -34,6 +34,7 @@ library(ggsci)
 # library(scater)
 library(BiocManager)
 library(swfscMisc)
+library(bayesplot)
 
 # Define some basic functions that we'll use later 
 quote_bare <- function( ... ){
@@ -91,7 +92,7 @@ datherbivory<-read.csv("https://www.dropbox.com/scl/fi/suy4twdhy36el0k7ytqsi/her
 # unique(datini$dat23)
 # unique(datini$dat24)
 # names(dat23)
-# calculate the total spikelet for each census
+# calculate the average spikelet and inflorescence number for each census
 dat23 %>% 
   mutate(spikelet_23=round(rowMeans(across(Spikelet_A:Spikelet_C),na.rm=T)),digit=0)->dat23_spike
 dat24 %>% 
@@ -137,6 +138,12 @@ head(dat2324_t_t1_herb)
 unique(dat2324_t_t1_herb$Species)
 #view(dat2324_t_t1_herb)
 
+dat2324_t_t1_herb %>% 
+  filter(tiller_t1>0) %>% 
+  dplyr::select(Species, spikelet_t1) %>%
+  group_by(Species) %>% 
+  summarise(n=sum(spikelet_t1,na.rm = T))
+
 # Climatic data ----
 climate_summary<-readRDS(url("https://www.dropbox.com/scl/fi/z7a57xv1ago4erqrnp0tx/prism_means.rds?rlkey=z0ddxpr7ls4k0x527k5pp2wsx&dl=1"))
 climate_summary %>% 
@@ -181,7 +188,7 @@ demography_climate_distance %>%
           distance = log(distance))->demography_climate_distance_surv
 
 ## Separate each variable to use the same model stan
-demography_ppt_distance_surv <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
+demography_surv_distance_ppt <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
                                       n_sites    = demography_climate_distance_surv$Site %>% n_distinct,
                            n_pops  = demography_climate_distance_surv$Population %>% n_distinct(),
                            # survival data
@@ -197,78 +204,130 @@ demography_ppt_distance_surv <- list( n_species    = demography_climate_distance
                            y_s      = demography_climate_distance_surv$surv_t1,
                            n_s      = nrow(demography_climate_distance_surv))
 
-data_sites_surv_aghy_pet <- list( n_sites    = demography_aghy_surv$Site %>% n_distinct,
-                                   n_pops  = demography_aghy_surv$Population %>% n_distinct(),
+data_sites_surv_aghy_pet <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_surv$Site %>% n_distinct,
+                                   n_pops  = demography_climate_distance_surv$Population %>% n_distinct(),
                                    # survival data
-                                   n_plot_s = demography_aghy_surv$Plot %>% n_distinct,
-                                   site_s   = demography_aghy_surv$Site,
-                                   pop_s =  demography_aghy_surv$Population,
-                                   plot_s  = demography_aghy_surv$Plot,
-                                   clim_s=as.vector(demography_aghy_surv$pet),
-                                   endo_s  = demography_aghy_surv$Endo-1,
-                                   herb_s  = demography_aghy_surv$Herbivory-1,
-                                   size_s   = demography_aghy_surv$log_size_t0,
-                                   y_s      = demography_aghy_surv$surv_t1,
-                                   n_s      = nrow(demography_aghy_surv))
-data_sites_surv_aghy_spei <- list( n_sites    = demography_aghy_surv$Site %>% n_distinct,
-                                 n_pops  = demography_aghy_surv$Population %>% n_distinct(),
+                                   n_plot_s = demography_climate_distance_surv$Plot %>% n_distinct,
+                                  species_s   = demography_climate_distance_surv$Species,
+                                   site_s   = demography_climate_distance_surv$Site,
+                                   pop_s =  demography_climate_distance_surv$Population,
+                                   plot_s  = demography_climate_distance_surv$Plot,
+                                   clim_s=as.vector(demography_climate_distance_surv$pet),
+                                   endo_s  = demography_climate_distance_surv$Endo-1,
+                                   herb_s  = demography_climate_distance_surv$Herbivory-1,
+                                   size_s   = demography_climate_distance_surv$log_size_t0,
+                                   y_s      = demography_climate_distance_surv$surv_t1,
+                                   n_s      = nrow(demography_climate_distance_surv))
+data_sites_surv_aghy_spei <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
+                                   n_sites    = demography_climate_distance_surv$Site %>% n_distinct,
+                                 n_pops  = demography_climate_distance_surv$Population %>% n_distinct(),
                                  # survival data
-                                 n_plot_s = demography_aghy_surv$Plot %>% n_distinct,
-                                 site_s   = demography_aghy_surv$Site,
-                                 pop_s =  demography_aghy_surv$Population,
-                                 plot_s  = demography_aghy_surv$Plot,
-                                 clim_s=as.vector(demography_aghy_surv$spei),
-                                 endo_s  = demography_aghy_surv$Endo-1,
-                                 herb_s  = demography_aghy_surv$Herbivory-1,
-                                 size_s   = demography_aghy_surv$log_size_t0,
-                                 y_s      = demography_aghy_surv$surv_t1,
-                                 n_s      = nrow(demography_aghy_surv))
-data_sites_surv_aghy_distance <- list( n_sites    = demography_aghy_surv$Site %>% n_distinct,
-                                    n_pops  = demography_aghy_surv$Population %>% n_distinct(),
+                                 n_plot_s = demography_climate_distance_surv$Plot %>% n_distinct,
+                                 species_s   = demography_climate_distance_surv$Species,
+                                 site_s   = demography_climate_distance_surv$Site,
+                                 pop_s =  demography_climate_distance_surv$Population,
+                                 plot_s  = demography_climate_distance_surv$Plot,
+                                 clim_s=as.vector(demography_climate_distance_surv$spei),
+                                 endo_s  = demography_climate_distance_surv$Endo-1,
+                                 herb_s  = demography_climate_distance_surv$Herbivory-1,
+                                 size_s   = demography_climate_distance_surv$log_size_t0,
+                                 y_s      = demography_climate_distance_surv$surv_t1,
+                                 n_s      = nrow(demography_climate_distance_surv))
+data_sites_surv_aghy_distance <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
+                                       n_sites    = demography_climate_distance_surv$Site %>% n_distinct,
+                                    n_pops  = demography_climate_distance_surv$Population %>% n_distinct(),
                                     # survival data
-                                    n_plot_s = demography_aghy_surv$Plot %>% n_distinct,
-                                    site_s   = demography_aghy_surv$Site,
-                                    pop_s =  demography_aghy_surv$Population,
-                                    plot_s  = demography_aghy_surv$Plot,
-                                    clim_s=as.vector(demography_aghy_surv$distance),
-                                    endo_s  = demography_aghy_surv$Endo-1,
-                                    herb_s  = demography_aghy_surv$Herbivory-1,
-                                    size_s   = demography_aghy_surv$log_size_t0,
-                                    y_s      = demography_aghy_surv$surv_t1,
-                                    n_s      = nrow(demography_aghy_surv))
+                                    n_plot_s = demography_climate_distance_surv$Plot %>% n_distinct,
+                                    species_s   = demography_climate_distance_surv$Species,
+                                    site_s   = demography_climate_distance_surv$Site,
+                                    pop_s =  demography_climate_distance_surv$Population,
+                                    plot_s  = demography_climate_distance_surv$Plot,
+                                    clim_s=as.vector(demography_climate_distance_surv$distance),
+                                    endo_s  = demography_climate_distance_surv$Endo-1,
+                                    herb_s  = demography_climate_distance_surv$Herbivory-1,
+                                    size_s   = demography_climate_distance_surv$log_size_t0,
+                                    y_s      = demography_climate_distance_surv$surv_t1,
+                                    n_s      = nrow(demography_climate_distance_surv))
 ## Running the stan model
-
 sim_pars <- list(
   warmup = 1000,
   iter = 4000,
   thin = 2,
   chains = 4
+  # control = list(adapt_delta = 0.99,max_treedepth=15)
 )
 
 fit_allsites_surv_aghy_ppt <- stan(
  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
- data = demography_ppt_distance_surv,
+ data = demography_surv_distance_ppt,
  warmup = sim_pars$warmup,
  seed = 13,
  iter = sim_pars$iter,
  thin = sim_pars$thin,
  chains = sim_pars$chains)
 
+summary(fit_allsites_surv_aghy_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_surv_aghy_ppt <- as.array(fit_allsites_surv_aghy_ppt)  # Converts to an array
 bayesplot::color_scheme_set("purple")
-bayesplot::mcmc_trace(fit_allsites_surv_aghy_ppt, 
-                      pars = quote_bare(b0_s,bendo_s,bherb_s,bclim_s,bclim_s,bspecies_s,
-                            bendoclim_s,bendoherb_s,bspeciesclim_s,bspeciesendo_s,bspeciesclimendo_s,
-                            bspeciesherbendo_s,bclim2_s,bendoclim2_s,bspeciesclim2_s,bspeciesclimendo2_s))+theme_bw()
+bayesplot::mcmc_trace(posterior_surv_aghy_ppt, 
+                      pars = quote_bare(b0_s[1],b0_s[2],b0_s[3],
+                                        bendo_s[1],bendo_s[2],bendo_s[3],
+                                        bherb_s[1], bherb_s[2], bherb_s[3],
+                                        bclim_s[1], bclim_s[2], bclim_s[3],
+                                        bendoclim_s[1],bendoclim_s[2],bendoclim_s[3],
+                                        bendoherb_s[1],bendoherb_s[2],bendoherb_s[3],
+                                        bclim2_s[1],bclim2_s[2],bclim2_s[3],
+                                        bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
+                                        ))+theme_bw()
 
-bayesplot::mcmc_pairs(fit_allsites_surv_aghy_ppt, 
-                      pars = quote_bare(b0_s,bendo_s,bherb_s,bclim_s,bclim_s,bspecies_s,
-                                        bendoclim_s,bendoherb_s,bspeciesclim_s))
+posterior_samples <- rstan::extract(fit_allsites_surv_aghy_ppt)
+# Compute predictions using posterior draws
+n_draws <- 1000  # Number of posterior samples to use
+pred_data<-as.data.frame(demography_surv_distance_ppt)
+pred_matrix <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data))
 
-bayesplot::mcmc_pairs(fit_allsites_surv_aghy_ppt, 
-                      pars = quote_bare(bspeciesendo_s,bspeciesclimendo_s,
-                                        bspeciesherbendo_s,bclim2_s,bendoclim2_s,bspeciesclim2_s,bspeciesclimendo2_s))
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data)) {
+    species <- pred_data$species_s[j]
+    pred_matrix[i, j] <- posterior_samples$b0_s[i, species] +
+      posterior_samples$bendo_s[i, species] * pred_data$endo_s[j] +
+      posterior_samples$bclim_s[i, species] * pred_data$clim_s[j] +
+      posterior_samples$bherb_s[i, species] * pred_data$herb_s[j] +
+      posterior_samples$bendoclim_s[i, species] * pred_data$clim_s[j] * pred_data$endo_s[j] +
+      posterior_samples$bendoherb_s[i, species] * pred_data$endo_s[j] * pred_data$herb_s[j] +
+      posterior_samples$bclim2_s[i, species] * pred_data$clim_s[j]^2 +
+      posterior_samples$bendoclim2_s[i, species] * pred_data$endo_s[j] * pred_data$clim_s[j]^2
+  }
+}
 
-## For Tom. This is where I stopped. 
+# Convert logits to probability scale
+pred_prob <- 1 / (1 + exp(-pred_matrix))
+# Compute mean and 95% credible interval
+pred_data$mean_survival <- apply(pred_prob, 2, mean)
+pred_data$lower_ci <- apply(pred_prob, 2, quantile, probs = 0.025)
+pred_data$upper_ci <- apply(pred_prob, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+  geom_line() +  # Mean prediction
+  #geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)), 
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_s ~ herb_s, labeller = labeller(
+    species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_s = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
+  labs(
+    x = "Climate",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
+  theme_bw() +
+  theme(legend.position = "top")
+
 
 
 
@@ -283,367 +342,543 @@ bayesplot::mcmc_pairs(fit_allsites_surv_aghy_ppt,
 
 
 fit_allsites_surv_aghy_pet <- stan(
-  file = "D:/stan/elvi_survival.stan",
-  data = data_sites_surv_temp_cv,
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
+  data = data_sites_surv_aghy_pet,
   warmup = sim_pars$warmup,
   iter = sim_pars$iter,
   thin = sim_pars$thin,
   chains = sim_pars$chains)
+
+summary(fit_allsites_surv_aghy_pet)$summary[, c("Rhat", "n_eff")]
+posterior_surv_aghy_pet <- as.array(fit_allsites_surv_aghy_pet)  # Converts to an array
+bayesplot::mcmc_trace(posterior_surv_aghy_pet, 
+                      pars = quote_bare(b0_s[1],b0_s[2],b0_s[3],
+                                        bendo_s[1],bendo_s[2],bendo_s[3],
+                                        bherb_s[1], bherb_s[2], bherb_s[3],
+                                        bclim_s[1], bclim_s[2], bclim_s[3],
+                                        bendoclim_s[1],bendoclim_s[2],bendoclim_s[3],
+                                        bendoherb_s[1],bendoherb_s[2],bendoherb_s[3],
+                                        bclim2_s[1],bclim2_s[2],bclim2_s[3],
+                                        bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
+                      ))+theme_bw()
 
 fit_allsites_surv_aghy_spei <- stan(
-  file = "D:/stan/elvi_survival.stan",
-  data = data_sites_surv_water_mean,
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
+  data = data_sites_surv_aghy_spei,
   warmup = sim_pars$warmup,
   iter = sim_pars$iter,
   thin = sim_pars$thin,
   chains = sim_pars$chains)
+
+summary(fit_allsites_surv_aghy_spei)$summary[, c("Rhat", "n_eff")]
+posterior_surv_aghy_spei <- as.array(fit_allsites_surv_aghy_spei)  # Converts to an array
+bayesplot::mcmc_trace(posterior_surv_aghy_spei, 
+                      pars = quote_bare(b0_s[1],b0_s[2],b0_s[3],
+                                        bendo_s[1],bendo_s[2],bendo_s[3],
+                                        bherb_s[1], bherb_s[2], bherb_s[3],
+                                        bclim_s[1], bclim_s[2], bclim_s[3],
+                                        bendoclim_s[1],bendoclim_s[2],bendoclim_s[3],
+                                        bendoherb_s[1],bendoherb_s[2],bendoherb_s[3],
+                                        bclim2_s[1],bclim2_s[2],bclim2_s[3],
+                                        bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
+                      ))+theme_bw()
 
 fit_allsites_surv_aghy_distance <- stan(
-  file = "D:/stan/elvi_survival.stan",
-  data = data_sites_surv_water_cv,
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
+  data = data_sites_surv_aghy_distance,
   warmup = sim_pars$warmup,
   iter = sim_pars$iter,
   thin = sim_pars$thin,
   chains = sim_pars$chains)
 
+summary(fit_allsites_surv_aghy_distance)$summary[, c("Rhat", "n_eff")]
+posterior_surv_aghy_distance <- as.array(fit_allsites_surv_aghy_distance)  # Converts to an array
+bayesplot::mcmc_trace(posterior_surv_aghy_distance, 
+                      pars = quote_bare(b0_s[1],b0_s[2],b0_s[3],
+                                        bendo_s[1],bendo_s[2],bendo_s[3],
+                                        bherb_s[1], bherb_s[2], bherb_s[3],
+                                        bclim_s[1], bclim_s[2], bclim_s[3],
+                                        bendoclim_s[1],bendoclim_s[2],bendoclim_s[3],
+                                        bendoherb_s[1],bendoherb_s[2],bendoherb_s[3],
+                                        bclim2_s[1],bclim2_s[2],bclim2_s[3],
+                                        bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
+                      ))+theme_bw()
+
+
+
 ## Save RDS file for further use
-saveRDS(fit_allsites_surv_aghy_ppt, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_surv_aghy_ppt.rds')
-saveRDS(fit_allsites_surv_aghy_pet, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_surv_aghy_pet.rds')
-saveRDS(fit_allsites_surv_aghy_spei, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_surv_aghy_spei.rds')
-saveRDS(fit_allsites_surv_aghy_distance, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_surv_aghy_distance.rds')
+# saveRDS(fit_allsites_surv_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_ppt.rds')
+# saveRDS(fit_allsites_surv_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_pet.rds')
+# saveRDS(fit_allsites_surv_aghy_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_spei.rds')
+# saveRDS(fit_allsites_surv_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_distance.rds')
 
-## Flowering----
-demography_climate %>% 
-  subset( tiller_t1 > 0 )%>%
-  dplyr::select( Population, Site, Plot,site_plot, Endo, Herbivory,
-                tiller_t1, inf_t1,temp_mean,temp_cv,water_mean,water_cv)%>% 
-  na.omit %>% 
-  mutate( Site= Site %>% as.factor %>% as.numeric,
-          Plot = Plot %>% as.factor %>% as.numeric,
-          site_plot=site_plot %>% as.factor %>% as.numeric,
-          Endo = Endo %>% as.factor %>% as.numeric,
-          Herbivory=Herbivory %>% as.factor %>% as.numeric,
-          Population = Population %>% as.factor %>% as.numeric ) %>%
-  mutate( flow_t1=inf_t1,
-          log_temp_mean = log(temp_mean),
-          log_temp_cv = log(temp_cv),
-          log_water_mean = log(water_mean),
-          log_water_cv = log(water_cv))->demography_climate_elvi_flowering
-summary(demography_climate_elvi_flowering)
-# hist(demography_climate_elvi_flowering$flow_t1)
-## Separate each variable to use the same model stan
-data_sites_flow_temp_mean <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
-                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
-                                   # survival data
-                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
-                                   site_f   = demography_climate_elvi_flowering$Site,
-                                   pop_f =  demography_climate_elvi_flowering$Population,
-                                   plot_f  = demography_climate_elvi_flowering$Plot,
-                                   temp_f=as.vector(demography_climate_elvi_flowering$log_temp_mean),
-                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
-                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
-                                   y_f      = demography_climate_elvi_flowering$flow_t1,
-                                   n_f      = nrow(demography_climate_elvi_flowering))
-
-data_sites_flow_temp_cv <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
-                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
-                                   # survival data
-                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
-                                   site_f   = demography_climate_elvi_flowering$Site,
-                                   pop_f =  demography_climate_elvi_flowering$Population,
-                                   plot_f  = demography_climate_elvi_flowering$Plot,
-                                   temp_f=as.vector(demography_climate_elvi_flowering$log_temp_cv),
-                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
-                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
-                                   y_f      = demography_climate_elvi_flowering$flow_t1,
-                                   n_f      = nrow(demography_climate_elvi_flowering))
-
-data_sites_flow_water_mean <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
-                                   n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
-                                   # survival data
-                                   n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
-                                   site_f   = demography_climate_elvi_flowering$Site,
-                                   pop_f =  demography_climate_elvi_flowering$Population,
-                                   plot_f  = demography_climate_elvi_flowering$Plot,
-                                   temp_f=as.vector(demography_climate_elvi_flowering$log_water_mean),
-                                   endo_f  = demography_climate_elvi_flowering$Endo-1,
-                                   herb_f  = demography_climate_elvi_flowering$Herbivory-1,
-                                   y_f      = demography_climate_elvi_flowering$flow_t1,
-                                   n_f      = nrow(demography_climate_elvi_flowering))
-
-data_sites_flow_water_cv <- list( n_sites    = demography_climate_elvi_flowering$Site %>% n_distinct,
-                                 n_pops  = demography_climate_elvi_flowering$Population %>% n_distinct(),
-                                 # survival data
-                                 n_plot_f = demography_climate_elvi_flowering$Plot %>% n_distinct,
-                                 site_f   = demography_climate_elvi_flowering$Site,
-                                 pop_f =  demography_climate_elvi_flowering$Population,
-                                 plot_f  = demography_climate_elvi_flowering$Plot,
-                                 temp_f=as.vector(demography_climate_elvi_flowering$log_water_cv),
-                                 endo_f  = demography_climate_elvi_flowering$Endo-1,
-                                 herb_f  = demography_climate_elvi_flowering$Herbivory-1,
-                                 y_f      = demography_climate_elvi_flowering$flow_t1,
-                                 n_f      = nrow(demography_climate_elvi_flowering))
-
-# fit_allsites_flow_temp_mean <- stan(
-#   file = "D:/stan/elvi_flowering.stan",
-#   data = data_sites_flow_temp_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_flow_temp_cv <- stan(
-#   file = "D:/stan/elvi_flowering.stan",
-#   data = data_sites_flow_temp_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_flow_water_mean <- stan(
-#   file = "D:/stan/elvi_flowering.stan",
-#   data = data_sites_flow_water_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_flow_water_cv <- stan(
-#   file = "D:/stan/elvi_flowering.stan",
-#   data = data_sites_flow_water_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-
-# saveRDS(fit_allsites_flow_temp_mean, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_flow_temp_mean.rds')
-# saveRDS(fit_allsites_flow_temp_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_flow_temp_cv.rds')
-# saveRDS(fit_allsites_flow_water_mean, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_flow_water_mean.rds')
-# saveRDS(fit_allsites_flow_water_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_flow_water_cv.rds')
-
-## Spikelet----
-demography_climate %>% 
-  subset( spikelet_t1 > 0 & tiller_t1 > 0 )%>%
-  dplyr::select(Population, Site, Plot,site_plot, Endo, Herbivory,
-                tiller_t1, spikelet_t1,temp_mean,temp_cv,water_mean,water_cv)%>% 
-  na.omit %>% 
-  mutate( Site= Site %>% as.factor %>% as.numeric,
-          Plot = Plot %>% as.factor %>% as.numeric,
-          site_plot=site_plot %>% as.factor %>% as.numeric,
-          Endo = Endo %>% as.factor %>% as.numeric,
-          Herbivory=Herbivory %>% as.factor %>% as.numeric,
-          Population = Population %>% as.factor %>% as.numeric ) %>%
-  mutate( spi_t1=spikelet_t1,
-          log_temp_mean = log(temp_mean),
-          log_temp_cv = log(temp_cv),
-          log_water_mean = log(water_mean),
-          log_water_cv = log(water_cv))->demography_climate_elvi_spikelet
-
-
-data_sites_spi_temp_mean <- list( n_sites    = demography_climate_elvi_spikelet$Site %>% n_distinct,
-                                   n_pops  = demography_climate_elvi_spikelet$Population %>% n_distinct(),
-                                   # survival data
-                                   n_plot_spk = demography_climate_elvi_spikelet$Plot %>% n_distinct,
-                                   site_spk   = demography_climate_elvi_spikelet$Site,
-                                   pop_spk =  demography_climate_elvi_spikelet$Population,
-                                   plot_spk  = demography_climate_elvi_spikelet$Plot,
-                                   temp_spk=as.vector(demography_climate_elvi_spikelet$log_temp_mean),
-                                   endo_spk  = demography_climate_elvi_spikelet$Endo-1,
-                                   herb_spk  = demography_climate_elvi_spikelet$Herbivory-1,
-                                   y_spk      = demography_climate_elvi_spikelet$spi_t1,
-                                   n_spk      = nrow(demography_climate_elvi_spikelet))
-
-data_sites_spi_temp_cv <- list( n_sites    = demography_climate_elvi_spikelet$Site %>% n_distinct,
-                                 n_pops  = demography_climate_elvi_spikelet$Population %>% n_distinct(),
-                                 # survival data
-                                 n_plot_spk = demography_climate_elvi_spikelet$Plot %>% n_distinct,
-                                 site_spk   = demography_climate_elvi_spikelet$Site,
-                                 pop_spk =  demography_climate_elvi_spikelet$Population,
-                                 plot_spk  = demography_climate_elvi_spikelet$Plot,
-                                 temp_spk=as.vector(demography_climate_elvi_spikelet$log_temp_cv),
-                                 endo_spk  = demography_climate_elvi_spikelet$Endo-1,
-                                 herb_spk  = demography_climate_elvi_spikelet$Herbivory-1,
-                                 y_spk      = demography_climate_elvi_spikelet$spi_t1,
-                                 n_spk      = nrow(demography_climate_elvi_spikelet))
-
-data_sites_spi_water_mean <- list( n_sites    = demography_climate_elvi_spikelet$Site %>% n_distinct,
-                                    n_pops  = demography_climate_elvi_spikelet$Population %>% n_distinct(),
-                                    # survival data
-                                    n_plot_spk = demography_climate_elvi_spikelet$Plot %>% n_distinct,
-                                    site_spk   = demography_climate_elvi_spikelet$Site,
-                                    pop_spk =  demography_climate_elvi_spikelet$Population,
-                                    plot_spk  = demography_climate_elvi_spikelet$Plot,
-                                    temp_spk=as.vector(demography_climate_elvi_spikelet$log_water_mean),
-                                    endo_spk  = demography_climate_elvi_spikelet$Endo-1,
-                                    herb_spk  = demography_climate_elvi_spikelet$Herbivory-1,
-                                    y_spk      = demography_climate_elvi_spikelet$spi_t1,
-                                    n_spk      = nrow(demography_climate_elvi_spikelet))
-
-data_sites_spi_water_cv <- list( n_sites    = demography_climate_elvi_spikelet$Site %>% n_distinct,
-                                  n_pops  = demography_climate_elvi_spikelet$Population %>% n_distinct(),
-                                  # survival data
-                                  n_plot_spk = demography_climate_elvi_spikelet$Plot %>% n_distinct,
-                                  site_spk   = demography_climate_elvi_spikelet$Site,
-                                  pop_spk =  demography_climate_elvi_spikelet$Population,
-                                  plot_spk  = demography_climate_elvi_spikelet$Plot,
-                                  temp_spk=as.vector(demography_climate_elvi_spikelet$log_water_cv),
-                                  endo_spk  = demography_climate_elvi_spikelet$Endo-1,
-                                  herb_spk  = demography_climate_elvi_spikelet$Herbivory-1,
-                                  y_spk      = demography_climate_elvi_spikelet$spi_t1,
-                                  n_spk      = nrow(demography_climate_elvi_spikelet))
-
-# fit_allsites_spi_temp_mean <- stan(
-#   file = "D:/stan/elvi_spilkelet.stan",
-#   data = data_sites_spi_temp_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_spi_temp_cv <- stan(
-#   file = "D:/stan/elvi_spilkelet.stan",
-#   data = data_sites_spi_temp_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_spi_water_mean <- stan(
-#   file = "D:/stan/elvi_spilkelet.stan",
-#   data = data_sites_spi_water_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_spi_water_cv <- stan(
-#   file = "D:/stan/elvi_spilkelet.stan",
-#   data = data_sites_spi_water_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-
-#Save RDS file for further use
-# saveRDS(fit_allsites_spi_temp_mean,'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_spi_temp_mean.rds')
-# saveRDS(fit_allsites_spi_temp_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_spi_temp_cv.rds')
-# saveRDS(fit_allsites_spi_water_mean, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_spi_water_mean.rds')
-# saveRDS(fit_allsites_spi_water_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_spi_water_cv.rds')
 
 ## Growth----
-## Read and format the growth data to build the model
-#hist(demography_climate_elvi$grow)
-demography_climate %>% 
+## Read and format survival data to build the model
+demography_climate_distance %>% 
   subset( tiller_t > 0 & tiller_t1 > 0)%>%
-  dplyr::select(Population, Site, Plot,site_plot, Endo, Herbivory,
-                tiller_t, grow,temp_mean,temp_cv,water_mean,water_cv)%>% 
+  dplyr::select(Species,Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, grow,mean_ppt,mean_pet,mean_spei,distance)%>% 
   na.omit %>% 
   mutate( Site= Site %>% as.factor %>% as.numeric,
+          Species= Species %>% as.factor %>% as.numeric,
           Plot = Plot %>% as.factor %>% as.numeric,
           site_plot=site_plot %>% as.factor %>% as.numeric,
           Endo = Endo %>% as.factor %>% as.numeric,
           Herbivory=Herbivory %>% as.factor %>% as.numeric,
           Population = Population %>% as.factor %>% as.numeric ) %>%
   mutate( log_size_t0 = log(tiller_t),
-          grow_t1=grow,
-          log_temp_mean = log(temp_mean),
-          log_temp_cv = log(temp_cv),
-          log_water_mean = log(water_mean),
-          log_water_cv = log(water_cv))->demography_climate_elvi_grow
+          grow=grow,
+          ppt = log(mean_ppt),
+          pet = log(mean_pet),
+          spei = mean_spei,
+          distance = log(distance))->demography_climate_distance_grow
 
 ## Separate each variable to use the same model stan
-data_sites_grow_temp_mean <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
-                                   n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
-                                   # survival data
-                                   n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
-                                   site_g   = demography_climate_elvi_grow$Site,
-                                   pop_g =  demography_climate_elvi_grow$Population,
-                                   plot_g  = demography_climate_elvi_grow$Plot,
-                                   temp_g=as.vector(demography_climate_elvi_grow$log_temp_mean),
-                                   endo_g  = demography_climate_elvi_grow$Endo-1,
-                                   herb_g  = demography_climate_elvi_grow$Herbivory-1,
-                                   size_g   = demography_climate_elvi_grow$log_size_t0,
-                                   y_g      = demography_climate_elvi_grow$grow_t1,
-                                   n_g      = nrow(demography_climate_elvi_grow))
-# summary(data_sites_grow_temp_mean$y_g)
-data_sites_grow_temp_cv <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
-                                 n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
-                                 # survival data
-                                 n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
-                                 site_g   = demography_climate_elvi_grow$Site,
-                                 pop_g =  demography_climate_elvi_grow$Population,
-                                 plot_g  = demography_climate_elvi_grow$Plot,
-                                 temp_g=as.vector(demography_climate_elvi_grow$log_temp_cv),
-                                 endo_g  = demography_climate_elvi_grow$Endo-1,
-                                 herb_g  = demography_climate_elvi_grow$Herbivory-1,
-                                 size_g   = demography_climate_elvi_grow$log_size_t0,
-                                 y_g      = demography_climate_elvi_grow$grow_t1,
-                                 n_g      = nrow(demography_climate_elvi_grow))
-data_sites_grow_water_mean <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
-                                    n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
-                                    # survival data
-                                    n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
-                                    site_g   = demography_climate_elvi_grow$Site,
-                                    pop_g =  demography_climate_elvi_grow$Population,
-                                    plot_g  = demography_climate_elvi_grow$Plot,
-                                    temp_g=as.vector(demography_climate_elvi_grow$water_mean),
-                                    endo_g  = demography_climate_elvi_grow$Endo-1,
-                                    herb_g  = demography_climate_elvi_grow$Herbivory-1,
-                                    size_g   = demography_climate_elvi_grow$log_size_t0,
-                                    y_g      = demography_climate_elvi_grow$grow_t1,
-                                    n_g      = nrow(demography_climate_elvi_grow))
-data_sites_grow_water_cv <- list( n_sites    = demography_climate_elvi_grow$Site %>% n_distinct,
-                                  n_pops  = demography_climate_elvi_grow$Population %>% n_distinct(),
-                                  # survival data
-                                  n_plot_g = demography_climate_elvi_grow$Plot %>% n_distinct,
-                                  site_g   = demography_climate_elvi_grow$Site,
-                                  pop_g =  demography_climate_elvi_grow$Population,
-                                  plot_g  = demography_climate_elvi_grow$Plot,
-                                  temp_g=as.vector(demography_climate_elvi_grow$water_cv),
-                                  endo_g  = demography_climate_elvi_grow$Endo-1,
-                                  herb_g  = demography_climate_elvi_grow$Herbivory-1,
-                                  size_g   = demography_climate_elvi_grow$log_size_t0,
-                                  y_g      = demography_climate_elvi_grow$grow_t1,
-                                  n_g      = nrow(demography_climate_elvi_grow))
+demography_grow_aghy_ppt <- list( n_species    = demography_climate_distance_grow$Species %>% n_distinct,
+                                      n_sites    = demography_climate_distance_grow$Site %>% n_distinct,
+                                      n_pops  = demography_climate_distance_grow$Population %>% n_distinct(),
+                                      # growth data
+                                      n_plot_g = demography_climate_distance_grow$Plot %>% n_distinct,
+                                      species_g   = demography_climate_distance_grow$Species,
+                                      site_g   = demography_climate_distance_grow$Site,
+                                      pop_g =  demography_climate_distance_grow$Population,
+                                      plot_g  = demography_climate_distance_grow$Plot,
+                                      clim_g=as.vector(demography_climate_distance_grow$ppt),
+                                      endo_g  = demography_climate_distance_grow$Endo-1,
+                                      herb_g  = demography_climate_distance_grow$Herbivory-1,
+                                      size_g   = demography_climate_distance_grow$log_size_t0,
+                                      y_g      = demography_climate_distance_grow$grow,
+                                      n_g      = nrow(demography_climate_distance_grow))
+
+data_sites_grow_aghy_pet <- list( n_species    = demography_climate_distance_grow$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_grow$Site %>% n_distinct,
+                                  n_pops  = demography_climate_distance_grow$Population %>% n_distinct(),
+                                  # growth data
+                                  n_plot_g = demography_climate_distance_grow$Plot %>% n_distinct,
+                                  species_g   = demography_climate_distance_grow$Species,
+                                  site_g   = demography_climate_distance_grow$Site,
+                                  pop_g =  demography_climate_distance_grow$Population,
+                                  plot_g  = demography_climate_distance_grow$Plot,
+                                  clim_g=as.vector(demography_climate_distance_grow$pet),
+                                  endo_g  = demography_climate_distance_grow$Endo-1,
+                                  herb_g  = demography_climate_distance_grow$Herbivory-1,
+                                  size_g   = demography_climate_distance_grow$log_size_t0,
+                                  y_g      = demography_climate_distance_grow$grow,
+                                  n_g      = nrow(demography_climate_distance_grow))
+data_sites_grow_aghy_spei <- list( n_species    = demography_climate_distance_grow$Species %>% n_distinct,
+                                   n_sites    = demography_climate_distance_grow$Site %>% n_distinct,
+                                   n_pops  = demography_climate_distance_grow$Population %>% n_distinct(),
+                                   # growth data
+                                   n_plot_g = demography_climate_distance_grow$Plot %>% n_distinct,
+                                   species_g   = demography_climate_distance_grow$Species,
+                                   site_g   = demography_climate_distance_grow$Site,
+                                   pop_g =  demography_climate_distance_grow$Population,
+                                   plot_g  = demography_climate_distance_grow$Plot,
+                                   clim_g=as.vector(demography_climate_distance_grow$spei),
+                                   endo_g  = demography_climate_distance_grow$Endo-1,
+                                   herb_g  = demography_climate_distance_grow$Herbivory-1,
+                                   size_g   = demography_climate_distance_grow$log_size_t0,
+                                   y_g      = demography_climate_distance_grow$grow,
+                                   n_g      = nrow(demography_climate_distance_grow))
+data_sites_grow_aghy_distance <- list( n_species    = demography_climate_distance_grow$Species %>% n_distinct,
+                                       n_sites    = demography_climate_distance_grow$Site %>% n_distinct,
+                                       n_pops  = demography_climate_distance_grow$Population %>% n_distinct(),
+                                       # growth data
+                                       n_plot_g = demography_climate_distance_grow$Plot %>% n_distinct,
+                                       species_g   = demography_climate_distance_grow$Species,
+                                       site_g   = demography_climate_distance_grow$Site,
+                                       pop_g =  demography_climate_distance_grow$Population,
+                                       plot_g  = demography_climate_distance_grow$Plot,
+                                       clim_g=as.vector(demography_climate_distance_grow$distance),
+                                       endo_g  = demography_climate_distance_grow$Endo-1,
+                                       herb_g  = demography_climate_distance_grow$Herbivory-1,
+                                       size_g   = demography_climate_distance_grow$log_size_t0,
+                                       y_g      = demography_climate_distance_grow$grow,
+                                       n_g      = nrow(demography_climate_distance_grow))
+## Running the stan model
+sim_pars <- list(
+  warmup = 1000,
+  iter = 4000,
+  thin = 2,
+  chains = 4
+  # control = list(adapt_delta = 0.99,max_treedepth=15)
+)
+
+fit_allsites_grow_aghy_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = demography_grow_aghy_ppt,
+  warmup = sim_pars$warmup,
+  seed = 13,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_grow_aghy_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_grow_aghy_ppt <- as.array(fit_allsites_grow_aghy_ppt)  # Converts to an array
+bayesplot::mcmc_trace(posterior_grow_aghy_ppt, 
+                      pars = quote_bare(b0_g[1],b0_g[2],b0_g[3],
+                                        bendo_g[1],bendo_g[2],bendo_g[3],
+                                        bherb_g[1], bherb_g[2], bherb_g[3],
+                                        bclim_g[1], bclim_g[2], bclim_g[3],
+                                        bendoclim_g[1],bendoclim_g[2],bendoclim_g[3],
+                                        bendoherb_g[1],bendoherb_g[2],bendoherb_g[3],
+                                        bclim2_g[1],bclim2_g[2],bclim2_g[3],
+                                        bendoclim2_g[1],bendoclim2_g[2],bendoclim2_g[3]
+                      ))+theme_bw()
+
+fit_allsites_grow_aghy_pet <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = data_sites_grow_aghy_pet,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_grow_aghy_pet)$summary[, c("Rhat", "n_eff")]
+posterior_grow_aghy_pet <- as.array(fit_allsites_grow_aghy_pet)  # Converts to an array
+bayesplot::mcmc_trace(posterior_grow_aghy_pet, 
+                      pars = quote_bare(b0_g[1],b0_g[2],b0_g[3],
+                                        bendo_g[1],bendo_g[2],bendo_g[3],
+                                        bherb_g[1], bherb_g[2], bherb_g[3],
+                                        bclim_g[1], bclim_g[2], bclim_g[3],
+                                        bendoclim_g[1],bendoclim_g[2],bendoclim_g[3],
+                                        bendoherb_g[1],bendoherb_g[2],bendoherb_g[3],
+                                        bclim2_g[1],bclim2_g[2],bclim2_g[3],
+                                        bendoclim2_g[1],bendoclim2_g[2],bendoclim2_g[3]
+                      ))+theme_bw()
+
+fit_allsites_grow_aghy_spei <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = data_sites_grow_aghy_spei,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_grow_aghy_spei)$summary[, c("Rhat", "n_eff")]
+posterior_grow_aghy_spei <- as.array(fit_allsites_grow_aghy_spei)  # Converts to an array
+bayesplot::mcmc_trace(posterior_grow_aghy_spei, 
+                      pars = quote_bare(b0_g[1],b0_g[2],b0_g[3],
+                                        bendo_g[1],bendo_g[2],bendo_g[3],
+                                        bherb_g[1], bherb_g[2], bherb_g[3],
+                                        bclim_g[1], bclim_g[2], bclim_g[3],
+                                        bendoclim_g[1],bendoclim_g[2],bendoclim_g[3],
+                                        bendoherb_g[1],bendoherb_g[2],bendoherb_g[3],
+                                        bclim2_g[1],bclim2_g[2],bclim2_g[3],
+                                        bendoclim2_g[1],bendoclim2_g[2],bendoclim2_g[3]
+                      ))+theme_bw()
+
+fit_allsites_grow_aghy_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = data_sites_grow_aghy_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_grow_aghy_distance)$summary[, c("Rhat", "n_eff")]
+posterior_grow_aghy_distance <- as.array(fit_allsites_grow_aghy_distance)  # Converts to an array
+bayesplot::mcmc_trace(posterior_grow_aghy_distance, 
+                      pars = quote_bare(b0_g[1],b0_g[2],b0_g[3],
+                                        bendo_g[1],bendo_g[2],bendo_g[3],
+                                        bherb_g[1], bherb_g[2], bherb_g[3],
+                                        bclim_g[1], bclim_g[2], bclim_g[3],
+                                        bendoclim_g[1],bendoclim_g[2],bendoclim_g[3],
+                                        bendoherb_g[1],bendoherb_g[2],bendoherb_g[3],
+                                        bclim2_g[1],bclim2_g[2],bclim2_g[3],
+                                        bendoclim2_g[1],bendoclim2_g[2],bendoclim2_g[3]
+                      ))+theme_bw()
 
 
-# fit_allsites_grow_temp_mean <- stan(
-#   file = "D:/stan/elvi_growth.stan",
-#   data = data_sites_grow_temp_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_grow_temp_cv <- stan(
-#   file = "D:/stan/elvi_growth.stan",
-#   data = data_sites_grow_temp_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_grow_water_mean <- stan(
-#   file = "D:/stan/elvi_growth.stan",
-#   data = data_sites_grow_water_mean,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
-# 
-# fit_allsites_grow_water_cv <- stan(
-#   file = "D:/stan/elvi_growth.stan",
-#   data = data_sites_grow_water_cv,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains)
+## Save RDS file for further use
+# saveRDS(fit_allsites_grow_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_grow_aghy_ppt.rds')
+# saveRDS(fit_allsites_grow_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_grow_aghy_pet.rds')
+# saveRDS(fit_allsites_grow_aghy_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_grow_aghy_spei.rds')
+# saveRDS(fit_allsites_grow_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_grow_aghy_distance.rds')
 
-# Save RDS file for further use
-# saveRDS(fit_allsites_grow_temp_mean, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_grow_temp_mean.rds')
-# saveRDS(fit_allsites_grow_temp_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_grow_temp_cv.rds')
-# saveRDS(fit_allsites_grow_water_mean, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_grow_water_mean.rds')
-# saveRDS(fit_allsites_grow_water_cv, 'C:/Users/jm200/Documents/ELVI Stan Output/fit_allsites_grow_water_cv.rds')
+## Flowering----
+demography_climate_distance %>% 
+  subset( tiller_t1 > 0 )%>%
+  dplyr::select(Species,Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, inf_t1,mean_ppt,mean_pet,mean_spei,distance)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor %>% as.numeric,
+          Species= Species %>% as.factor %>% as.numeric,
+          Plot = Plot %>% as.factor %>% as.numeric,
+          site_plot=site_plot %>% as.factor %>% as.numeric,
+          Endo = Endo %>% as.factor %>% as.numeric,
+          Herbivory=Herbivory %>% as.factor %>% as.numeric,
+          Population = Population %>% as.factor %>% as.numeric ) %>%
+  mutate( log_size_t0 = log(tiller_t),
+          flow_t1=inf_t1,
+          ppt = log(mean_ppt),
+          pet = log(mean_pet),
+          spei = mean_spei,
+          distance = log(distance))->demography_climate_distance_flow
+
+#hist(demography_climate_distance_flow$flow_t1,main="")
+## Separate each variable to use the same model stan
+demography_flow_aghy_ppt <- list( n_species    = demography_climate_distance_flow$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_flow$Site %>% n_distinct,
+                                  n_pops  = demography_climate_distance_flow$Population %>% n_distinct(),
+                                  # flowering data
+                                  n_plot_f = demography_climate_distance_flow$Plot %>% n_distinct,
+                                  species_f   = demography_climate_distance_flow$Species,
+                                  site_f   = demography_climate_distance_flow$Site,
+                                  pop_f =  demography_climate_distance_flow$Population,
+                                  plot_f  = demography_climate_distance_flow$Plot,
+                                  clim_f=as.vector(demography_climate_distance_flow$ppt),
+                                  endo_f  = demography_climate_distance_flow$Endo-1,
+                                  herb_f  = demography_climate_distance_flow$Herbivory-1,
+                                  size_f   = demography_climate_distance_flow$log_size_t0,
+                                  y_f      = demography_climate_distance_flow$flow_t1,
+                                  n_f      = nrow(demography_climate_distance_flow))
+
+data_sites_flow_aghy_pet <- list( n_species    = demography_climate_distance_flow$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_flow$Site %>% n_distinct,
+                                  n_pops  = demography_climate_distance_flow$Population %>% n_distinct(),
+                                  # flowering data
+                                  n_plot_f = demography_climate_distance_flow$Plot %>% n_distinct,
+                                  species_f   = demography_climate_distance_flow$Species,
+                                  site_f   = demography_climate_distance_flow$Site,
+                                  pop_f =  demography_climate_distance_flow$Population,
+                                  plot_f  = demography_climate_distance_flow$Plot,
+                                  clim_f=as.vector(demography_climate_distance_flow$pet),
+                                  endo_f  = demography_climate_distance_flow$Endo-1,
+                                  herb_f  = demography_climate_distance_flow$Herbivory-1,
+                                  size_f   = demography_climate_distance_flow$log_size_t0,
+                                  y_f      = demography_climate_distance_flow$flow_t1,
+                                  n_f      = nrow(demography_climate_distance_flow))
+data_sites_flow_aghy_spei <- list( n_species    = demography_climate_distance_flow$Species %>% n_distinct,
+                                   n_sites    = demography_climate_distance_flow$Site %>% n_distinct,
+                                   n_pops  = demography_climate_distance_flow$Population %>% n_distinct(),
+                                   # flowering data
+                                   n_plot_f = demography_climate_distance_flow$Plot %>% n_distinct,
+                                   species_f   = demography_climate_distance_flow$Species,
+                                   site_f   = demography_climate_distance_flow$Site,
+                                   pop_f =  demography_climate_distance_flow$Population,
+                                   plot_f  = demography_climate_distance_flow$Plot,
+                                   clim_f=as.vector(demography_climate_distance_flow$spei),
+                                   endo_f  = demography_climate_distance_flow$Endo-1,
+                                   herb_f  = demography_climate_distance_flow$Herbivory-1,
+                                   size_f   = demography_climate_distance_flow$log_size_t0,
+                                   y_f      = demography_climate_distance_flow$flow_t1,
+                                   n_f      = nrow(demography_climate_distance_flow))
+data_sites_flow_aghy_distance <- list( n_species    = demography_climate_distance_flow$Species %>% n_distinct,
+                                       n_sites    = demography_climate_distance_flow$Site %>% n_distinct,
+                                       n_pops  = demography_climate_distance_flow$Population %>% n_distinct(),
+                                       # flowering data
+                                       n_plot_f = demography_climate_distance_flow$Plot %>% n_distinct,
+                                       species_f   = demography_climate_distance_flow$Species,
+                                       site_f   = demography_climate_distance_flow$Site,
+                                       pop_f =  demography_climate_distance_flow$Population,
+                                       plot_f  = demography_climate_distance_flow$Plot,
+                                       clim_f=as.vector(demography_climate_distance_flow$distance),
+                                       endo_f  = demography_climate_distance_flow$Endo-1,
+                                       herb_f  = demography_climate_distance_flow$Herbivory-1,
+                                       size_f   = demography_climate_distance_flow$log_size_t0,
+                                       y_f      = demography_climate_distance_flow$flow_t1,
+                                       n_f      = nrow(demography_climate_distance_flow))
+## Running the stan model
+fit_allsites_flow_aghy_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = demography_flow_aghy_ppt,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_flow_aghy_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_flow_aghy_ppt <- as.array(fit_allsites_flow_aghy_ppt)  # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_aghy_ppt, 
+                      pars = quote_bare(b0_f[1],b0_f[2],b0_f[3],
+                                        bendo_f[1],bendo_f[2],bendo_f[3],
+                                        bherb_f[1], bherb_f[2], bherb_f[3],
+                                        bclim_f[1], bclim_f[2], bclim_f[3],
+                                        bendoclim_f[1],bendoclim_f[2],bendoclim_f[3],
+                                        bendoherb_f[1],bendoherb_f[2],bendoherb_f[3],
+                                        bclim2_f[1],bclim2_f[2],bclim2_f[3],
+                                        bendoclim2_f[1],bendoclim2_f[2],bendoclim2_f[3]
+                      ))+theme_bw()
+
+fit_allsites_flow_aghy_pet <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = data_sites_flow_aghy_pet,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_flow_aghy_pet)$summary[, c("Rhat", "n_eff")]
+posterior_flow_aghy_pet <- as.array(fit_allsites_flow_aghy_pet)  # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_aghy_pet, 
+                      pars = quote_bare(b0_f[1],b0_f[2],b0_f[3],
+                                        bendo_f[1],bendo_f[2],bendo_f[3],
+                                        bherb_f[1], bherb_f[2], bherb_f[3],
+                                        bclim_f[1], bclim_f[2], bclim_f[3],
+                                        bendoclim_f[1],bendoclim_f[2],bendoclim_f[3],
+                                        bendoherb_f[1],bendoherb_f[2],bendoherb_f[3],
+                                        bclim2_f[1],bclim2_f[2],bclim2_f[3],
+                                        bendoclim2_f[1],bendoclim2_f[2],bendoclim2_f[3]
+                      ))+theme_bw()
+
+fit_allsites_flow_aghy_spei <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = data_sites_flow_aghy_spei,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_flow_aghy_spei)$summary[, c("Rhat", "n_eff")]
+posterior_flow_aghy_spei <- as.array(fit_allsites_flow_aghy_spei)  # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_aghy_spei, 
+                      pars = quote_bare(b0_f[1],b0_f[2],b0_f[3],
+                                        bendo_f[1],bendo_f[2],bendo_f[3],
+                                        bherb_f[1], bherb_f[2], bherb_f[3],
+                                        bclim_f[1], bclim_f[2], bclim_f[3],
+                                        bendoclim_f[1],bendoclim_f[2],bendoclim_f[3],
+                                        bendoherb_f[1],bendoherb_f[2],bendoherb_f[3],
+                                        bclim2_f[1],bclim2_f[2],bclim2_f[3],
+                                        bendoclim2_f[1],bendoclim2_f[2],bendoclim2_f[3]
+                      ))+theme_bw()
+
+
+fit_allsites_flow_aghy_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = data_sites_flow_aghy_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_flow_aghy_distance)$summary[, c("Rhat", "n_eff")]
+posterior_flow_aghy_distance <- as.array(fit_allsites_flow_aghy_distance)  # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_aghy_distance, 
+                      pars = quote_bare(b0_f[1],b0_f[2],b0_f[3],
+                                        bendo_f[1],bendo_f[2],bendo_f[3],
+                                        bherb_f[1], bherb_f[2], bherb_f[3],
+                                        bclim_f[1], bclim_f[2], bclim_f[3],
+                                        bendoclim_f[1],bendoclim_f[2],bendoclim_f[3],
+                                        bendoherb_f[1],bendoherb_f[2],bendoherb_f[3],
+                                        bclim2_f[1],bclim2_f[2],bclim2_f[3],
+                                        bendoclim2_f[1],bendoclim2_f[2],bendoclim2_f[3]
+                      ))+theme_bw()
+
+## Save RDS file for further use
+saveRDS(fit_allsites_flow_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_flow_aghy_ppt.rds')
+saveRDS(fit_allsites_flow_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_flow_aghy_pet.rds')
+saveRDS(fit_allsites_flow_aghy_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_flow_aghy_spei.rds')
+saveRDS(fit_allsites_flow_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_flow_aghy_distance.rds')
+
+## Spikelet----
+demography_climate_distance %>% 
+  filter(Species %in% c("ELVI","POAU")) %>% 
+  subset(tiller_t1 > 0 )%>%
+  dplyr::select(Species,Population, Site, Plot,site_plot, Endo, Herbivory,
+                tiller_t, spikelet_t1,mean_ppt,mean_pet,mean_spei,distance)%>% 
+  na.omit %>% 
+  mutate( Site= Site %>% as.factor %>% as.numeric,
+          Species= Species %>% as.factor %>% as.numeric,
+          Plot = Plot %>% as.factor %>% as.numeric,
+          site_plot=site_plot %>% as.factor %>% as.numeric,
+          Endo = Endo %>% as.factor %>% as.numeric,
+          Herbivory=Herbivory %>% as.factor %>% as.numeric,
+          Population = Population %>% as.factor %>% as.numeric ) %>%
+  mutate( log_size_t0 = log(tiller_t),
+          spi_t1=spikelet_t1,
+          ppt = log(mean_ppt),
+          pet = log(mean_pet),
+          spei = mean_spei,
+          distance = log(distance))->demography_climate_distance_spik
+
+# hist(demography_climate_distance_spike$spikelet_t1,main="")
+demography_spik_aghy_ppt <- list( n_species    = demography_climate_distance_spik$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_spik$Site %>% n_distinct,
+                                  n_pops  = demography_climate_distance_spik$Population %>% n_distinct(),
+                                  # flowering data
+                                  n_plot_spk = demography_climate_distance_spik$Plot %>% n_distinct,
+                                  species_spk   = demography_climate_distance_spik$Species,
+                                  site_spk   = demography_climate_distance_spik$Site,
+                                  pop_spk =  demography_climate_distance_spik$Population,
+                                  plot_spk  = demography_climate_distance_spik$Plot,
+                                  clim_spk=as.vector(demography_climate_distance_spik$ppt),
+                                  endo_spk  = demography_climate_distance_spik$Endo-1,
+                                  herb_spk  = demography_climate_distance_spik$Herbivory-1,
+                                  size_spk   = demography_climate_distance_spik$log_size_t0,
+                                  y_spk      = demography_climate_distance_spik$spikelet_t1,
+                                  n_spk      = nrow(demography_climate_distance_spik))
+
+data_sites_spik_aghy_pet <- list( n_species    = demography_climate_distance_spik$Species %>% n_distinct,
+                                  n_sites    = demography_climate_distance_spik$Site %>% n_distinct,
+                                  n_pops  = demography_climate_distance_spik$Population %>% n_distinct(),
+                                  # flowering data
+                                  n_plot_spk = demography_climate_distance_spik$Plot %>% n_distinct,
+                                  species_spk   = demography_climate_distance_spik$Species,
+                                  site_spk   = demography_climate_distance_spik$Site,
+                                  pop_spk =  demography_climate_distance_spik$Population,
+                                  plot_spk  = demography_climate_distance_spik$Plot,
+                                  clim_spk=as.vector(demography_climate_distance_spik$pet),
+                                  endo_spk  = demography_climate_distance_spik$Endo-1,
+                                  herb_spk  = demography_climate_distance_spik$Herbivory-1,
+                                  size_spk   = demography_climate_distance_spik$log_size_t0,
+                                  y_spk      = demography_climate_distance_spik$spikelet_t1,
+                                  n_spk      = nrow(demography_climate_distance_spik))
+data_sites_spik_aghy_spei <- list( n_species    = demography_climate_distance_spik$Species %>% n_distinct,
+                                   n_sites    = demography_climate_distance_spik$Site %>% n_distinct,
+                                   n_pops  = demography_climate_distance_spik$Population %>% n_distinct(),
+                                   # flowering data
+                                   n_plot_spk = demography_climate_distance_spik$Plot %>% n_distinct,
+                                   species_spk   = demography_climate_distance_spik$Species,
+                                   site_spk   = demography_climate_distance_spik$Site,
+                                   pop_spk =  demography_climate_distance_spik$Population,
+                                   plot_spk  = demography_climate_distance_spik$Plot,
+                                   clim_spk=as.vector(demography_climate_distance_spik$spei),
+                                   endo_spk  = demography_climate_distance_spik$Endo-1,
+                                   herb_spk  = demography_climate_distance_spik$Herbivory-1,
+                                   size_spk   = demography_climate_distance_spik$log_size_t0,
+                                   y_spk      = demography_climate_distance_spik$spikelet_t1,
+                                   n_spk      = nrow(demography_climate_distance_spik))
+data_sites_spik_aghy_distance <- list( n_species    = demography_climate_distance_spik$Species %>% n_distinct,
+                                       n_sites    = demography_climate_distance_spik$Site %>% n_distinct,
+                                       n_pops  = demography_climate_distance_spik$Population %>% n_distinct(),
+                                       # flowering data
+                                       n_plot_spk = demography_climate_distance_spik$Plot %>% n_distinct,
+                                       species_spk   = demography_climate_distance_spik$Species,
+                                       site_spk   = demography_climate_distance_spik$Site,
+                                       pop_spk =  demography_climate_distance_spik$Population,
+                                       plot_spk  = demography_climate_distance_spik$Plot,
+                                       clim_spk=as.vector(demography_climate_distance_spik$distance),
+                                       endo_spk  = demography_climate_distance_spik$Endo-1,
+                                       herb_spk  = demography_climate_distance_spik$Herbivory-1,
+                                       size_spk   = demography_climate_distance_spik$log_size_t0,
+                                       y_spk      = demography_climate_distance_spik$spikelet_t1,
+                                       n_spk      = nrow(demography_climate_distance_spik))
+
+mean_value <- mean(demography_spik_aghy_ppt$y_spk, na.rm = TRUE)
+variance_value <- var(demography_spik_aghy_ppt$y_spk, na.rm = TRUE)
+fit_allsites_spik_aghy_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+  data = demography_spik_aghy_ppt,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains)
+
+summary(fit_allsites_spik_aghy_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_spik_aghy_ppt <- as.array(fit_allsites_spik_aghy_ppt)  # Converts to an array
+bayesplot::mcmc_trace(posterior_spik_aghy_ppt, 
+                      pars = quote_bare(b0_spk[1],b0_spk[2],
+                                        bendo_spk[1],bendo_spk[2],
+                                        bherb_spk[1], bherb_spk[2],
+                                        bclim_spk[1], bclim_spk[2], 
+                                        bendoclim_spk[1],bendoclim_spk[2],
+                                        bendoherb_spk[1],bendoherb_spk[2],
+                                        bclim2_spk[1],bclim2_spk[2],
+                                        bendoclim2_spk[1],bendoclim2_spk[2]
+                      ))+theme_bw()
+
 
 ## load stan output 
 fit_allsites_surv_temp_mean <- readRDS(url("https://www.dropbox.com/scl/fi/lmervp4u3uil63izyf4d7/fit_allsites_surv_temp_mean.rds?rlkey=8xljiw4tbefq902jtsnvhrbdp&dl=1"))
