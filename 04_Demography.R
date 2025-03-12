@@ -81,7 +81,6 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
-
 # Demographic data -----
 # Merge the demographic census
 datini<-read.csv("https://www.dropbox.com/scl/fi/exwmw8z8vp1qkf8inyeoq/Initialdata.csv?rlkey=kez08s92dgh9v0i08269kx1iq&dl=1", stringsAsFactors = F)
@@ -157,16 +156,69 @@ demography_climate<-left_join(x=dat2324_t_t1_herb,y=climate_site,by=c("Site"))
 demography_climate_distance<-left_join(x=demography_climate,y=distance_species_clean,by=c("Site","Species"))
 
 ## Create new variables
-demography_climate_distance$surv1<-1*(!is.na(demography_climate_distance$tiller_t) & !is.na(demography_climate_distance$tiller_t1))
-demography_climate_distance$site_plot<-interaction(demography_climate_distance$Site,demography_climate_distance$Plot)
-demography_climate_distance$grow<-(log(demography_climate_distance$tiller_t1+1) - log(demography_climate_distance$tiller_t+1))# Relative growth rate
+demography_climate_distance %>% 
+  mutate(surv1=1*(!is.na(demography_climate_distance$tiller_t) & !is.na(demography_climate_distance$tiller_t1)),
+         site_plot=interaction(demography_climate_distance$Site,demography_climate_distance$Plot),
+         grow=(log(demography_climate_distance$tiller_t1+1) - log(demography_climate_distance$tiller_t+1)))->demography_climate_distance
 
 # names(demography_climate)
 # view(demography_climate)
 #summary(demography_climate)
-hist(demography_climate_distance$grow,main="")
 
-## Survival----
+ggplot(demography_climate_distance, aes(x = spikelet_t1, fill = Species, color = Species)) +
+  geom_density(alpha = 0.4) +  # Density plot with transparency
+  labs(x = "Spikelet average", y = "Density",
+       title = "") +
+  theme_bw() +
+  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "blue")) +
+  theme(
+    legend.position = c(0.8, 0.8),  # Legend at the top
+    legend.background = element_rect(fill = "white", color = "white"),  # Optional: outline the legend
+    legend.title = element_text(size = 10),  # Optional: adjust legend title size
+    legend.text = element_text(size = 8)    # Optional: adjust legend text size
+  )
+
+ggplot(demography_climate_distance, aes(x = grow, fill = Species, color = Species)) +
+  geom_density(alpha = 0.4) +  # Density plot with transparency
+  labs(x = "Relative growth", y = "Density",
+       title = "") +
+  theme_bw() +
+  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "blue")) +
+  theme(
+    legend.position = c(0.8, 0.8),  # Legend at the top
+    legend.background = element_rect(fill = "white", color = "white"),  # Optional: outline the legend
+    legend.title = element_text(size = 10),  # Optional: adjust legend title size
+    legend.text = element_text(size = 8)    # Optional: adjust legend text size
+  )
+
+# Plot the data with regression lines
+filtered_data <- demography_climate_distance %>% filter(Species %in% c("ELVI", "POAU"))
+ggplot(filtered_data, aes(x = spikelet_t1, y = inf_t1, color = Species)) +
+  geom_point() +  # Plot points
+  geom_smooth(method = "lm", se = TRUE, aes(color = Species)) +  # Add regression line
+  labs(x = "Spikelet average", y = "Inflorescence average", title = "") +
+  theme_bw() +
+  theme(legend.position = c(0.8, 0.8))
+
+#Probability density plot for Inflorescence grouped by species
+ggplot(filtered_data, aes(x = inf_t1, fill = Species, color = Species)) +
+  geom_density(alpha = 0.4) +  # Density plot with transparency
+  labs(x = "Inflorescence average", y = "Density",
+       title = "") +
+  theme_bw() +
+  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "blue")) +
+  theme(
+    legend.position = c(0.8, 0.8),  # Legend at the top
+    legend.background = element_rect(fill = "white", color = "black"),  # Optional: outline the legend
+    legend.title = element_text(size = 10),  # Optional: adjust legend title size
+    legend.text = element_text(size = 8)    # Optional: adjust legend text size
+  )
+
+
+# Survival----
 ## Read and format survival data to build the model
 demography_climate_distance %>% 
   subset( tiller_t > 0 )%>%
@@ -188,7 +240,7 @@ demography_climate_distance %>%
           distance = log(distance))->demography_climate_distance_surv
 
 ## Separate each variable to use the same model stan
-demography_surv_distance_ppt <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
+demography_surv_aghy_ppt <- list( n_species    = demography_climate_distance_surv$Species %>% n_distinct,
                                       n_sites    = demography_climate_distance_surv$Site %>% n_distinct,
                            n_pops  = demography_climate_distance_surv$Population %>% n_distinct(),
                            # survival data
@@ -260,16 +312,16 @@ sim_pars <- list(
 
 fit_allsites_surv_aghy_ppt <- stan(
  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
- data = demography_surv_distance_ppt,
+ data = demography_surv_aghy_ppt,
  warmup = sim_pars$warmup,
  seed = 13,
  iter = sim_pars$iter,
  thin = sim_pars$thin,
  chains = sim_pars$chains)
 
+## Chain mixing and model convergence
 summary(fit_allsites_surv_aghy_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_surv_aghy_ppt <- as.array(fit_allsites_surv_aghy_ppt)  # Converts to an array
-bayesplot::color_scheme_set("purple")
 bayesplot::mcmc_trace(posterior_surv_aghy_ppt, 
                       pars = quote_bare(b0_s[1],b0_s[2],b0_s[3],
                                         bendo_s[1],bendo_s[2],bendo_s[3],
@@ -281,43 +333,44 @@ bayesplot::mcmc_trace(posterior_surv_aghy_ppt,
                                         bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
                                         ))+theme_bw()
 
-posterior_samples <- rstan::extract(fit_allsites_surv_aghy_ppt)
-# Compute predictions using posterior draws
-n_draws <- 1000  # Number of posterior samples to use
-pred_data<-as.data.frame(demography_surv_distance_ppt)
-pred_matrix <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data))
+
+## Compute predictions using posterior draws
+posterior_samples_sur_ppt <- rstan::extract(fit_allsites_surv_aghy_ppt)
+n_draws <- 2000  # Number of posterior samples to use
+pred_data_sur_ppt<-as.data.frame(demography_surv_aghy_ppt)
+pred_matrix_sur_ppt <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_ppt))
 
 for (i in 1:n_draws) {
-  for (j in 1:nrow(pred_data)) {
-    species <- pred_data$species_s[j]
-    pred_matrix[i, j] <- posterior_samples$b0_s[i, species] +
-      posterior_samples$bendo_s[i, species] * pred_data$endo_s[j] +
-      posterior_samples$bclim_s[i, species] * pred_data$clim_s[j] +
-      posterior_samples$bherb_s[i, species] * pred_data$herb_s[j] +
-      posterior_samples$bendoclim_s[i, species] * pred_data$clim_s[j] * pred_data$endo_s[j] +
-      posterior_samples$bendoherb_s[i, species] * pred_data$endo_s[j] * pred_data$herb_s[j] +
-      posterior_samples$bclim2_s[i, species] * pred_data$clim_s[j]^2 +
-      posterior_samples$bendoclim2_s[i, species] * pred_data$endo_s[j] * pred_data$clim_s[j]^2
+  for (j in 1:nrow(pred_data_sur_ppt)) {
+    species <- pred_data_sur_ppt$species_s[j]
+    pred_matrix_sur_ppt[i, j] <- posterior_samples_sur_ppt$b0_s[i, species] +
+      posterior_samples_sur_ppt$bendo_s[i, species] * pred_data_sur_ppt$endo_s[j] +
+      posterior_samples_sur_ppt$bclim_s[i, species] * pred_data_sur_ppt$clim_s[j] +
+      posterior_samples_sur_ppt$bherb_s[i, species] * pred_data_sur_ppt$herb_s[j] +
+      posterior_samples_sur_ppt$bendoclim_s[i, species] * pred_data_sur_ppt$clim_s[j] * pred_data_sur_ppt$endo_s[j] +
+      posterior_samples_sur_ppt$bendoherb_s[i, species] * pred_data_sur_ppt$endo_s[j] * pred_data_sur_ppt$herb_s[j] +
+      posterior_samples_sur_ppt$bclim2_s[i, species] * pred_data_sur_ppt$clim_s[j]^2 +
+      posterior_samples_sur_ppt$bendoclim2_s[i, species] * pred_data_sur_ppt$endo_s[j] * pred_data_sur_ppt$clim_s[j]^2
   }
 }
 
 # Convert logits to probability scale
-pred_prob <- 1 / (1 + exp(-pred_matrix))
+pred_prob_sur_ppt <-invlogit(pred_matrix_sur_ppt)
 # Compute mean and 95% credible interval
-pred_data$mean_survival <- apply(pred_prob, 2, mean)
-pred_data$lower_ci <- apply(pred_prob, 2, quantile, probs = 0.025)
-pred_data$upper_ci <- apply(pred_prob, 2, quantile, probs = 0.975)
+pred_data_sur_ppt$mean_survival <- apply(pred_prob_sur_ppt, 2, mean)
+pred_data_sur_ppt$lower_ci <- apply(pred_prob_sur_ppt, 2, quantile, probs = 0.025)
+pred_data_sur_ppt$upper_ci <- apply(pred_prob_sur_ppt, 2, quantile, probs = 0.975)
 # Plot predicted survival probabilities with credible intervals
-ggplot(pred_data, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
   geom_line() +  # Mean prediction
-  #geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
-  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)), 
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
   #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
   facet_grid(species_s ~ herb_s, labeller = labeller(
     species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_s = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
   labs(
-    x = "Climate",
+    x = "Preciptation (mm)",
     y = "Predicted survival probability",
     color = "Endophyte",
     fill = "Endophyte",
@@ -326,20 +379,13 @@ ggplot(pred_data, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s)
   scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
   scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
   theme_bw() +
-  theme(legend.position = "top")
-
-
-
-
-
-
-
-
-
-
-
-
-
+  theme(legend.position = c(0.9, 0.8),
+        legend.title = element_text(size = 10),  # Reduce legend title size
+        legend.text = element_text(size = 12),  # Adjust legend text size
+        axis.title = element_text(size = 13),  # Increase axis title size
+        axis.text = element_text(size = 10),  # Increase axis label size
+        strip.text = element_text(size = 13)
+        ) # Increase facet label size)
 
 fit_allsites_surv_aghy_pet <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
@@ -362,6 +408,60 @@ bayesplot::mcmc_trace(posterior_surv_aghy_pet,
                                         bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
                       ))+theme_bw()
 
+## Compute predictions using posterior draws
+posterior_samples_sur_pet <- rstan::extract(fit_allsites_surv_aghy_pet)
+n_draws <- 2000  # Number of posterior samples to use
+pred_data_sur_pet<-as.data.frame(data_sites_surv_aghy_pet)
+pred_matrix_sur_pet <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_pet))
+
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data_sur_pet)) {
+    species <- pred_data_sur_pet$species_s[j]
+    pred_matrix_sur_pet[i, j] <- posterior_samples_sur_pet$b0_s[i, species] +
+      posterior_samples_sur_pet$bendo_s[i, species] * pred_data_sur_pet$endo_s[j] +
+      posterior_samples_sur_pet$bclim_s[i, species] * pred_data_sur_pet$clim_s[j] +
+      posterior_samples_sur_pet$bherb_s[i, species] * pred_data_sur_pet$herb_s[j] +
+      posterior_samples_sur_pet$bendoclim_s[i, species] * pred_data_sur_pet$clim_s[j] * pred_data_sur_pet$endo_s[j] +
+      posterior_samples_sur_pet$bendoherb_s[i, species] * pred_data_sur_pet$endo_s[j] * pred_data_sur_pet$herb_s[j] +
+      posterior_samples_sur_pet$bclim2_s[i, species] * pred_data_sur_pet$clim_s[j]^2 +
+      posterior_samples_sur_pet$bendoclim2_s[i, species] * pred_data_sur_pet$endo_s[j] * pred_data_sur_pet$clim_s[j]^2
+  }
+}
+
+# Convert logits to probability scale
+pred_prob_sur_pet <-invlogit(pred_matrix_sur_pet)
+# Compute mean and 95% credible interval
+pred_data_sur_pet$mean_survival <- apply(pred_prob_sur_pet, 2, mean)
+pred_data_sur_pet$lower_ci <- apply(pred_prob_sur_pet, 2, quantile, probs = 0.025)
+pred_data_sur_pet$upper_ci <- apply(pred_prob_sur_pet, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data_sur_pet, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+  geom_line() +  # Mean prediction
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_s ~ herb_s, labeller = labeller(
+    species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_s = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
+  labs(
+    x = "Preciptation (mm)",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
+  theme_bw() +
+  theme(legend.position = c(0.9, 0.8),
+        legend.title = element_text(size = 10),  # Reduce legend title size
+        legend.text = element_text(size = 12),  # Adjust legend text size
+        axis.title = element_text(size = 13),  # Increase axis title size
+        axis.text = element_text(size = 10),  # Increase axis label size
+        strip.text = element_text(size = 13)
+  ) # Increase facet label size)
+
+
 fit_allsites_surv_aghy_spei <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
   data = data_sites_surv_aghy_spei,
@@ -382,6 +482,59 @@ bayesplot::mcmc_trace(posterior_surv_aghy_spei,
                                         bclim2_s[1],bclim2_s[2],bclim2_s[3],
                                         bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
                       ))+theme_bw()
+
+## Compute predictions using posterior draws
+posterior_samples_sur_spei <- rstan::extract(fit_allsites_surv_aghy_spei)
+n_draws <- 2000  # Number of posterior samples to use
+pred_data_sur_spei<-as.data.frame(data_sites_surv_aghy_spei)
+pred_matrix_sur_spei <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_spei))
+
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data_sur_spei)) {
+    species <- pred_data_sur_spei$species_s[j]
+    pred_matrix_sur_spei[i, j] <- posterior_samples_sur_spei$b0_s[i, species] +
+      posterior_samples_sur_spei$bendo_s[i, species] * pred_data_sur_spei$endo_s[j] +
+      posterior_samples_sur_spei$bclim_s[i, species] * pred_data_sur_spei$clim_s[j] +
+      posterior_samples_sur_spei$bherb_s[i, species] * pred_data_sur_spei$herb_s[j] +
+      posterior_samples_sur_spei$bendoclim_s[i, species] * pred_data_sur_spei$clim_s[j] * pred_data_sur_spei$endo_s[j] +
+      posterior_samples_sur_spei$bendoherb_s[i, species] * pred_data_sur_spei$endo_s[j] * pred_data_sur_spei$herb_s[j] +
+      posterior_samples_sur_spei$bclim2_s[i, species] * pred_data_sur_spei$clim_s[j]^2 +
+      posterior_samples_sur_spei$bendoclim2_s[i, species] * pred_data_sur_spei$endo_s[j] * pred_data_sur_spei$clim_s[j]^2
+  }
+}
+
+# Convert logits to probability scale
+pred_prob_sur_spei <-invlogit(pred_matrix_sur_spei)
+# Compute mean and 95% credible interval
+pred_data_sur_spei$mean_survival <- apply(pred_prob_sur_spei, 2, mean)
+pred_data_sur_spei$lower_ci <- apply(pred_prob_sur_spei, 2, quantile, probs = 0.025)
+pred_data_sur_spei$upper_ci <- apply(pred_prob_sur_spei, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data_sur_spei, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+  geom_line() +  # Mean prediction
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_s ~ herb_s, labeller = labeller(
+    species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_s = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
+  labs(
+    x = "Standardised precipitation-evapotranspiration index",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
+  theme_bw() +
+  theme(legend.position = c(0.9, 0.8),
+        legend.title = element_text(size = 10),  # Reduce legend title size
+        legend.text = element_text(size = 12),  # Adjust legend text size
+        axis.title = element_text(size = 13),  # Increase axis title size
+        axis.text = element_text(size = 10),  # Increase axis label size
+        strip.text = element_text(size = 13)
+  ) # Increase facet label size)
 
 fit_allsites_surv_aghy_distance <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
@@ -404,13 +557,66 @@ bayesplot::mcmc_trace(posterior_surv_aghy_distance,
                                         bendoclim2_s[1],bendoclim2_s[2],bendoclim2_s[3]
                       ))+theme_bw()
 
+## Compute predictions using posterior draws
+posterior_samples_sur_distance <- rstan::extract(fit_allsites_surv_aghy_distance)
+n_draws <- 2000  # Number of posterior samples to use
+pred_data_sur_distance<-as.data.frame(data_sites_surv_aghy_distance)
+pred_matrix_sur_distance <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_distance))
+
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data_sur_distance)) {
+    species <- pred_data_sur_distance$species_s[j]
+    pred_matrix_sur_distance[i, j] <- posterior_samples_sur_distance$b0_s[i, species] +
+      posterior_samples_sur_distance$bendo_s[i, species] * pred_data_sur_distance$endo_s[j] +
+      posterior_samples_sur_distance$bclim_s[i, species] * pred_data_sur_distance$clim_s[j] +
+      posterior_samples_sur_distance$bherb_s[i, species] * pred_data_sur_distance$herb_s[j] +
+      posterior_samples_sur_distance$bendoclim_s[i, species] * pred_data_sur_distance$clim_s[j] * pred_data_sur_distance$endo_s[j] +
+      posterior_samples_sur_distance$bendoherb_s[i, species] * pred_data_sur_distance$endo_s[j] * pred_data_sur_distance$herb_s[j] +
+      posterior_samples_sur_distance$bclim2_s[i, species] * pred_data_sur_distance$clim_s[j]^2 +
+      posterior_samples_sur_distance$bendoclim2_s[i, species] * pred_data_sur_distance$endo_s[j] * pred_data_sur_distance$clim_s[j]^2
+  }
+}
+
+# Convert logits to probability scale
+pred_prob_sur_distance <-invlogit(pred_matrix_sur_distance)
+# Compute mean and 95% credible interval
+pred_data_sur_distance$mean_survival <- apply(pred_prob_sur_distance, 2, mean)
+pred_data_sur_distance$lower_ci <- apply(pred_prob_sur_distance, 2, quantile, probs = 0.025)
+pred_data_sur_distance$upper_ci <- apply(pred_prob_sur_distance, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data_sur_distance, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+  geom_line() +  # Mean prediction
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_s ~ herb_s, labeller = labeller(
+    species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_s = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
+  labs(
+    x = "Mahalanobis distance",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
+  theme_bw() +
+  theme(legend.position = c(0.9, 0.8),
+        legend.title = element_text(size = 10),  # Reduce legend title size
+        legend.text = element_text(size = 12),  # Adjust legend text size
+        axis.title = element_text(size = 13),  # Increase axis title size
+        axis.text = element_text(size = 10),  # Increase axis label size
+        strip.text = element_text(size = 13)
+  ) # Increase facet label size
+
 
 
 ## Save RDS file for further use
-# saveRDS(fit_allsites_surv_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_ppt.rds')
-# saveRDS(fit_allsites_surv_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_pet.rds')
-# saveRDS(fit_allsites_surv_aghy_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_spei.rds')
-# saveRDS(fit_allsites_surv_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/fit_allsites_surv_aghy_distance.rds')
+saveRDS(fit_allsites_surv_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_surv_aghy_ppt.rds')
+saveRDS(fit_allsites_surv_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_surv_aghy_pet.rds')
+saveRDS(fit_allsites_surv_aghy_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_surv_aghy_spei.rds')
+saveRDS(fit_allsites_surv_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_surv_aghy_distance.rds')
 
 
 ## Growth----
@@ -509,7 +715,6 @@ fit_allsites_grow_aghy_ppt <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
   data = demography_grow_aghy_ppt,
   warmup = sim_pars$warmup,
-  seed = 13,
   iter = sim_pars$iter,
   thin = sim_pars$thin,
   chains = sim_pars$chains)
@@ -526,6 +731,60 @@ bayesplot::mcmc_trace(posterior_grow_aghy_ppt,
                                         bclim2_g[1],bclim2_g[2],bclim2_g[3],
                                         bendoclim2_g[1],bendoclim2_g[2],bendoclim2_g[3]
                       ))+theme_bw()
+
+## Compute predictions using posterior draws
+posterior_samples_grow_ppt <- rstan::extract(fit_allsites_grow_aghy_ppt)
+n_draws <- 2000  # Number of posterior samples to use
+pred_data_grow_ppt<-as.data.frame(demography_grow_aghy_ppt)
+pred_matrix_grow_ppt <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_grow_ppt))
+
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data_grow_ppt)) {
+    species <- pred_data_grow_ppt$species_g[j]
+    pred_matrix_grow_ppt[i, j] <- posterior_samples_grow_ppt$b0_g[i, species] +
+      posterior_samples_grow_ppt$bendo_g[i, species] * pred_data_grow_ppt$endo_g[j] +
+      posterior_samples_grow_ppt$bclim_g[i, species] * pred_data_grow_ppt$clim_g[j] +
+      posterior_samples_grow_ppt$bherb_g[i, species] * pred_data_grow_ppt$herb_g[j] +
+      posterior_samples_grow_ppt$bendoclim_g[i, species] * pred_data_grow_ppt$clim_g[j] * pred_data_grow_ppt$endo_g[j] +
+      posterior_samples_grow_ppt$bendoherb_g[i, species] * pred_data_grow_ppt$endo_g[j] * pred_data_grow_ppt$herb_g[j] +
+      posterior_samples_grow_ppt$bclim2_g[i, species] * pred_data_grow_ppt$clim_g[j]^2 +
+      posterior_samples_grow_ppt$bendoclim2_g[i, species] * pred_data_grow_ppt$endo_g[j] * pred_data_grow_ppt$clim_g[j]^2
+  }
+}
+
+# Convert to probability scale
+pred_prob_grow_ppt <-exp(pred_matrix_grow_ppt)
+# Compute mean and 95% credible interval
+pred_data_grow_ppt$mean_growth <- apply(pred_prob_grow_ppt, 2, mean)
+pred_data_grow_ppt$lower_ci <- apply(pred_prob_grow_ppt, 2, quantile, probs = 0.025)
+pred_data_grow_ppt$upper_ci <- apply(pred_prob_grow_ppt, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data_grow_ppt, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
+  geom_line() +  # Mean prediction
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci),color = NA, alpha = 0.1) +  # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_g ~ herb_g, labeller = labeller(
+    species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_g = c("0" = "Unfenced", "1" = "Fenced"))) +  # Facet by species & herbivory
+  labs(
+    x = "Preciptation (mm)",
+    y = "Relative growth",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change endophyte labels
+  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) +  # Change fill labels
+  theme_bw() +
+  theme(legend.position = c(0.9, 0.9),
+        legend.title = element_text(size = 10),  # Reduce legend title size
+        legend.text = element_text(size = 12),  # Adjust legend text size
+        axis.title = element_text(size = 13),  # Increase axis title size
+        axis.text = element_text(size = 10),  # Increase axis label size
+        strip.text = element_text(size = 13)
+  ) 
+
 
 fit_allsites_grow_aghy_pet <- stan(
   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",

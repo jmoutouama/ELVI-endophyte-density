@@ -10,8 +10,8 @@ data {
   int<lower=1> plot_s[n_s];  // plot index
   int<lower=1> pop_s[n_s];  // population  index
   int<lower=0,upper=1> y_s[n_s]; // Survival at time t+1.
-  int<lower=0, upper=1> endo_s[n_s];  // endophyte status (positive=1, negative=0)
-  int<lower=0, upper=1> herb_s[n_s];  // herbivory  (herb=1, noherb=0)
+  int<lower=0,upper=1> endo_s[n_s];  // endophyte status (positive=1, negative=0)
+  int<lower=0,upper=1> herb_s[n_s];  // herbivory  (herb=1, noherb=0)
   vector[n_s] clim_s;  // climate covariate (preciptation, pet, spei or Mahalanobis Distance)
   
 }
