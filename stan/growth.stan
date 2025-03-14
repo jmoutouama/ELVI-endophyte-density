@@ -10,8 +10,8 @@ data {
   int<lower=1> plot_g[n_g];  // plot index
   int<lower=1> pop_g[n_g];  // population  index
   vector [n_g] y_g; // grow from t to t+1.
-  vector[n_g] endo_g;  // endophyte status (positive=1, negative=0)
-  vector[n_g] herb_g;  // herbivory  (herb=1, noherb=0)
+  int<lower=0,upper=1> endo_g[n_g];  // endophyte status (positive=1, negative=0)
+  int<lower=0,upper=1> herb_g[n_g];  // herbivory  (herb=1, noherb=0)
   vector[n_g] clim_g;  // climate covariate (preciptation, pet, spei or Mahalanobis Distance)
   
 }
@@ -37,8 +37,8 @@ parameters {
   }
 
 transformed parameters {
-  real predG[n_g];
-  // prediction for survival
+  vector[n_g] predG;
+  // prediction for growth
   for(igrow in 1:n_g){
     predG[igrow] = b0_g[species_g[igrow]] + 
                 //main effects
@@ -62,27 +62,28 @@ transformed parameters {
 model {
   // priors on parameters
   //Survival
-  b0_g ~ normal(0,1);    
-  bendo_g ~ normal(0,1);   
-  bherb_g ~ normal(0,1); 
-  bclim_g ~ normal(0,1);  
-  bendoclim_g ~ normal(0,1);  
-  bendoherb_g ~ normal(0,1); 
-  bclim2_g ~ normal(0,1);  
-  bendoclim2_g ~ normal(0,1);
-  plot_tau_g ~ inv_gamma(0.1, 0.1);
+  b0_g ~ normal(0,10);    
+  bendo_g ~ normal(0,10);   
+  bherb_g ~ normal(0,10); 
+  bclim_g ~ normal(0,10);  
+  bendoclim_g ~ normal(0,10);  
+  bendoherb_g ~ normal(0,10); 
+  bclim2_g ~ normal(0,10);  
+  bendoclim2_g ~ normal(0,10);
+  sigma ~ normal(0, 10);
+  plot_tau_g ~ inv_gamma(2, 1);
   for (i in 1:n_plot_g){
     plot_rfx_g[i] ~ normal(0, plot_tau_g);
   }
-  pop_tau_g ~ inv_gamma(0.1, 0.1);
+  pop_tau_g ~ inv_gamma(2, 1);
   for (i in 1:n_pops){
     pop_rfx_g[i] ~ normal(0, pop_tau_g);
   }
-  site_tau_g ~ inv_gamma(0.1,0.1);
+  site_tau_g ~ inv_gamma(2,1);
   for (i in 1:n_sites){
     site_rfx_g[i] ~ normal(0, site_tau_g);
   }
-
+  
   // sampling  
   //survival
   y_g ~ normal(predG, sigma);
@@ -91,8 +92,8 @@ model {
 generated quantities {
   vector[n_g] log_lik;
   for (ngi in 1:n_g) {
-    log_lik[ngi] = normal_lpdf (y_g[ngi] |predG[ngi],sigma);
- }
+    log_lik[ngi] = normal_lpdf(y_g[ngi] | predG[ngi], sigma);
+  }
 }
 
 

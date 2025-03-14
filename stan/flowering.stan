@@ -10,8 +10,8 @@ data {
   int<lower=1> plot_f[n_f];  // plot index
   int<lower=1> pop_f[n_f];  // population  index
   int<lower=0> y_f[n_f]; // Flowering at time t+1
-  vector[n_f] endo_f;  // endophyte status (positive=1, negative=0)
-  vector[n_f] herb_f;  // herbivory  (herb=1, noherb=0)
+  int<lower=0,upper=1> endo_f[n_f];  // endophyte status (positive=1, negative=0)
+  int<lower=0,upper=1> herb_f[n_f];  // herbivory  (herb=1, noherb=0)
   vector[n_f] clim_f;  // climate covariate (preciptation, pet, spei or Mahalanobis Distance)
   
 }
@@ -38,8 +38,8 @@ parameters {
   }
 
 transformed parameters {
-  real predF[n_f];
-  // prediction for survival
+  vector[n_f] predF;
+  // prediction for flowering
   for(iflow in 1:n_f){
     predF[iflow] = b0_f[species_f[iflow]] + 
                 //main effects
@@ -63,29 +63,29 @@ transformed parameters {
 model {
   // priors on parameters
   //Flowering
-  b0_f ~ normal(0,1);    
-  bendo_f ~ normal(0,1);   
-  bherb_f ~ normal(0,1); 
-  bclim_f ~ normal(0,1);  
-  bendoclim_f ~ normal(0,1);  
-  bendoherb_f ~ normal(0,1); 
-  bclim2_f ~ normal(0,1);  
-  bendoclim2_f ~ normal(0,1);
-  plot_tau_f ~ inv_gamma(0.1, 0.1);
+  b0_f ~ normal(0,10);    
+  bendo_f ~ normal(0,10);   
+  bherb_f ~ normal(0,10); 
+  bclim_f ~ normal(0,10);  
+  bendoclim_f ~ normal(0,10);  
+  bendoherb_f ~ normal(0,10); 
+  bclim2_f ~ normal(0,10);  
+  bendoclim2_f ~ normal(0,10);
+  plot_tau_f ~ inv_gamma(2, 1);
   for (i in 1:n_plot_f){
     plot_rfx_f[i] ~ normal(0, plot_tau_f);
   }
-  pop_tau_f ~ inv_gamma(0.1, 0.1);
+  pop_tau_f ~ inv_gamma(2, 1);
   for (i in 1:n_pops){
     pop_rfx_f[i] ~ normal(0, pop_tau_f);
   }
-  site_tau_f ~ inv_gamma(0.1,0.1);
+  site_tau_f ~ inv_gamma(2,1);
   for (i in 1:n_sites){
     site_rfx_f[i] ~ normal(0, site_tau_f);
   }
 
   // sampling  
-  //survival
+  //flowering
   y_f ~ neg_binomial_2_log(predF, phi_f);
 }
 

@@ -1,4 +1,4 @@
-\begin{thebibliography}{32}
+\begin{thebibliography}{35}
 \providecommand{\natexlab}[1]{#1}
 
 \bibitem[{Afkhami et~al.(2014)Afkhami, McIntyre, and
@@ -113,10 +113,25 @@ Gelman, A., Y.~Goegebeur, F.~Tuerlinckx, and I.~Van~Mechelen. 2000.
 \newblock Journal of the Royal Statistical Society: Series C (Applied
   Statistics) 49:247--268.
 
+\bibitem[{Giauque et~al.(2019)Giauque, Connor, and
+  Hawkes}]{giauque2019endophyte}
+Giauque, H., E.~W. Connor, and C.~V. Hawkes. 2019.
+\newblock Endophyte traits relevant to stress tolerance, resource use and
+  habitat of origin predict effects on host plants.
+\newblock New Phytologist 221:2239--2249.
+
 \bibitem[{Hoeksema and Bruna(2015)}]{hoeksema2015context}
 Hoeksema, J.~D., and E.~M. Bruna. 2015.
 \newblock Context-dependent outcomes of mutualistic interactions.
 \newblock Mutualism 10:181--202.
+
+\bibitem[{Kazenel et~al.(2015)Kazenel, Debban, Ranelli, Hendricks, Chung,
+  Pendergast~IV, Charlton, Young, and Rudgers}]{kazenel2015mutualistic}
+Kazenel, M.~R., C.~L. Debban, L.~Ranelli, W.~Q. Hendricks, Y.~A. Chung, T.~H.
+  Pendergast~IV, N.~D. Charlton, C.~A. Young, and J.~A. Rudgers. 2015.
+\newblock A mutualistic endophyte alters the niche dimensions of its host
+  plant.
+\newblock AoB plants 7:plv005.
 
 \bibitem[{Laughton et~al.(2014)Laughton, Fan, and
   Gerardo}]{laughton2014combined}
@@ -159,6 +174,12 @@ Rudgers, J.~A., and A.~L. Swafford. 2009.
 \newblock Benefits of a fungal endophyte in elymus virginicus decline under
   drought stress.
 \newblock Basic and Applied Ecology 10:43--51.
+
+\bibitem[{Saikkonen et~al.(1998)Saikkonen, Faeth, Helander, and
+  Sullivan}]{saikkonen1998fungal}
+Saikkonen, K., S.~H. Faeth, M.~Helander, and T.~Sullivan. 1998.
+\newblock Fungal endophytes: a continuum of interactions with host plants.
+\newblock Annual review of Ecology and Systematics 29:319--343.
 
 \bibitem[{Shaw(2011)}]{shaw2011guide}
 Shaw, R.~B. 2011.

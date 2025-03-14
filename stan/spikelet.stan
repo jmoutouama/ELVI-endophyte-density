@@ -38,7 +38,7 @@ parameters {
   }
 
 transformed parameters {
-  real predSPK[n_spk];
+  vector[n_spk] predSPK;
   // prediction for survival
   for(ispk in 1:n_spk){
     predSPK[ispk] = b0_spk[species_spk[ispk]] + 
@@ -62,30 +62,31 @@ transformed parameters {
 
 model {
   // priors on parameters
-  //Flowering
-  b0_spk ~ normal(0,100);    
-  bendo_spk ~ normal(0,100);   
-  bherb_spk ~ normal(0,100); 
-  bclim_spk ~ normal(0,100);  
-  bendoclim_spk ~ normal(0,100);  
-  bendoherb_spk ~ normal(0,100); 
-  bclim2_spk ~ normal(0,100);  
-  bendoclim2_spk ~ normal(0,100);
-  plot_tau_spk ~ inv_gamma(0.01, 0.01);
+  //Spikelet
+  b0_spk ~ normal(0,10);    
+  bendo_spk ~ normal(0,10);   
+  bherb_spk ~ normal(0,10); 
+  bclim_spk ~ normal(0,10);  
+  bendoclim_spk ~ normal(0,10);  
+  bendoherb_spk ~ normal(0,10); 
+  bclim2_spk ~ normal(0,10);  
+  bendoclim2_spk ~ normal(0,10);
+  phi_spk ~ gamma(2, 1);
+  plot_tau_spk ~ inv_gamma(2, 1);
   for (i in 1:n_plot_spk){
     plot_rfx_spk[i] ~ normal(0, plot_tau_spk);
   }
-  pop_tau_spk ~ inv_gamma(0.01, 0.01);
+  pop_tau_spk ~ inv_gamma(2, 1);
   for (i in 1:n_pops){
     pop_rfx_spk[i] ~ normal(0, pop_tau_spk);
   }
-  site_tau_spk ~ inv_gamma(0.01,0.01);
+  site_tau_spk ~ inv_gamma(2,1);
   for (i in 1:n_sites){
     site_rfx_spk[i] ~ normal(0, site_tau_spk);
   }
 
   // sampling  
-  //survival
+  //spikelet
   y_spk ~ neg_binomial_2_log(predSPK,phi_spk);
 }
 

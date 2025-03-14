@@ -8,45 +8,45 @@ Repeated entry---line 469 of file ELVI.bib
  :                       ,
 I'm skipping whatever remains of this entry
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 32 entries,
+You've used 35 entries,
             3251 wiz_defined-function locations,
-            872 strings with 11034 characters,
-and the built_in function-call counts, 18869 in all, are:
-= -- 1643
-> -- 844
+            891 strings with 11827 characters,
+and the built_in function-call counts, 21148 in all, are:
+= -- 1819
+> -- 997
 < -- 18
-+ -- 291
-- -- 252
-* -- 1318
-:= -- 3101
-add.period$ -- 127
-call.type$ -- 32
-change.case$ -- 243
-chr.to.int$ -- 31
-cite$ -- 32
-duplicate$ -- 1335
-empty$ -- 1347
-format.name$ -- 350
-if$ -- 3735
++ -- 344
+- -- 300
+* -- 1501
+:= -- 3470
+add.period$ -- 139
+call.type$ -- 35
+change.case$ -- 274
+chr.to.int$ -- 34
+cite$ -- 35
+duplicate$ -- 1488
+empty$ -- 1487
+format.name$ -- 407
+if$ -- 4177
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 266
-newline$ -- 163
-num.names$ -- 128
-pop$ -- 508
+missing$ -- 300
+newline$ -- 178
+num.names$ -- 140
+pop$ -- 573
 preamble$ -- 1
-purify$ -- 212
+purify$ -- 240
 quote$ -- 0
-skip$ -- 412
+skip$ -- 448
 stack$ -- 0
-substring$ -- 1035
-swap$ -- 595
+substring$ -- 1144
+swap$ -- 669
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 285
+type$ -- 312
 warning$ -- 0
-while$ -- 147
+while$ -- 161
 width$ -- 0
-write$ -- 414
+write$ -- 453
 (There was 1 error message)

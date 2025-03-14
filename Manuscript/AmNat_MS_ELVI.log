@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  13 NOV 2024 16:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  14 MAR 2025 11:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -299,145 +299,162 @@ File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 
 {/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
 al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2] [3] [4]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//clim_map_v1.pdf, id=20, 397.485pt x 289.08pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//clim_map_v1.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//clim_map_v1.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//clim_map_v1.pdf  used on input line 164.
-(pdftex.def)             Requested size: 469.75502pt x 341.64957pt.
 
+LaTeX Warning: File `clim_map_v1.pdf' not found on input line 162.
+
+
+./AmNat_MS_ELVI.tex:162: Package pdftex.def Error: File `clim_map_v1.pdf' not f
+ound: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.162 ...phics[width=1\textwidth]{clim_map_v1.pdf}
+                                                  
+? 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
-yte-density/Figure//clim_map_v1.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
-191.
+[5]
+Overfull \vbox (22.63336pt too high) has occurred while \output is active []
 
-(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
+
+[6]
+LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
+189.
+ (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
 ) [7]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//climatesite.pdf, id=40, 650.43pt x 361.35pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//climatesite.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//climatesite.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//climatesite.pdf  used on input line 208.
-(pdftex.def)             Requested size: 469.75502pt x 260.98232pt.
- [8 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//climatesite.pdf>] [9] [10]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//Posterior_mean.pdf, id=57, 578.16pt x 505.89pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//Posterior_mean.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//Posterior_mean.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//Posterior_mean.pdf  used on input line 304
-.
-(pdftex.def)             Requested size: 469.75502pt x 411.0346pt.
- [11]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//Fig_temp_mean.pdf, id=61, 433.62pt x 614.295pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//Fig_temp_mean.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//Fig_temp_mean.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//Fig_temp_mean.pdf  used on input line 313.
 
-(pdftex.def)             Requested size: 422.77664pt x 598.96802pt.
- [12 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//Posterior_mean.pdf>]
-Overfull \vbox (14.74586pt too high) has occurred while \output is active []
+LaTeX Warning: File `climatesite.pdf' not found on input line 206.
 
 
-[13 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//Fig_temp_mean.pdf>] [14]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_survival.pdf, id=86, 433.62pt x 361.35pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//PPC_survival.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//PPC_survival.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_survival.pdf  used on input line 345.
-(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [15 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//PPC_survival.pdf>]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_growth.pdf, id=99, 433.62pt x 361.35pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//PPC_growth.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//PPC_growth.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_growth.pdf  used on input line 352.
-(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
+./AmNat_MS_ELVI.tex:206: Package pdftex.def Error: File `climatesite.pdf' not f
+ound: using draft setting.
 
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.206 ...phics[width=1\textwidth]{climatesite.pdf}
+                                                  
+? 
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[8]
+Overfull \vbox (22.63336pt too high) has occurred while \output is active []
+
+
+[9] [10]
+
+LaTeX Warning: File `Posterior_mean.pdf' not found on input line 302.
+
+
+./AmNat_MS_ELVI.tex:302: Package pdftex.def Error: File `Posterior_mean.pdf' no
+t found: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.302 ...cs[width=1\textwidth]{Posterior_mean.pdf}
+                                                  
+? 
+[11]
+
+LaTeX Warning: File `Fig_temp_mean.pdf' not found on input line 311.
+
+
+./AmNat_MS_ELVI.tex:311: Package pdftex.def Error: File `Fig_temp_mean.pdf' not
+ found: using draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.311 ...s[width=0.9\textwidth]{Fig_temp_mean.pdf}
+                                                  
+? 
+[12] [13]
+
+./AmNat_MS_ELVI.tex:343: LaTeX Error: File `PPC_survival' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.343 \includegraphics{PPC_survival}
+                                    
+? 
+[14]
+
+./AmNat_MS_ELVI.tex:350: LaTeX Error: File `PPC_growth' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.350 \includegraphics{PPC_growth}
+                                  
+? 
+[15
+
+]
+
+./AmNat_MS_ELVI.tex:357: LaTeX Error: File `PPC_spikelet' not found.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.357 \includegraphics{PPC_spikelet}
+                                    
+? 
 [16
 
- </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
-nsity/Figure//PPC_growth.pdf>]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_spikelet.pdf, id=112, 433.62pt x 361.35pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//PPC_spikelet.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//PPC_spikelet.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_spikelet.pdf  used on input line 359.
-(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [17
+]
 
- </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
-nsity/Figure//PPC_spikelet.pdf>]
-</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//PPC_flowering.pdf, id=125, 433.62pt x 361.35pt>
-File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
-e-density/Figure//PPC_flowering.pdf Graphic file (type pdf)
-<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
--density/Figure//PPC_flowering.pdf>
-Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PPC_flowering.pdf  used on input line 366.
+./AmNat_MS_ELVI.tex:364: LaTeX Error: File `PPC_flowering' not found.
 
-(pdftex.def)             Requested size: 433.61894pt x 361.34912pt.
- [18
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.364 \includegraphics{PPC_flowering}
+                                     
+? 
+[17
 
- </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-de
-nsity/Figure//PPC_flowering.pdf>] (./AmNat_MS_ELVI.bbl [19
+] (./AmNat_MS_ELVI.bbl [18
 
-] [20]) [21]
-(./AmNat_MS_ELVI.aux)
+] [19] [20]) [21] (./AmNat_MS_ELVI.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4436 strings out of 476025
- 71689 string characters out of 5790018
- 1862388 words of memory out of 5000000
- 24799 multiletter control sequences out of 15000+600000
- 545413 words of font info for 113 fonts, out of 8000000 for 9000
+ 4632 strings out of 476025
+ 71778 string characters out of 5790018
+ 1863388 words of memory out of 5000000
+ 24981 multiletter control sequences out of 15000+600000
+ 545581 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,16n,62p,484b,286s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,16n,62p,488b,301s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></
 usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
-sr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></usr/lo
-cal/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/
-texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive
-/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/t
-exmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on AmNat_MS_ELVI.pdf (21 pages, 24179162 bytes).
+sr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></us
+r/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr.pfb></usr/loc
+al/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/t
+exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/
+2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/te
+xmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on AmNat_MS_ELVI.pdf (21 pages, 137796 bytes).
 PDF statistics:
- 185 PDF objects out of 1000 (max. 8388607)
- 126 compressed objects within 2 object streams
+ 118 PDF objects out of 1000 (max. 8388607)
+ 76 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 41 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
