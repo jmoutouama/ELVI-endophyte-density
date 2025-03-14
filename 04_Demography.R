@@ -182,8 +182,8 @@ ggplot(demography_climate_distance, aes(x = spikelet_t1, fill = Species, color =
     title = ""
   ) +
   theme_bw() +
-  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
-  # scale_fill_manual(values = c("red", "blue")) +
+  # scale_color_manual(values = c("red", "#00AFBB")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "#00AFBB")) +
   theme(
     legend.position = c(0.8, 0.8), # Legend at the top
     legend.background = element_rect(fill = "white", color = "white"), # Optional: outline the legend
@@ -198,8 +198,8 @@ ggplot(demography_climate_distance, aes(x = grow, fill = Species, color = Specie
     title = ""
   ) +
   theme_bw() +
-  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
-  # scale_fill_manual(values = c("red", "blue")) +
+  # scale_color_manual(values = c("red", "#00AFBB")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "#00AFBB")) +
   theme(
     legend.position = c(0.8, 0.8), # Legend at the top
     legend.background = element_rect(fill = "white", color = "white"), # Optional: outline the legend
@@ -257,8 +257,8 @@ ggplot(filtered_data, aes(x = inf_t1, fill = Species, color = Species)) +
     title = ""
   ) +
   theme_bw() +
-  # scale_color_manual(values = c("red", "blue")) +  # Custom colors for the species
-  # scale_fill_manual(values = c("red", "blue")) +
+  # scale_color_manual(values = c("red", "#00AFBB")) +  # Custom colors for the species
+  # scale_fill_manual(values = c("red", "#00AFBB")) +
   theme(
     legend.position = c(0.8, 0.8), # Legend at the top
     legend.background = element_rect(fill = "white", color = "black"), # Optional: outline the legend
@@ -405,7 +405,6 @@ bayesplot::mcmc_trace(posterior_surv_aghy_ppt,
   )
 ) + theme_bw()
 
-
 ## Compute predictions using posterior draws
 posterior_samples_sur_ppt <- rstan::extract(fit_allsites_surv_aghy_ppt)
 n_draws <- 1000 # Number of posterior samples to use
@@ -435,9 +434,10 @@ pred_data_sur_ppt$upper_ci <- apply(pred_prob_sur_ppt, 2, quantile, probs = 0.97
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
   geom_line() + # Mean prediction
-  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci,fill=factor(endo_s)), alpha = 0.3,color = NA) +  # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_s)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
-  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_s ~ herb_s, labeller = labeller(
     species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_s = c("0" = "Unfenced", "1" = "Fenced")
@@ -449,8 +449,8 @@ ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.8),
@@ -459,7 +459,7 @@ ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor
     axis.title = element_text(size = 13), # Increase axis title size
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
-  ) # Increase facet label size)
+  )
 
 # fit_allsites_surv_aghy_pet <- stan(
 #   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
@@ -471,6 +471,7 @@ ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor
 #   control = sim_pars$control)
 
 fit_allsites_surv_aghy_pet <- readRDS(url("https://www.dropbox.com/scl/fi/e98tc65ecu5kq0z90tmuc/fit_allsites_surv_aghy_pet.rds?rlkey=zav1ijycjc0odvfszc3i17w2a&dl=1"))
+
 summary(fit_allsites_surv_aghy_pet)$summary[, c("Rhat", "n_eff")]
 posterior_surv_aghy_pet <- as.array(fit_allsites_surv_aghy_pet) # Converts to an array
 bayesplot::mcmc_trace(posterior_surv_aghy_pet,
@@ -515,22 +516,23 @@ pred_data_sur_pet$upper_ci <- apply(pred_prob_sur_pet, 2, quantile, probs = 0.97
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_sur_pet, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
   geom_line() + # Mean prediction
-  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_s)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
-  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_s ~ herb_s, labeller = labeller(
     species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_s = c("0" = "Unfenced", "1" = "Fenced")
   )) + # Facet by species & herbivory
   labs(
-    x = "Preciptation (mm)",
+    x = "Potential Evapotranspiration",
     y = "Predicted survival probability",
     color = "Endophyte",
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.8),
@@ -539,7 +541,7 @@ ggplot(pred_data_sur_pet, aes(x = exp(clim_s), y = mean_survival, color = factor
     axis.title = element_text(size = 13), # Increase axis title size
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
-  ) # Increase facet label size)
+  )
 
 
 # fit_allsites_surv_aghy_spei <- stan(
@@ -597,9 +599,10 @@ pred_data_sur_spei$upper_ci <- apply(pred_prob_sur_spei, 2, quantile, probs = 0.
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_sur_spei, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
   geom_line() + # Mean prediction
-  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_s)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
-  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_s ~ herb_s, labeller = labeller(
     species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_s = c("0" = "Unfenced", "1" = "Fenced")
@@ -611,8 +614,8 @@ ggplot(pred_data_sur_spei, aes(x = exp(clim_s), y = mean_survival, color = facto
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.8),
@@ -621,7 +624,7 @@ ggplot(pred_data_sur_spei, aes(x = exp(clim_s), y = mean_survival, color = facto
     axis.title = element_text(size = 13), # Increase axis title size
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
-  ) # Increase facet label size)
+  )
 
 # fit_allsites_surv_aghy_distance <- stan(
 #   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
@@ -633,6 +636,7 @@ ggplot(pred_data_sur_spei, aes(x = exp(clim_s), y = mean_survival, color = facto
 #   control = sim_pars$control)
 
 fit_allsites_surv_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/ap0uys7p36wy6fl5zm4gk/fit_allsites_surv_aghy_distance.rds?rlkey=ro1rdaplg8hx9dfbx9v5jw605&dl=1"))
+
 summary(fit_allsites_surv_aghy_distance)$summary[, c("Rhat", "n_eff")]
 posterior_surv_aghy_distance <- as.array(fit_allsites_surv_aghy_distance) # Converts to an array
 bayesplot::mcmc_trace(posterior_surv_aghy_distance,
@@ -691,8 +695,8 @@ ggplot(pred_data_sur_distance, aes(x = exp(clim_s), y = mean_survival, color = f
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.8),
@@ -837,7 +841,7 @@ bayesplot::mcmc_trace(posterior_grow_aghy_ppt,
 
 ## Compute predictions using posterior draws
 posterior_samples_grow_ppt <- rstan::extract(fit_allsites_grow_aghy_ppt)
-n_draws <- 2000 # Number of posterior samples to use
+n_draws <- 1000 # Number of posterior samples to use
 pred_data_grow_ppt <- as.data.frame(demography_grow_aghy_ppt)
 pred_matrix_grow_ppt <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_grow_ppt))
 
@@ -864,10 +868,10 @@ pred_data_grow_ppt$upper_ci <- apply(pred_prob_grow_ppt, 2, quantile, probs = 0.
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_grow_ppt, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
@@ -883,7 +887,7 @@ ggplot(pred_data_grow_ppt, aes(x = exp(clim_g), y = mean_growth, color = factor(
   scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
-    legend.position = c(0.9, 0.93),
+    legend.position = c(0.9, 0.90),
     legend.title = element_text(size = 10), # Reduce legend title size
     legend.text = element_text(size = 12), # Adjust legend text size
     axis.title = element_text(size = 13), # Increase axis title size
@@ -947,16 +951,16 @@ pred_data_grow_pet$upper_ci <- apply(pred_prob_grow_pet, 2, quantile, probs = 0.
 # Plot predicted growth  with credible intervals
 ggplot(pred_data_grow_pet, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
   )) + # Facet by species & herbivory
   labs(
-    x = "Preciptation (mm)",
+    x = "Potential Evapotranspiration",
     y = "Predicted relative growth",
     color = "Endophyte",
     fill = "Endophyte",
@@ -1029,10 +1033,10 @@ pred_data_grow_spei$upper_ci <- apply(pred_prob_grow_spei, 2, quantile, probs = 
 # Plot predicted growvival probabilities with credible intervals
 ggplot(pred_data_grow_spei, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
@@ -1055,7 +1059,6 @@ ggplot(pred_data_grow_spei, aes(x = exp(clim_g), y = mean_growth, color = factor
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
   )
-
 
 # fit_allsites_grow_aghy_distance <- stan(
 #   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
@@ -1113,10 +1116,10 @@ pred_data_grow_distance$upper_ci <- apply(pred_prob_grow_distance, 2, quantile, 
 # Plot predicted growvival probabilities with credible intervals
 ggplot(pred_data_grow_distance, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
@@ -1138,7 +1141,7 @@ ggplot(pred_data_grow_distance, aes(x = exp(clim_g), y = mean_growth, color = fa
     axis.title = element_text(size = 13), # Increase axis title size
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
-  ) # Increase facet label size
+  )
 
 ## Save RDS file for further use
 # saveRDS(fit_allsites_grow_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_grow_aghy_ppt.rds')
@@ -1299,10 +1302,10 @@ pred_data_flow_ppt$upper_ci <- apply(pred_prob_flow_ppt, 2, quantile, probs = 0.
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_flow_ppt, aes(x = exp(clim_f), y = mean_flowth, color = factor(endo_f), fill = factor(endo_f))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_f ~ herb_f, labeller = labeller(
     species_f = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_f = c("0" = "Unfenced", "1" = "Fenced")
@@ -1314,8 +1317,8 @@ ggplot(pred_data_flow_ppt, aes(x = exp(clim_f), y = mean_flowth, color = factor(
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.55),
@@ -1381,10 +1384,10 @@ pred_data_flow_pet$upper_ci <- apply(pred_prob_flow_pet, 2, quantile, probs = 0.
 # Plot predicted flowth  with credible intervals
 ggplot(pred_data_flow_pet, aes(x = exp(clim_f), y = mean_flowering, color = factor(endo_f), fill = factor(endo_f))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_f ~ herb_f, labeller = labeller(
     species_f = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_f = c("0" = "Unfenced", "1" = "Fenced")
@@ -1396,8 +1399,8 @@ ggplot(pred_data_flow_pet, aes(x = exp(clim_f), y = mean_flowering, color = fact
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.2, 0.55),
@@ -1407,7 +1410,6 @@ ggplot(pred_data_flow_pet, aes(x = exp(clim_f), y = mean_flowering, color = fact
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
   ) # Increase facet label size)
-
 
 # fit_allsites_flow_aghy_spei <- stan(
 #   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
@@ -1464,10 +1466,10 @@ pred_data_flow_spei$upper_ci <- apply(pred_prob_flow_spei, 2, quantile, probs = 
 # Plot predicted flowvival probabilities with credible intervals
 ggplot(pred_data_flow_spei, aes(x = exp(clim_f), y = mean_flowering, color = factor(endo_f), fill = factor(endo_f))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_f ~ herb_f, labeller = labeller(
     species_f = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_f = c("0" = "Unfenced", "1" = "Fenced")
@@ -1479,8 +1481,8 @@ ggplot(pred_data_flow_spei, aes(x = exp(clim_f), y = mean_flowering, color = fac
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.9),
@@ -1545,10 +1547,10 @@ pred_data_flow_distance$upper_ci <- apply(pred_prob_flow_distance, 2, quantile, 
 # Plot predicted flowvival probabilities with credible intervals
 ggplot(pred_data_flow_distance, aes(x = exp(clim_f), y = mean_flowering, color = factor(endo_f), fill = factor(endo_f))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_f ~ herb_f, labeller = labeller(
     species_f = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_f = c("0" = "Unfenced", "1" = "Fenced")
@@ -1560,8 +1562,8 @@ ggplot(pred_data_flow_distance, aes(x = exp(clim_f), y = mean_flowering, color =
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.35, 0.55),
@@ -1571,8 +1573,6 @@ ggplot(pred_data_flow_distance, aes(x = exp(clim_f), y = mean_flowering, color =
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
   ) # Increase facet label size
-
-
 
 ## Save RDS file for further use
 # saveRDS(fit_allsites_flow_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_flow_aghy_ppt.rds')
@@ -1707,8 +1707,6 @@ bayesplot::mcmc_trace(posterior_spik_aghy_ppt,
   )
 ) + theme_bw()
 
-pairs(fit_allsites_spik_aghy_ppt, pars = c("b0_spk", "bclim_spk", "phi_spk"))
-
 summary(fit_allsites_spik_aghy_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_spik_aghy_ppt <- as.array(fit_allsites_spik_aghy_ppt) # Converts to an array
 bayesplot::mcmc_trace(posterior_spik_aghy_ppt,
@@ -1753,10 +1751,10 @@ pred_data_spik_ppt$upper_ci <- apply(pred_prob_spik_ppt, 2, quantile, probs = 0.
 # Plot predicted survival probabilities with credible intervals
 ggplot(pred_data_spik_ppt, aes(x = exp(clim_spk), y = mean_spikelet, color = factor(endo_spk), fill = factor(endo_spk))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_spk ~ herb_spk, labeller = labeller(
     species_spk = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_spk = c("0" = "Unfenced", "1" = "Fenced")
@@ -1768,8 +1766,8 @@ ggplot(pred_data_spik_ppt, aes(x = exp(clim_spk), y = mean_spikelet, color = fac
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.91),
@@ -1809,7 +1807,7 @@ bayesplot::mcmc_trace(posterior_spik_aghy_pet,
 ## Compute predictions using posterior draws
 posterior_samples_spik_pet <- rstan::extract(fit_allsites_spik_aghy_pet)
 n_draws <- 1000 # Number of posterior samples to use
-pred_data_spik_pet <- as.data.frame(data_sites_spik_aghy_pet)
+pred_data_spik_pet <- as.data.frame(demography_spik_aghy_pet)
 pred_matrix_spik_pet <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_spik_pet))
 
 for (i in 1:n_draws) {
@@ -1835,23 +1833,23 @@ pred_data_spik_pet$upper_ci <- apply(pred_prob_spik_pet, 2, quantile, probs = 0.
 # Plot predicted spikth  with credible intervals
 ggplot(pred_data_spik_pet, aes(x = exp(clim_spk), y = mean_spikelet, color = factor(endo_spk), fill = factor(endo_spk))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_spk ~ herb_spk, labeller = labeller(
     species_spk = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_spk = c("0" = "Unfenced", "1" = "Fenced")
   )) + # Facet by species & herbivory
   labs(
-    x = "Preciptation (mm)",
+    x = "Potential Evapotranspiration",
     y = "Inflorescence ",
     color = "Endophyte",
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.38, 0.40),
@@ -1863,15 +1861,15 @@ ggplot(pred_data_spik_pet, aes(x = exp(clim_spk), y = mean_spikelet, color = fac
   ) # Increase facet label size)
 
 
-fit_allsites_spik_aghy_spei <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
-  data = data_sites_spik_aghy_spei,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control = sim_pars$control
-)
+# fit_allsites_spik_aghy_spei <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+#   data = data_sites_spik_aghy_spei,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control = sim_pars$control
+# )
 
 fit_allsites_spik_aghy_spei <- readRDS(url("https://www.dropbox.com/scl/fi/swhi510v2mhnlb62xrcvo/fit_allsites_spik_aghy_spei.rds?rlkey=s9szgdfhokb7jjn7zxix5t93e&dl=1"))
 
@@ -1893,7 +1891,7 @@ bayesplot::mcmc_trace(posterior_spik_aghy_spei,
 ## Compute predictions using posterior draws
 posterior_samples_spik_spei <- rstan::extract(fit_allsites_spik_aghy_spei)
 n_draws <- 1000 # Number of posterior samples to use
-pred_data_spik_spei <- as.data.frame(data_sites_spik_aghy_spei)
+pred_data_spik_spei <- as.data.frame(demography_spik_aghy_spei)
 pred_matrix_spik_spei <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_spik_spei))
 
 for (i in 1:n_draws) {
@@ -1919,10 +1917,10 @@ pred_data_spik_spei$upper_ci <- apply(pred_prob_spik_spei, 2, quantile, probs = 
 # Plot predicted spikvival probabilities with credible intervals
 ggplot(pred_data_spik_spei, aes(x = exp(clim_spk), y = mean_spikelet, color = factor(endo_spk), fill = factor(endo_spk))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_spk ~ herb_spk, labeller = labeller(
     species_spk = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_spk = c("0" = "Unfenced", "1" = "Fenced")
@@ -1934,8 +1932,8 @@ ggplot(pred_data_spik_spei, aes(x = exp(clim_spk), y = mean_spikelet, color = fa
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.9, 0.9),
@@ -1946,15 +1944,15 @@ ggplot(pred_data_spik_spei, aes(x = exp(clim_spk), y = mean_spikelet, color = fa
     strip.text = element_text(size = 13)
   )
 
-fit_allsites_spik_aghy_distance <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
-  data = data_sites_spik_aghy_distance,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control = sim_pars$control
-)
+# fit_allsites_spik_aghy_distance <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+#   data = data_sites_spik_aghy_distance,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control = sim_pars$control
+# )
 
 fit_allsites_spik_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/7apjqo8nris1vlgih4enz/fit_allsites_spik_aghy_distance.rds?rlkey=lhcl48ud0uuve6wetkwx4ov14&dl=1"))
 
@@ -1975,7 +1973,7 @@ bayesplot::mcmc_trace(posterior_spik_aghy_distance,
 ## Compute predictions using posterior draws
 posterior_samples_spik_distance <- rstan::extract(fit_allsites_spik_aghy_distance)
 n_draws <- 1000 # Number of posterior samples to use
-pred_data_spik_distance <- as.data.frame(data_sites_spik_aghy_distance)
+pred_data_spik_distance <- as.data.frame(demography_spik_aghy_distance)
 pred_matrix_spik_distance <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_spik_distance))
 
 for (i in 1:n_draws) {
@@ -2001,10 +1999,10 @@ pred_data_spik_distance$upper_ci <- apply(pred_prob_spik_distance, 2, quantile, 
 # Plot predicted spikvival probabilities with credible intervals
 ggplot(pred_data_spik_distance, aes(x = exp(clim_spk), y = mean_spikelet, color = factor(endo_spk), fill = factor(endo_spk))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_spk ~ herb_spk, labeller = labeller(
     species_spk = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_spk = c("0" = "Unfenced", "1" = "Fenced")
@@ -2016,8 +2014,8 @@ ggplot(pred_data_spik_distance, aes(x = exp(clim_spk), y = mean_spikelet, color 
     fill = "Endophyte",
     title = ""
   ) +
-  scale_color_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
-  scale_fill_manual(values = c("0" = "blue", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
   theme_bw() +
   theme(
     legend.position = c(0.35, 0.40),
@@ -2028,7 +2026,6 @@ ggplot(pred_data_spik_distance, aes(x = exp(clim_spk), y = mean_spikelet, color 
     strip.text = element_text(size = 13)
   ) # Increase facet label size
 
-
 ## Save RDS file for further use
 # saveRDS(fit_allsites_spik_aghy_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_spik_aghy_ppt.rds')
 # saveRDS(fit_allsites_spik_aghy_pet, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_spik_aghy_pet.rds')
@@ -2036,214 +2033,9 @@ ggplot(pred_data_spik_distance, aes(x = exp(clim_spk), y = mean_spikelet, color 
 # saveRDS(fit_allsites_spik_aghy_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_allsites_spik_aghy_distance.rds')
 
 ## Posterior predictive check for  all models
-predS_Tmean <- rstan::extract(fit_allsites_surv_temp_mean, pars = c("predS"))$predS
-predS_Tcv <- rstan::extract(fit_allsites_surv_temp_cv, pars = c("predS"))$predS
-predS_Wmean <- rstan::extract(fit_allsites_surv_water_mean, pars = c("predS"))$predS
-predS_Wcv <- rstan::extract(fit_allsites_surv_water_cv, pars = c("predS"))$predS
+# Extract posterior predictive samples
 
-predG_Tmean <- rstan::extract(fit_allsites_grow_temp_mean, pars = c("predG"))$predG
-sigma_Tmean <- rstan::extract(fit_allsites_grow_temp_mean, pars = c("sigma"))$sigma
-predG_Tcv <- rstan::extract(fit_allsites_grow_temp_cv, pars = c("predG"))$predG
-sigma_Tcv <- rstan::extract(fit_allsites_grow_temp_cv, pars = c("sigma"))$sigma
-predG_Wmean <- rstan::extract(fit_allsites_grow_water_mean, pars = c("predG"))$predG
-sigma_Wmean <- rstan::extract(fit_allsites_grow_water_mean, pars = c("sigma"))$sigma
-predG_Wcv <- rstan::extract(fit_allsites_grow_water_cv, pars = c("predG"))$predG
-sigma_Wcv <- rstan::extract(fit_allsites_grow_water_cv, pars = c("sigma"))$sigma
-
-predF_Tmean <- rstan::extract(fit_allsites_flow_temp_mean, pars = c("predF"))$predF
-phi_f_Tmean <- rstan::extract(fit_allsites_flow_temp_mean, pars = c("phi_f"))$phi_f
-predF_Tcv <- rstan::extract(fit_allsites_flow_temp_cv, pars = c("predF"))$predF
-phi_f_Tcv <- rstan::extract(fit_allsites_flow_temp_cv, pars = c("phi_f"))$phi_f
-predF_Wmean <- rstan::extract(fit_allsites_flow_water_mean, pars = c("predF"))$predF
-phi_f_Wmean <- rstan::extract(fit_allsites_flow_water_mean, pars = c("phi_f"))$phi_f
-predF_Wcv <- rstan::extract(fit_allsites_flow_water_cv, pars = c("predF"))$predF
-phi_f_Wcv <- rstan::extract(fit_allsites_flow_water_cv, pars = c("phi_f"))$phi_f
-
-predSP_Tmean <- rstan::extract(fit_allsites_spi_temp_mean, pars = c("predF"))$predF
-phi_spk_Tmean <- rstan::extract(fit_allsites_spi_temp_mean, pars = c("phi_spk"))$phi_spk
-predSP_Tcv <- rstan::extract(fit_allsites_spi_temp_cv, pars = c("predF"))$predF
-phi_spk_Tcv <- rstan::extract(fit_allsites_spi_temp_cv, pars = c("phi_spk"))$phi_spk
-predSP_Wmean <- rstan::extract(fit_allsites_spi_water_mean, pars = c("predF"))$predF
-phi_spk_Wmean <- rstan::extract(fit_allsites_spi_water_mean, pars = c("phi_spk"))$phi_spk
-predSP_Wcv <- rstan::extract(fit_allsites_spi_water_cv, pars = c("predF"))$predF
-phi_spk_Wmean <- rstan::extract(fit_allsites_spi_water_cv, pars = c("phi_spk"))$phi_spk
-
-# draw 500 random samples from the joint posterior
-n_post_draws <- 500
-post_draws <- sample.int(dim(predS_Tmean)[1], n_post_draws)
-# set up simulation output
-y_s_tm_sim <- matrix(NA, n_post_draws, length(data_sites_surv_temp_mean$y_s))
-y_s_tcv_sim <- matrix(NA, n_post_draws, length(data_sites_surv_temp_cv$y_s))
-y_s_wm_sim <- matrix(NA, n_post_draws, length(data_sites_surv_water_mean$y_s))
-y_s_wcv_sim <- matrix(NA, n_post_draws, length(data_sites_surv_water_cv$y_s))
-
-y_g_tm_sim <- matrix(NA, n_post_draws, length(data_sites_grow_temp_mean$y_g))
-y_g_tcv_sim <- matrix(NA, n_post_draws, length(data_sites_grow_temp_cv$y_g))
-y_g_wm_sim <- matrix(NA, n_post_draws, length(data_sites_grow_water_mean$y_g))
-y_g_wcv_sim <- matrix(NA, n_post_draws, length(data_sites_grow_water_cv$y_g))
-
-y_f_tm_sim <- matrix(NA, n_post_draws, length(data_sites_flow_temp_mean$y_f))
-y_f_tcv_sim <- matrix(NA, n_post_draws, length(data_sites_flow_temp_cv$y_f))
-y_f_wm_sim <- matrix(NA, n_post_draws, length(data_sites_flow_water_mean$y_f))
-y_f_wcv_sim <- matrix(NA, n_post_draws, length(data_sites_flow_water_cv$y_f))
-
-y_sp_tm_sim <- matrix(NA, n_post_draws, length(data_sites_spi_temp_mean$y_spk))
-y_sp_tcv_sim <- matrix(NA, n_post_draws, length(data_sites_spi_temp_cv$y_spk))
-y_sp_wm_sim <- matrix(NA, n_post_draws, length(data_sites_spi_water_mean$y_spk))
-y_sp_wcv_sim <- matrix(NA, n_post_draws, length(data_sites_spi_water_cv$y_spk))
-
-
-# loop over the posterior and generate new observations
-for (i in 1:n_post_draws) {
-  print(i)
-  ## sample survival data (bernoulli)
-  y_s_tm_sim[i, ] <- rbinom(n = length(data_sites_surv_temp_mean$y_s), size = 1, prob = invlogit(predS_Tmean[i, ]))
-  y_s_tcv_sim[i, ] <- rbinom(n = length(data_sites_surv_temp_cv$y_s), size = 1, prob = invlogit(predS_Tcv[i, ]))
-  y_s_wm_sim[i, ] <- rbinom(n = length(data_sites_surv_water_mean$y_s), size = 1, prob = invlogit(predS_Wmean[i, ]))
-  y_s_wcv_sim[i, ] <- rbinom(n = length(data_sites_surv_water_cv$y_s), size = 1, prob = invlogit(predS_Wcv[i, ]))
-  ## sample growth data (normal)
-  y_g_tm_sim[i, ] <- rnorm(n = length(data_sites_grow_temp_mean$y_g), mean = predG_Tmean[i, ], sd = sigma_Tmean[i])
-  y_g_tcv_sim[i, ] <- rnorm(n = length(data_sites_grow_temp_cv$y_g), mean = predG_Tcv[i, ], sd = sigma_Tcv[i])
-  y_g_wm_sim[i, ] <- rnorm(n = length(data_sites_grow_water_mean$y_g), mean = predG_Wmean[i, ], sd = sigma_Wmean[i])
-  y_g_wcv_sim[i, ] <- rnorm(n = length(data_sites_grow_water_cv$y_g), mean = predG_Wcv[i, ], sd = sigma_Wcv[i])
-  ## sample flowering data (negative binomial)
-  y_f_tm_sim[i, ] <- rnbinom(n = length(data_sites_flow_temp_mean$y_f), mu = exp(predF_Tmean[i, ]), size = phi_f_Tmean[i])
-  y_f_tcv_sim[i, ] <- rnbinom(n = length(data_sites_flow_temp_cv$y_f), mu = exp(predF_Tcv[i, ]), size = phi_f_Tcv[i])
-  y_f_wm_sim[i, ] <- rnbinom(n = length(data_sites_flow_water_mean$y_f), mu = exp(predF_Wmean[i, ]), size = phi_f_Wmean[i])
-  y_f_wcv_sim[i, ] <- rnbinom(n = length(data_sites_flow_water_cv$y_f), mu = exp(predF_Wcv[i, ]), size = phi_f_Tcv[i])
-  ## sample spikelet data (negative binomial)
-  y_sp_tm_sim[i, ] <- rnbinom(n = length(data_sites_spi_temp_mean$y_spk), mu = exp(predSP_Tmean[i, ]), size = phi_spk_Tmean[i])
-  y_sp_tcv_sim[i, ] <- rnbinom(n = length(data_sites_spi_temp_cv$y_spk), mu = exp(predSP_Tcv[i, ]), size = phi_spk_Tcv)
-  y_sp_wm_sim[i, ] <- rnbinom(n = length(data_sites_spi_water_mean$y_spk), mu = exp(predSP_Wmean[i, ]), size = phi_spk_Wmean)
-  y_sp_wcv_sim[i, ] <- rnbinom(n = length(data_sites_spi_water_cv$y_spk), mu = exp(predSP_Wcv[i, ]), size = phi_spk_Tcv)
-}
-
-# plot ppc overlay
-# color_scheme_set("red")
-color_scheme_set("blue")
-bayesplot::ppc_dens_overlay(data_sites_surv_temp_mean$y_s, y_s_tm_sim) +
-  xlab("Survival ") +
-  ylab("Density") +
-  ggtitle(("Mean temperature")) +
-  theme_bw() +
-  theme(legend.position = c(0.15, 0.7)) -> ppc_surv_temp_mean
-ppc_dens_overlay(data_sites_surv_temp_mean$y_s, y_s_tm_sim) +
-  xlab("Survival ") +
-  ylab("Density") +
-  ggtitle(("CV temperature")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_surv_temp_cv
-ppc_dens_overlay(data_sites_surv_temp_mean$y_s, y_s_tm_sim) +
-  xlab("Survival ") +
-  ylab("Density") +
-  ggtitle(("Mean soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_surv_water_mean
-ppc_dens_overlay(data_sites_surv_temp_mean$y_s, y_s_tm_sim) +
-  xlab("Survival ") +
-  ylab("Density") +
-  ggtitle(("CV soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_surv_water_cv
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_survival.pdf", useDingbats = F, height = 5, width = 6)
-multiplot(ppc_surv_temp_mean, ppc_surv_temp_cv, ppc_surv_water_mean,
-  ppc_surv_water_cv,
-  cols = 2
-)
-dev.off()
-
-bayesplot::ppc_dens_overlay(data_sites_grow_temp_mean$y_g, y_g_tm_sim) +
-  xlab("Growth ") +
-  ylab("Density") +
-  ggtitle(("Mean temperature")) +
-  theme_bw() +
-  theme(legend.position = c(0.15, 0.7)) -> ppc_grow_temp_mean
-ppc_dens_overlay(data_sites_grow_temp_mean$y_g, y_g_tm_sim) +
-  xlab("Growth ") +
-  ylab("Density") +
-  ggtitle(("CV temperature")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_grow_temp_cv
-ppc_dens_overlay(data_sites_grow_temp_mean$y_g, y_g_tm_sim) +
-  xlab("Growth ") +
-  ylab("Density") +
-  ggtitle(("Mean soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_grow_water_mean
-ppc_dens_overlay(data_sites_grow_temp_mean$y_g, y_g_tm_sim) +
-  xlab("Growth ") +
-  ylab("Density") +
-  ggtitle(("CV soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_grow_water_cv
-# pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_growth.pdf",useDingbats = F,height=5,width=6)
-# multiplot(ppc_grow_temp_mean,ppc_grow_temp_cv,ppc_grow_water_mean,
-#           ppc_grow_water_cv,cols=2)
-# dev.off()
-
-bayesplot::ppc_dens_overlay(data_sites_flow_temp_mean$y_f, y_f_tm_sim) +
-  xlab("Flowering") +
-  ylab("Density") +
-  xlim(-10, 40) +
-  ggtitle(("Mean temperature")) +
-  theme_bw() +
-  theme(legend.position = c(0.8, 0.7)) -> ppc_flow_temp_mean
-ppc_dens_overlay(data_sites_flow_temp_mean$y_f, y_f_tm_sim) +
-  xlab("Flowering") +
-  ylab("Density") +
-  xlim(-10, 40) +
-  ggtitle(("CV temperature")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_flow_temp_cv
-ppc_dens_overlay(data_sites_flow_temp_mean$y_f, y_f_tm_sim) +
-  xlab("Flowering") +
-  ylab("Density") +
-  xlim(-10, 40) +
-  ggtitle(("Mean soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_flow_water_mean
-ppc_dens_overlay(data_sites_flow_temp_mean$y_f, y_f_tm_sim) +
-  xlab("Flowering") +
-  ylab("Density") +
-  xlim(-10, 40) +
-  ggtitle(("CV soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_flow_water_cv
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_flowering.pdf", useDingbats = F, height = 5, width = 6)
-multiplot(ppc_flow_temp_mean, ppc_flow_temp_cv, ppc_flow_water_mean,
-  ppc_flow_water_cv,
-  cols = 2
-)
-dev.off()
-
-bayesplot::ppc_dens_overlay(data_sites_spi_temp_mean$y_spk, y_sp_tm_sim) +
-  xlab("Spikelet") +
-  ylab("Density") +
-  xlim(-10, 200) +
-  ggtitle(("Mean temperature")) +
-  theme_bw() +
-  theme(legend.position = c(0.8, 0.7)) -> ppc_spi_temp_mean
-ppc_dens_overlay(data_sites_spi_temp_mean$y_spk, y_sp_tm_sim) +
-  xlab("Spikelet") +
-  ylab("Density") +
-  xlim(-10, 200) +
-  ggtitle(("CV temperature")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_spi_temp_cv
-ppc_dens_overlay(data_sites_spi_temp_mean$y_spk, y_sp_tm_sim) +
-  xlab("Spikelet") +
-  ylab("Density") +
-  xlim(-10, 200) +
-  ggtitle(("Mean soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_spi_water_mean
-ppc_dens_overlay(data_sites_spi_temp_mean$y_spk, y_sp_tm_sim) +
-  xlab("Spikelet") +
-  ylab("Density") +
-  xlim(-10, 200) +
-  ggtitle(("CV soil moisture")) +
-  theme_bw() +
-  theme(legend.position = "none") -> ppc_spi_water_cv
+ppc_boxplot(y_obs, y_rep[1:100, ])
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PPC_spikelet.pdf", useDingbats = F, height = 5, width = 6)
 multiplot(ppc_spi_temp_mean, ppc_spi_temp_cv, ppc_spi_water_mean,
   ppc_spi_water_cv,
