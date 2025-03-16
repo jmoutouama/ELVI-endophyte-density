@@ -15,7 +15,7 @@ library(RColorBrewer)
 library(tidyverse)
 library(dismo)
 library(prism)
-library(rethinking)
+library(MESS)
 # Climatic data----
 ## Data from PRISM---- 
 # making a folder to store prism data
@@ -80,14 +80,14 @@ elvi_occ_raw %>%
   unique() %>% 
   arrange(latitude)->elvi1
 
-elvi_occ %>% 
+elvi_occ_raw %>% 
   dplyr::select(country,lon, lat,year)%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-94) &  as.numeric(longitude <=-92) & as.numeric(latitude >=29.5) &  as.numeric(latitude <=32.5) & country=="United States") %>% 
   unique() %>% 
   arrange(latitude)->elvi2
 
-elvi_occ %>% 
+elvi_occ_raw %>% 
   dplyr::select(country,lon, lat,year)%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-92) &  as.numeric(longitude <=-89.5) & as.numeric(latitude >=29.5) &  as.numeric(latitude <=31) & country=="United States") %>% 
@@ -108,14 +108,14 @@ poa_occ_raw %>%
   unique() %>% 
   arrange(latitude)->poa1
 
-poa_occ %>% 
+poa_occ_raw %>% 
   dplyr::select(country,lon, lat,year)%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-94) &  as.numeric(longitude <=-92) & as.numeric(latitude >=29.5) &  as.numeric(latitude <=32.5) & country=="United States") %>% 
   unique() %>% 
   arrange(latitude)->poa2
 
-poa_occ %>% 
+poa_occ_raw %>% 
   dplyr::select(country,lon, lat,year)%>% 
   dplyr::rename(longitude=lon,latitude=lat) %>% 
   filter(year %in% (1901:2024) & as.numeric(longitude >=-92) &  as.numeric(longitude <=-89.5) & as.numeric(latitude >=29.5) &  as.numeric(latitude <=31) & country=="United States") %>% 
@@ -161,21 +161,55 @@ op<-par(mfrow = c(2,2), mar=c(0,1,3.75,1),oma = c(0, 1, 1, 0))
 #par(mar=c(5,0,4,0),mfrow=c(2,2))
 plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area)
-plot(aghy,add=T,pch = 16,cex =0.6, col=col.alpha("blue4",0.3))
-plot(elvi,add=T,pch = 16,cex =0.6,col=col.alpha("grey50",0.3))
-plot(poa,add=T,pch = 16,cex =0.6,col=col.alpha("red",0.3))
+plot(study_area,add=T)
 plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 23,col="black",bg="red",cex =1)
+plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
+#mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+legend(-106, 28.5, 
+       legend=c( "Common garden sites","Source populations"),
+       pch = c(3,21),
+       pt.cex=c(1,1),
+       col = c("black","black"),
+       pt.bg=c("black","red"),
+       cex = 0.7, 
+       bty = "n", 
+       horiz = F , 
+)
+plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
+#text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
+plot(study_area,add=T)
+plot(aghy,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
+plot(garden,add=T,pch = 3,col="black",cex =2)
+plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+legend(-106, 28.5, 
+       legend=c( "GBIF occurences","Common garden sites","Source populations"),
+       pch = c(23,3,21),
+       pt.cex=c(0.55,1,1),
+       col = c("grey50","black","black"),
+       pt.bg=c("grey","black","red"),
+       cex = 0.7, 
+       bty = "n", 
+       horiz = F , 
+)
 
-plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip,cex.lab=1.2)
+plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
 plot(elvi,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
 plot(garden,add=T,pch = 3,col="black",cex =2)
 plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext(~ italic ("Elymus virginicus"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+legend(-106, 28.5, 
+       legend=c( "GBIF occurences","Common garden sites","Source populations"),
+       pch = c(23,3,21),
+       pt.cex=c(0.55,1,1),
+       col = c("grey50","black","black"),
+       pt.bg=c("grey","black","red"),
+       cex = 0.7, 
+       bty = "n", 
+       horiz = F , 
+)
 
 par(mar=c(0,3,3.75,1))
 plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)

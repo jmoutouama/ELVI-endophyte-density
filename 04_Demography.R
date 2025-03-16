@@ -705,8 +705,82 @@ ggplot(pred_data_sur_distance, aes(x = exp(clim_s), y = mean_survival, color = f
     axis.title = element_text(size = 13), # Increase axis title size
     axis.text = element_text(size = 10), # Increase axis label size
     strip.text = element_text(size = 13)
-  ) # Increase facet label size
+  ) 
 
+fit_allsites_surv_aghy_distance_linear <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival_distance.stan",
+  data = data_sites_surv_aghy_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
+
+summary(fit_allsites_surv_aghy_distance_linear)$summary[, c("Rhat", "n_eff")]
+posterior_surv_aghy_distance_linear <- as.array(fit_allsites_surv_aghy_distance_linear) # Converts to an array
+bayesplot::mcmc_trace(posterior_surv_aghy_distance_linear,
+                      pars = quote_bare(
+                        b0_s[1], b0_s[2], b0_s[3],
+                        bendo_s[1], bendo_s[2], bendo_s[3],
+                        bherb_s[1], bherb_s[2], bherb_s[3],
+                        bclim_s[1], bclim_s[2], bclim_s[3],
+                        bendoclim_s[1], bendoclim_s[2], bendoclim_s[3],
+                        bendoherb_s[1], bendoherb_s[2], bendoherb_s[3]
+                      )
+) + theme_bw()
+
+## Compute predictions using posterior draws
+posterior_samples_sur_distance <- rstan::extract(fit_allsites_surv_aghy_distance_linear)
+n_draws <- 1000 # Number of posterior samples to use
+pred_data_sur_distance <- as.data.frame(data_sites_surv_aghy_distance)
+pred_matrix_sur_distance <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_distance))
+
+for (i in 1:n_draws) {
+  for (j in 1:nrow(pred_data_sur_distance)) {
+    species <- pred_data_sur_distance$species_s[j]
+    pred_matrix_sur_distance[i, j] <- posterior_samples_sur_distance$b0_s[i, species] +
+      posterior_samples_sur_distance$bendo_s[i, species] * pred_data_sur_distance$endo_s[j] +
+      posterior_samples_sur_distance$bclim_s[i, species] * pred_data_sur_distance$clim_s[j] +
+      posterior_samples_sur_distance$bherb_s[i, species] * pred_data_sur_distance$herb_s[j] +
+      posterior_samples_sur_distance$bendoclim_s[i, species] * pred_data_sur_distance$clim_s[j] * pred_data_sur_distance$endo_s[j] +
+      posterior_samples_sur_distance$bendoherb_s[i, species] * pred_data_sur_distance$endo_s[j] * pred_data_sur_distance$herb_s[j]
+  }
+}
+
+# Convert logits to probability scale
+pred_prob_sur_distance <- invlogit(pred_matrix_sur_distance)
+# Compute mean and 95% credible interval
+pred_data_sur_distance$mean_survival <- apply(pred_prob_sur_distance, 2, mean)
+pred_data_sur_distance$lower_ci <- apply(pred_prob_sur_distance, 2, quantile, probs = 0.025)
+pred_data_sur_distance$upper_ci <- apply(pred_prob_sur_distance, 2, quantile, probs = 0.975)
+# Plot predicted survival probabilities with credible intervals
+ggplot(pred_data_sur_distance, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
+  geom_line() + # Mean prediction
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci), alpha = 0.2) +  # Credible interval
+  # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
+  #            position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5) +
+  facet_grid(species_s ~ herb_s, labeller = labeller(
+    species_s = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
+    herb_s = c("0" = "Unfenced", "1" = "Fenced")
+  )) + # Facet by species & herbivory
+  labs(
+    x = "Mahalanobis distance",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "red"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "red"), labels = c("E-", "E+")) + # Change fill labels
+  theme_bw() +
+  theme(
+    legend.position = c(0.9, 0.8),
+    legend.title = element_text(size = 10), # Reduce legend title size
+    legend.text = element_text(size = 12), # Adjust legend text size
+    axis.title = element_text(size = 13), # Increase axis title size
+    axis.text = element_text(size = 10), # Increase axis label size
+    strip.text = element_text(size = 13)
+  ) 
 
 
 ## Save RDS file for further use
