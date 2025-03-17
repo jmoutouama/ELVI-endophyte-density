@@ -369,13 +369,13 @@ data_sites_surv_aghy_distance <- list(
   n_s = nrow(demography_climate_distance_surv)
 )
 ## Running the stan model
-# sim_pars <- list(
-#   warmup = 1000,
-#   iter = 4000,
-#   thin = 2,
-#   chains = 4,
-#   control = list(adapt_delta = 0.99, max_treedepth = 15)
-# )
+sim_pars <- list(
+  warmup = 1000,
+  iter = 4000,
+  thin = 2,
+  chains = 4,
+  control = list(adapt_delta = 0.99, max_treedepth = 15)
+)
 
 # fit_allsites_surv_aghy_ppt <- stan(
 #  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival.stan",
@@ -409,12 +409,7 @@ bayesplot::mcmc_trace(posterior_surv_aghy_ppt,
 posterior_samples_sur_ppt <- rstan::extract(fit_allsites_surv_aghy_ppt)
 n_draws <- 1000 # Number of posterior samples to use
 pred_data_sur_ppt <- as.data.frame(demography_surv_aghy_ppt)
-n=50
-data.frame( clim = rep(seq(min(pred_data_sur_ppt$clim_s), max(pred_data_sur_ppt$clim_s), length.out=n),times=4),
-            endo=rep(0:1,each=n*2),
-            herb=rep(0:1,eacn=n))
-
-pred_matrix_sur_ppt <- matrix(NA, nrow = 2, ncol = 3)
+pred_matrix_sur_ppt <- matrix(NA, nrow = n_draws, ncol = nrow(pred_data_sur_ppt))
 
 for (i in 1:n_draws) {
   for (j in 1:nrow(pred_data_sur_ppt)) {
@@ -440,7 +435,7 @@ pred_data_sur_ppt$upper_ci <- apply(pred_prob_sur_ppt, 2, quantile, probs = 0.97
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PrSurv_ppt.pdf", useDingbats = F, height = 7, width = 5)
 ggplot(pred_data_sur_ppt, aes(x = exp(clim_s), y = mean_survival, color = factor(endo_s), fill = factor(endo_s))) +
   geom_line() + # Mean prediction
-  #geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_s)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_s)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_s), y = y_s, color = factor(endo_s)),
   #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
   # ) +
@@ -1006,7 +1001,7 @@ for (i in 1:n_draws) {
 }
 
 # Convert to probability scale
-pred_prob_grow_ppt <- pred_matrix_grow_ppt
+pred_prob_grow_ppt <- exp(pred_matrix_grow_ppt)
 # Compute mean and 95% credible interval
 pred_data_grow_ppt$mean_growth <- apply(pred_prob_grow_ppt, 2, mean)
 pred_data_grow_ppt$lower_ci <- apply(pred_prob_grow_ppt, 2, quantile, probs = 0.025)
@@ -1015,10 +1010,10 @@ pred_data_grow_ppt$upper_ci <- apply(pred_prob_grow_ppt, 2, quantile, probs = 0.
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Prgrow_ppt.pdf", useDingbats = F, height = 7, width = 5)
 ggplot(pred_data_grow_ppt, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
@@ -1261,7 +1256,7 @@ for (i in 1:n_draws) {
 }
 
 # Convert logits to probability scale
-pred_prob_grow_distance <- pred_matrix_grow_distance
+pred_prob_grow_distance <- exp(pred_matrix_grow_distance)
 # Compute mean and 95% credible interval
 pred_data_grow_distance$mean_growth <- apply(pred_prob_grow_distance, 2, mean)
 pred_data_grow_distance$lower_ci <- apply(pred_prob_grow_distance, 2, quantile, probs = 0.025)
@@ -1270,10 +1265,10 @@ pred_data_grow_distance$upper_ci <- apply(pred_prob_grow_distance, 2, quantile, 
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Prgrow_mh.pdf", useDingbats = F, height = 7, width = 5)
 ggplot(pred_data_grow_distance, aes(x = exp(clim_g), y = mean_growth, color = factor(endo_g), fill = factor(endo_g))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
-  geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
-    position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
-  ) +
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_g)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_point(aes(x = exp(clim_g), y = y_g, color = factor(endo_g)),
+  #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
+  # ) +
   facet_grid(species_g ~ herb_g, labeller = labeller(
     species_g = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),
     herb_g = c("0" = "Unfenced", "1" = "Fenced")
@@ -1543,7 +1538,7 @@ pred_data_flow_ppt$upper_ci <- apply(pred_prob_flow_ppt, 2, quantile, probs = 0.
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Prflow_ppt.pdf", useDingbats = F, height = 7, width = 5)
 ggplot(pred_data_flow_ppt, aes(x = exp(clim_f), y = mean_flowth, color = factor(endo_f), fill = factor(endo_f))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_f)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_f), y = y_f, color = factor(endo_f)),
   #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
   # ) +
@@ -1864,7 +1859,7 @@ for (i in 1:n_draws) {
 }
 
 # Convert logits to probability scale
-pred_prob_flow_distance <- exp(pred_matrix_flow_distance)
+pred_prob_flow_distance <- pred_matrix_flow_distance
 # Compute mean and 95% credible interval
 pred_data_flow_distance$mean_flowering <- apply(pred_prob_flow_distance, 2, mean)
 pred_data_flow_distance$lower_ci <- apply(pred_prob_flow_distance, 2, quantile, probs = 0.025)
@@ -2068,7 +2063,7 @@ pred_data_spik_ppt$upper_ci <- apply(pred_prob_spik_ppt, 2, quantile, probs = 0.
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Prspik_ppt.pdf", useDingbats = F, height = 7, width = 5)
 ggplot(pred_data_spik_ppt, aes(x = exp(clim_spk), y = mean_spikelet, color = factor(endo_spk), fill = factor(endo_spk))) +
   geom_line() + # Mean prediction
-  geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
+  # geom_ribbon(aes(ymin = lower_ci, ymax = upper_ci, fill = factor(endo_spk)), alpha = 0.3, color = NA) + # Credible interval
   # geom_point(aes(x = exp(clim_spk), y = y_spk, color = factor(endo_spk)),
   #   position = position_jitter(width = 0.1, height = 0.02), alpha = 0.5
   # ) +

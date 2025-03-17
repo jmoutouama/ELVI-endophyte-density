@@ -55,12 +55,76 @@ climate_garden <- separate(climate_garden, 'YearMonth',
                            into = c('year', 'month'),
                            sep = 4)
 # Reshape data-- make a separate column for temperature and precipitation
-climate_garden <- unique(climate_garden)
-climate_garden <- climate_garden %>% 
-  spread(clim, value) %>%
-  rename(lon = longitude, lat = latitude, site = garden_sites.site_code)
+# Function to calculate Potential Evapotranspiration (PET) using a simplified method
+calc_PET <- function(temperature, latitude) {
+  # Constants for PET calculation
+  delta = 4098 * (0.6108 * exp(17.27 * temperature / (temperature + 237.3))) / ((temperature + 237.3)^2)
+  gamma = 0.665 * 10^-3 * 1013  # Psychrometric constant, Pa/°C (constant)
+  
+  # Solar radiation approximation (simplified)
+  R_s = 0.0820 * (1 + 0.034 * cos((2 * pi / 365) * (1:12 - 1)))  # Example using latitude
+  
+  # Estimate PET using the simplified Penman-Monteith
+  PET = (delta * (R_s + 0.408 * (temperature - 0.5)) + (gamma * (temperature - 0.5) * R_s)) / (delta + gamma)
+  
+  return(PET)
+}
 
-# Calculate the potential evapotranspiration (PET) based on thornthwaite method and compute the water balance (P - PET).
+# Function to calculate SPEI
+calculate_SPEI <- function(precipitation, temperature, latitude, scale = 3) {
+  
+  # Ensure that you are working with monthly data
+  months <- rep(1:12, length(precipitation) / 12)
+  
+  # Create a dataframe for the site data
+  data <- data.frame(
+    month = months,
+    latitude = rep(latitude, length(precipitation)),
+    precipitation = precipitation,
+    temperature = temperature
+  )
+  
+  # Ensure the number of rows matches for each site
+  n_months <- length(precipitation)  # Total months of data
+  
+  # Calculate PET for each month using a vectorized approach
+  data$PET <- NA
+  for (i in 1:n_months) {
+    data$PET[i] <- calc_PET(data$temperature[i], data$latitude[i])
+  }
+  
+  # Calculate water balance: WaterBalance = Precipitation - PET
+  data$water_balance <- data$precipitation - data$PET
+  
+  # Standardize the water balance (Z-score)
+  data$water_balance_z <- scale(data$water_balance)
+  
+  # Calculate the SPEI using the water balance and the scale (e.g., 3-month scale)
+  spei_result <- spei(data$water_balance_z, scale = scale)
+  
+  # Return the SPEI result
+  return(spei_result)
+}
+
+latitude<-30.27347
+spei_index <- calculate_SPEI(climate_garden_SON$ppt, climate_garden_SON$tmean, latitude, scale = 3)
+
+
+
+# Apply function to each site
+climate_garden_SON_SPEI <- calculate_spei(climate_garden, "SON", 30.27347,scale=3)
+climate_garden_KER_SPEI <- calculate_spei(climate_garden, "KER", 30.02844)
+climate_garden_BAS_SPEI <- calculate_spei(climate_garden, "BAS", 30.09234)
+climate_garden_BFL_SPEI <- calculate_spei(climate_garden, "BFL", 30.28487)
+climate_garden_LAF_SPEI <- calculate_spei(climate_garden, "LAF", 30.30477)
+climate_garden_COL_SPEI <- calculate_spei(climate_garden, "COL", 30.56930)
+climate_garden_HUN_SPEI <- calculate_spei(climate_garden, "HUN", 30.74281)
+
+
+
+
+
+
 climate_garden %>% 
   filter(site=="SON") %>% 
   mutate(PET = thornthwaite(tmean,30.27347), BAL=ppt-PET)->climate_garden_SON
@@ -84,7 +148,7 @@ climate_garden %>%
   mutate(PET = thornthwaite(tmean,30.74281), BAL=ppt-PET)->climate_garden_HUN
 
 # Convert to a ts (time series) for convenience
-climate_garden_SON_ts <- ts(climate_garden_SON[, -c(1,2,3,4,5)], start=c(1990,1), end = c(2024, 12), frequency = 12)
+climate_garden_SON_ts <- ts(climate_garden_SON[, -c(1,2,3,4,5)], start=c(1994,1), end = c(2024, 12), frequency = 12)
 plot(climate_garden_SON_ts)
 spei_SON <- SPEI::spei(climate_garden_SON_ts[, "BAL"], scale = 3)
 plot(spei_SON)
@@ -92,7 +156,7 @@ spei_SON_values<-as.data.frame(spei_SON$fitted)
 names(spei_SON_values)<-"SPEI"
 climate_garden_SON_SPEI<-data.frame(climate_garden_SON,spei_SON_values)
 
-climate_garden_KER_ts <- ts(climate_garden_KER[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_KER_ts <- ts(climate_garden_KER[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_KER_ts)
 spei_KER <- SPEI::spei(climate_garden_KER_ts[, "BAL"], scale = 3)
 plot(spei_KER)
@@ -100,7 +164,7 @@ spei_KER_values<-as.data.frame(spei_KER$fitted)
 names(spei_KER_values)<-"SPEI"
 climate_garden_KER_SPEI<-data.frame(climate_garden_KER,spei_KER_values)
 
-climate_garden_BAS_ts <- ts(climate_garden_BAS[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_BAS_ts <- ts(climate_garden_BAS[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_BAS_ts)
 spei_BAS <- SPEI::spei(climate_garden_BAS_ts[, "BAL"], scale = 3)
 plot(spei_BAS)
@@ -108,7 +172,7 @@ spei_BAS_values<-as.data.frame(spei_BAS$fitted)
 names(spei_BAS_values)<-"SPEI"
 climate_garden_BAS_SPEI<-data.frame(climate_garden_BAS,spei_BAS_values)
 
-climate_garden_BFL_ts <- ts(climate_garden_BFL[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_BFL_ts <- ts(climate_garden_BFL[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_BFL_ts)
 spei_BFL <- SPEI::spei(climate_garden_BFL_ts[, "BAL"], scale = 3)
 plot(spei_BFL)
@@ -116,7 +180,7 @@ spei_BFL_values<-as.data.frame(spei_BFL$fitted)
 names(spei_BFL_values)<-"SPEI"
 climate_garden_BFL_SPEI<-data.frame(climate_garden_BFL,spei_BFL_values)
 
-climate_garden_LAF_ts <- ts(climate_garden_LAF[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_LAF_ts <- ts(climate_garden_LAF[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_LAF_ts)
 spei_LAF <- SPEI::spei(climate_garden_LAF_ts[, "BAL"], scale = 3)
 plot(spei_LAF)
@@ -124,7 +188,7 @@ spei_LAF_values<-as.data.frame(spei_LAF$fitted)
 names(spei_LAF_values)<-"SPEI"
 climate_garden_LAF_SPEI<-data.frame(climate_garden_LAF,spei_LAF_values)
 
-climate_garden_COL_ts <- ts(climate_garden_COL[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_COL_ts <- ts(climate_garden_COL[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_COL_ts)
 spei_COL <- SPEI::spei(climate_garden_COL_ts[, "BAL"], scale = 3)
 plot(spei_COL)
@@ -132,7 +196,7 @@ spei_COL_values<-as.data.frame(spei_COL$fitted)
 names(spei_COL_values)<-"SPEI"
 climate_garden_COL_SPEI<-data.frame(climate_garden_COL,spei_COL_values)
 
-climate_garden_HUN_ts <- ts(climate_garden_HUN[, -c(1,2,3,4,5)], start=c(1990, 01), end = c(2024, 12), frequency = 12)
+climate_garden_HUN_ts <- ts(climate_garden_HUN[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
 plot(climate_garden_HUN_ts)
 spei_HUN <- SPEI::spei(climate_garden_HUN_ts[, "BAL"], scale = 3)
 plot(spei_HUN)

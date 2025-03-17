@@ -32,7 +32,7 @@ parameters {
   real<lower=0> pop_tau_s; 
   vector[n_pops] pop_rfx_s;
   real<lower=0> site_tau_s; 
-  vector[n_sites] site_rfx_s;
+  matrix[n_species,n_sites] site_rfx_s;
   }
 
 transformed parameters {
@@ -53,7 +53,7 @@ transformed parameters {
                 //random effects
                 plot_rfx_s[plot_s[isurv]] +
                 pop_rfx_s[pop_s[isurv]]+
-                site_rfx_s[site_s[isurv]];
+                site_rfx_s[species_s[isurv],site_s[isurv]];
     }
 
 }
@@ -79,7 +79,7 @@ model {
   }
   site_tau_s ~ inv_gamma(2,1);
   for (i in 1:n_sites){
-    site_rfx_s[i] ~ normal(0, site_tau_s);
+    to_vector(site_rfx_s[,i]) ~ normal(0, site_tau_s);
   }
 
   // sampling  
