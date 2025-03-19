@@ -1,4 +1,4 @@
-# Project: 
+# Project:
 # Purpose: Create variables that most accurately reflect the climate across study area.
 # Note: Raster files are too large to provide in public repository. They are stored on a local machine
 # Authors: Jacob Moutouama
@@ -6,273 +6,207 @@
 rm(list = ls())
 # load packages
 library(tidyverse) # a suite of packages for wrangling and tidying data
-library(prism)     # package to access and download climate data
-library(raster)    # the climate data comes in raster files- this package helps process those
+library(prism) # package to access and download climate data
+library(raster) # the climate data comes in raster files- this package helps process those
 library(stringr)
 library(magrittr)
-library(readxl)# read excel data
+library(readxl) # read excel data
 library(ggsci) # package for color blind color in ggplot 2
-library(corrplot)# visualize the correlation  
+library(corrplot) # visualize the correlation
 library(terra)
 library(zoo)
 library(SPEI)
 library(smplot2)
+library(Evapotranspiration)
 # PRISM data ----
 # First, set a file path where prism data will be stored
-options(prism.path = '/Users/jm200/Documents/Prism Range limit/')
-#get_prism_monthlys(type="ppt",years=1994:2024,mon=1:12,keepZip = TRUE)
-
+options(prism.path = "/Users/jm200/Documents/Prism Range limit/")
+# get_prism_monthlys(type="ppt",years=1994:2024,mon=1:12,keepZip = TRUE)
 # Grab the prism data and compile the files
-climate_data <- prism_archive_ls() %>%  
-  pd_stack(.)  
-climate_crs<-climate_data@crs@projargs
+climate_data <- prism_archive_ls() %>%
+  pd_stack(.)
+climate_crs <- climate_data@crs@projargs
 # Convert these locations to format that can be matched to Prism climate data
-read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
-  arrange(latitude)->garden ## common garden populations
+read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>%
+  arrange(latitude) -> garden ## common garden populations
 garden_sites <- as.data.frame(garden)
-coordinates(garden_sites) <- c('longitude', 'latitude')
+coordinates(garden_sites) <- c("longitude", "latitude")
 proj4string(garden_sites) <- CRS(climate_crs)
-# Extract climatic data from the raster stack for those sites 
-climate_garden <- data.frame(coordinates(garden_sites), 
-                             garden_sites$site_code, 
-                             extract(climate_data, garden_sites))
+# Extract climatic data from the raster stack for those sites
+climate_garden <- data.frame(
+  coordinates(garden_sites),
+  garden_sites$site_code,
+  extract(climate_data, garden_sites)
+)
 # Reshape data. Col 1:3 are lat, long, and site ID. Col 4:ncol are climate data
 # Column headers include date and climate type info
-climate_garden <- climate_garden %>% 
+climate_garden <- climate_garden %>%
   gather(date, value, 4:ncol(climate_garden))
 # The column header includes the date and data type, but also some other metadata that we don't need
 # Here, I remove the extra info from the column header
-climate_garden$date <- gsub('PRISM_', '', climate_garden$date) %>% 
-  gsub('stable_4kmM3_', '', .) %>% 
-  gsub('provisional_4kmM3_', '', .) %>%
-  gsub('_bil', '', .)
+climate_garden$date <- gsub("PRISM_", "", climate_garden$date) %>%
+  gsub("stable_4kmM3_", "", .) %>%
+  gsub("provisional_4kmM3_", "", .) %>%
+  gsub("_bil", "", .)
 
 # Split header into type (precipitation or temperature), year, and month
-climate_garden <- separate(climate_garden, 'date', 
-                           into = c('clim', 'YearMonth'), 
-                           sep = '_')
-climate_garden <- separate(climate_garden, 'YearMonth',
-                           into = c('year', 'month'),
-                           sep = 4)
+climate_garden <- separate(climate_garden, "date",
+  into = c("clim", "YearMonth"),
+  sep = "_"
+)
+climate_garden <- separate(climate_garden, "YearMonth",
+  into = c("year", "month"),
+  sep = 4
+)
 # Reshape data-- make a separate column for temperature and precipitation
-# Function to calculate Potential Evapotranspiration (PET) using a simplified method
-calc_PET <- function(temperature, latitude) {
-  # Constants for PET calculation
-  delta = 4098 * (0.6108 * exp(17.27 * temperature / (temperature + 237.3))) / ((temperature + 237.3)^2)
-  gamma = 0.665 * 10^-3 * 1013  # Psychrometric constant, Pa/°C (constant)
-  
-  # Solar radiation approximation (simplified)
-  R_s = 0.0820 * (1 + 0.034 * cos((2 * pi / 365) * (1:12 - 1)))  # Example using latitude
-  
-  # Estimate PET using the simplified Penman-Monteith
-  PET = (delta * (R_s + 0.408 * (temperature - 0.5)) + (gamma * (temperature - 0.5) * R_s)) / (delta + gamma)
-  
-  return(PET)
-}
+climate_garden <- unique(climate_garden)
 
-# Function to calculate SPEI
-calculate_SPEI <- function(precipitation, temperature, latitude, scale = 3) {
-  
-  # Ensure that you are working with monthly data
-  months <- rep(1:12, length(precipitation) / 12)
-  
+climate_garden_1994_2024 <- climate_garden %>%
+  spread(clim, value) %>%
+  rename(lon = longitude, lat = latitude, site = garden_sites.site_code) %>% 
+  mutate(year=as.numeric(year),month=as.numeric(month)) %>% 
+  filter(year>=1994)
+
+summary(climate_garden_1994_2024)
+# Separate the data per site
+
+climate_garden_1994_2024 %>%
+  filter(site == "SON") -> climate_garden_SON
+climate_garden_1994_2024 %>%
+  filter(site == "KER") -> climate_garden_KER
+climate_garden_1994_2024 %>%
+  filter(site == "BAS") -> climate_garden_BAS
+climate_garden_1994_2024 %>%
+  filter(site == "BFL") -> climate_garden_BFL
+climate_garden_1994_2024 %>%
+  filter(site == "LAF") -> climate_garden_LAF
+climate_garden_1994_2024 %>%
+  filter(site == "COL") -> climate_garden_COL
+climate_garden_1994_2024 %>%
+  filter(site == "HUN") -> climate_garden_HUN
+
+# Load the required libraries
+# Function to calculate SPEI using the Thornthwaite method for PET
+# Function to calculate SPEI using Thornthwaite PET over a two-year (24-month) scale
+calculate_SPEI <- function(precipitation, temperature, latitude, site_names, scale, start_year) {
+  # Ensure input vectors have the correct length
+  if (length(precipitation) != length(temperature)) {
+    stop("Precipitation and temperature vectors must have the same length.")
+  }
   # Create a dataframe for the site data
+  months <- rep(1:12, length(precipitation) / 12)
   data <- data.frame(
+    site = rep(site_names, each = length(precipitation) / length(site_names)), # Assign site names
     month = months,
-    latitude = rep(latitude, length(precipitation)),
+    latitude = rep(latitude, length(precipitation)),  # Repeat latitude for all months
     precipitation = precipitation,
     temperature = temperature
   )
-  
-  # Ensure the number of rows matches for each site
-  n_months <- length(precipitation)  # Total months of data
-  
-  # Calculate PET for each month using a vectorized approach
-  data$PET <- NA
-  for (i in 1:n_months) {
-    data$PET[i] <- calc_PET(data$temperature[i], data$latitude[i])
-  }
-  
-  # Calculate water balance: WaterBalance = Precipitation - PET
+  # Create a Date column based on start year and month
+  data$year <- rep(seq(start_year, length.out = length(precipitation) / 12, by = 1), each = 12)[1:length(precipitation)]
+  data$date <- as.Date(paste(data$year, data$month, "01", sep = "-"))
+  # Calculate PET using the Thornthwaite method from the SPEI package
+  data$PET <- thornthwaite(data$temperature, latitude)  # Thornthwaite PET calculation
+  # Calculate water balance: Water Balance = Precipitation - PET
   data$water_balance <- data$precipitation - data$PET
-  
-  # Standardize the water balance (Z-score)
-  data$water_balance_z <- scale(data$water_balance)
-  
-  # Calculate the SPEI using the water balance and the scale (e.g., 3-month scale)
-  spei_result <- spei(data$water_balance_z, scale = scale)
-  
-  # Return the SPEI result
-  return(spei_result)
+  # Calculate the SPEI using the water balance and specified scale
+  spei_result <- spei(data$water_balance, scale = scale)
+  # Return the required columns
+  result <- data.frame(
+    date = data$date, 
+    site = data$site,  
+    month = data$month,
+    tmean = data$temperature,  
+    ppt = data$precipitation,
+    PET = data$PET,  
+    SPEI = spei_result$fitted  # Extract the fitted SPEI values
+  )
+  return(result)
 }
-
-latitude<-30.27347
-spei_index <- calculate_SPEI(climate_garden_SON$ppt, climate_garden_SON$tmean, latitude, scale = 3)
-
-
-
 # Apply function to each site
-climate_garden_SON_SPEI <- calculate_spei(climate_garden, "SON", 30.27347,scale=3)
-climate_garden_KER_SPEI <- calculate_spei(climate_garden, "KER", 30.02844)
-climate_garden_BAS_SPEI <- calculate_spei(climate_garden, "BAS", 30.09234)
-climate_garden_BFL_SPEI <- calculate_spei(climate_garden, "BFL", 30.28487)
-climate_garden_LAF_SPEI <- calculate_spei(climate_garden, "LAF", 30.30477)
-climate_garden_COL_SPEI <- calculate_spei(climate_garden, "COL", 30.56930)
-climate_garden_HUN_SPEI <- calculate_spei(climate_garden, "HUN", 30.74281)
-
-
-
-
-
-
-climate_garden %>% 
-  filter(site=="SON") %>% 
-  mutate(PET = thornthwaite(tmean,30.27347), BAL=ppt-PET)->climate_garden_SON
-climate_garden %>% 
-  filter(site=="KER") %>% 
-  mutate(PET = thornthwaite(tmean,30.02844), BAL=ppt-PET)->climate_garden_KER
-climate_garden %>% 
-  filter(site=="BAS") %>% 
-  mutate(PET = thornthwaite(tmean,30.09234), BAL=ppt-PET)->climate_garden_BAS
-climate_garden %>% 
-  filter(site=="BFL") %>% 
-  mutate(PET = thornthwaite(tmean,30.28487), BAL=ppt-PET)->climate_garden_BFL
-climate_garden %>% 
-  filter(site=="LAF") %>% 
-  mutate(PET = thornthwaite(tmean,30.30477), BAL=ppt-PET)->climate_garden_LAF
-climate_garden %>% 
-  filter(site=="COL") %>% 
-  mutate(PET = thornthwaite(tmean,30.56930), BAL=ppt-PET)->climate_garden_COL
-climate_garden %>% 
-  filter(site=="HUN") %>% 
-  mutate(PET = thornthwaite(tmean,30.74281), BAL=ppt-PET)->climate_garden_HUN
-
-# Convert to a ts (time series) for convenience
-climate_garden_SON_ts <- ts(climate_garden_SON[, -c(1,2,3,4,5)], start=c(1994,1), end = c(2024, 12), frequency = 12)
-plot(climate_garden_SON_ts)
-spei_SON <- SPEI::spei(climate_garden_SON_ts[, "BAL"], scale = 3)
-plot(spei_SON)
-spei_SON_values<-as.data.frame(spei_SON$fitted)
-names(spei_SON_values)<-"SPEI"
-climate_garden_SON_SPEI<-data.frame(climate_garden_SON,spei_SON_values)
-
-climate_garden_KER_ts <- ts(climate_garden_KER[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_KER_ts)
-spei_KER <- SPEI::spei(climate_garden_KER_ts[, "BAL"], scale = 3)
-plot(spei_KER)
-spei_KER_values<-as.data.frame(spei_KER$fitted)
-names(spei_KER_values)<-"SPEI"
-climate_garden_KER_SPEI<-data.frame(climate_garden_KER,spei_KER_values)
-
-climate_garden_BAS_ts <- ts(climate_garden_BAS[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_BAS_ts)
-spei_BAS <- SPEI::spei(climate_garden_BAS_ts[, "BAL"], scale = 3)
-plot(spei_BAS)
-spei_BAS_values<-as.data.frame(spei_BAS$fitted)
-names(spei_BAS_values)<-"SPEI"
-climate_garden_BAS_SPEI<-data.frame(climate_garden_BAS,spei_BAS_values)
-
-climate_garden_BFL_ts <- ts(climate_garden_BFL[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_BFL_ts)
-spei_BFL <- SPEI::spei(climate_garden_BFL_ts[, "BAL"], scale = 3)
-plot(spei_BFL)
-spei_BFL_values<-as.data.frame(spei_BFL$fitted)
-names(spei_BFL_values)<-"SPEI"
-climate_garden_BFL_SPEI<-data.frame(climate_garden_BFL,spei_BFL_values)
-
-climate_garden_LAF_ts <- ts(climate_garden_LAF[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_LAF_ts)
-spei_LAF <- SPEI::spei(climate_garden_LAF_ts[, "BAL"], scale = 3)
-plot(spei_LAF)
-spei_LAF_values<-as.data.frame(spei_LAF$fitted)
-names(spei_LAF_values)<-"SPEI"
-climate_garden_LAF_SPEI<-data.frame(climate_garden_LAF,spei_LAF_values)
-
-climate_garden_COL_ts <- ts(climate_garden_COL[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_COL_ts)
-spei_COL <- SPEI::spei(climate_garden_COL_ts[, "BAL"], scale = 3)
-plot(spei_COL)
-spei_COL_values<-as.data.frame(spei_COL$fitted)
-names(spei_COL_values)<-"SPEI"
-climate_garden_COL_SPEI<-data.frame(climate_garden_COL,spei_COL_values)
-
-climate_garden_HUN_ts <- ts(climate_garden_HUN[, -c(1,2,3,4,5)], start=c(1994, 01), end = c(2024, 12), frequency = 12)
-plot(climate_garden_HUN_ts)
-spei_HUN <- SPEI::spei(climate_garden_HUN_ts[, "BAL"], scale = 3)
-plot(spei_HUN)
-spei_HUN_values<-as.data.frame(spei_HUN$fitted)
-names(spei_HUN_values)<-"SPEI"
-climate_garden_HUN_SPEI<-data.frame(climate_garden_HUN,spei_HUN_values)
+climate_garden_SON_SPEI <- calculate_SPEI(climate_garden_SON$ppt, climate_garden_SON$tmean, latitude=30.27347,site_names="SON", scale = 3, start_year = 2000)
+climate_garden_KER_SPEI <- calculate_SPEI(climate_garden_KER$ppt, climate_garden_KER$tmean, latitude=30.02844, site_names="KER",scale = 3, start_year = 2000)
+climate_garden_BAS_SPEI <- calculate_SPEI(climate_garden_BAS$ppt, climate_garden_BAS$tmean, latitude=30.09234, site_names="BAS",scale = 3, start_year = 2000)
+climate_garden_BFL_SPEI <- calculate_SPEI(climate_garden_BFL$ppt, climate_garden_BFL$tmean, latitude=30.28487,site_names="BFL",scale = 3, start_year = 2000)
+climate_garden_LAF_SPEI <- calculate_SPEI(climate_garden_LAF$ppt, climate_garden_LAF$tmean, latitude=30.30477,site_names="LAF", scale = 3, start_year = 2000)
+climate_garden_COL_SPEI <- calculate_SPEI(climate_garden_COL$ppt, climate_garden_COL$tmean, latitude=30.56930,site_names="COL", scale = 3, start_year = 2000)
+climate_garden_HUN_SPEI <- calculate_SPEI(climate_garden_HUN$ppt, climate_garden_HUN$tmean, latitude=30.74281,site_names="HUN", scale = 3, start_year = 2000)
 
 # Put all the sites together
-climate_garden_SPEI<-bind_rows(climate_garden_HUN_SPEI,
-                               climate_garden_COL_SPEI,
-                               climate_garden_LAF_SPEI,
-                               climate_garden_BAS_SPEI,
-                               climate_garden_BFL_SPEI,
-                               climate_garden_KER_SPEI,
-                               climate_garden_SON_SPEI)
+climate_garden_SPEI <- bind_rows(
+  climate_garden_HUN_SPEI,
+  climate_garden_COL_SPEI,
+  climate_garden_LAF_SPEI,
+  climate_garden_BAS_SPEI,
+  climate_garden_BFL_SPEI,
+  climate_garden_KER_SPEI,
+  climate_garden_SON_SPEI
+)
 
 # Subset the data collection period
-climate_garden_SPEI %>% 
-  unite("longdate",year:month,sep= "-") %>% 
-  filter(longdate>as.yearmon("2023-05") & longdate<as.yearmon("2024-06"))->climate_garden_SPEI_2023_2024
+climate_garden_SPEI %>%
+  filter(date > as.Date("2023-05-01") & date < as.Date("2024-06-01"))-> climate_garden_SPEI_2023_2024
 
 ## Plot the daily trend for temperature and soil moisture from start to end
-climate_garden_SPEI_2023_2024 %>% 
-  group_by(site) %>% 
+climate_garden_SPEI_2023_2024 %>%
+  group_by(site) %>%
   summarise(
-    mean_ppt=mean(ppt),
-    mean_temp=mean(tmean),
-    mean_pet=mean(PET),
-    mean_spei=mean(SPEI))->prism_means
-prism_means<-as.data.frame(prism_means)
-# saveRDS(prism_means, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/prism_means.rds')
+    sum_ppt = sum(ppt),
+    mean_temp = mean(tmean),
+    mean_pet = mean(PET),
+    mean_spei = mean(SPEI)
+  ) -> prism_means
 
+prism_means <- as.data.frame(prism_means)
+saveRDS(prism_means,"/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/prism_means.rds")
 #  Time scale provide insight into long-term drought trends.
 # SPEI > 0: Wet conditions.
 # SPEI < 0: Dry conditions (drought).
 # SPEI ≤ -1.5: Moderate to severe drought.
 
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Climate_prism.pdf",width=14,height=10,useDingbats = F)
-par(mar=c(5,5,2,3),mfrow=c(2,2))
-barplot(prism_means[order(prism_means[,2],decreasing=FALSE),][,2],names.arg=prism_means[order(prism_means[,2],decreasing=FALSE),][,1],col="#E69F00",xlab="Sites", ylab="Mean",main="",ylim=c(0,200))
-mtext("Precipitation",side = 3, adj = 0.5,cex=1.2,line=0.3)
-mtext( "A",side = 3, adj = 0,cex=1.2)
-barplot(prism_means[order(prism_means[,3],decreasing=FALSE),][,3],names.arg=prism_means[order(prism_means[,3],decreasing=FALSE),][,1],col="#E69F00",xlab="Sites", ylab="Mean",main="",ylim=c(0,25))
-mtext("Temperature",side = 3, adj = 0.5,cex=1.2,line=0.3)
-mtext( "B",side = 3, adj = 0,cex=1.2)
-barplot(prism_means[order(prism_means[,4],decreasing=FALSE),][,4],names.arg=prism_means[order(prism_means[,4],decreasing=FALSE),][,1],col="#E69F00",xlab="Sites", ylab="Mean",main="")
-mtext("Potential evapotranspiration (PET)",side = 3, adj = 0.5,cex=1.2,line=0.3)
-mtext( "C",side = 3, adj = 0,cex=1.2)
-barplot(prism_means[order(prism_means[,5],decreasing=FALSE),][,5],names.arg=prism_means[order(prism_means[,5],decreasing=FALSE),][,1],col="#E69F00",xlab="Sites", ylab="Mean",main="")
-mtext("Standardized Precipitation Evapotranspiration Index",side = 3, adj = 0.5,cex=1.2,line=0.3)
-mtext( "D",side = 3, adj = 0,cex=1.2)
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Climate_prism.pdf", width = 14, height = 10, useDingbats = F)
+par(mar = c(5, 5, 2, 3), mfrow = c(2, 2))
+barplot(prism_means[order(prism_means[, 2], decreasing = FALSE), ][, 2], names.arg = prism_means[order(prism_means[, 2], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 2000))
+mtext("Precipitation", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+mtext("A", side = 3, adj = 0, cex = 1.2)
+barplot(prism_means[order(prism_means[, 3], decreasing = FALSE), ][, 3], names.arg = prism_means[order(prism_means[, 3], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 25))
+mtext("Temperature", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+mtext("B", side = 3, adj = 0, cex = 1.2)
+barplot(prism_means[order(prism_means[, 4], decreasing = FALSE), ][, 4], names.arg = prism_means[order(prism_means[, 4], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "")
+mtext("Precipitation Evapotranspiration ", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+mtext("C", side = 3, adj = 0, cex = 1.2)
+barplot(prism_means[order(prism_means[, 5], decreasing = FALSE), ][, 5], names.arg = prism_means[order(prism_means[, 5], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "")
+mtext("Standardized Precipitation Evapotranspiration Index", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+mtext("D", side = 3, adj = 0, cex = 1.2)
 dev.off()
 
 
-site_names <- c("LAF"="Lafayette",
-                "HUN"="Huntville",
-                "KER"="Kerville",
-                "BAS"="Bastrop",
-                "COL"="College Station",
-                "BFL" ="Brackenridge",
-                "SON" ="Sonora")
-climate_garden_SPEI_2023_2024 %>% 
-  ggplot(aes(x=as.Date(as.yearmon(longdate)), y=ppt))+
-  geom_line(aes(colour=site))+
-  #ggtitle("d")+
+site_names <- c(
+  "LAF" = "Lafayette",
+  "HUN" = "Huntville",
+  "KER" = "Kerville",
+  "BAS" = "Bastrop",
+  "COL" = "College Station",
+  "BFL" = "Brackenridge",
+  "SON" = "Sonora"
+)
+climate_garden_SPEI_2023_2024 %>%
+  ggplot(aes(x = as.Date(date), y = ppt)) +
+  geom_line(aes(colour = site)) +
+  # ggtitle("d")+
   # scale_color_manual(values = cbp1)+
   # scale_fill_manual(values = cbp1)+
-  theme_bw()+ 
-  theme(legend.position = "none",
-        axis.text.x = element_text(size=4.5,color="black", angle=0),
-        plot.title =element_text(size=14, color="black",angle=0))+
-  labs( y="Daily precipitation  (°C)", x="Month")+
-  #ylim=c(0,100)+
-  #facet_grid(~site,labeller = labeller(site=site_names))+
-  facet_grid(~factor(site,levels=c("HUN","LAF","COL","BAS","BFL","KER","SON")))+
-  geom_hline(data=prism_means,aes(yintercept = mean_ppt,colour=site))->figpptsite_prism
+  theme_bw() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(size = 4.5, color = "black", angle = 0),
+    plot.title = element_text(size = 14, color = "black", angle = 0)
+  ) +
+  labs(y = "Daily precipitation  (°C)", x = "Month") +
+  # ylim=c(0,100)+
+  # facet_grid(~site,labeller = labeller(site=site_names))+
+  facet_grid(~ factor(site, levels = c("HUN", "LAF", "COL", "BAS", "BFL", "KER", "SON"))) +
+  geom_hline(data = prism_means, aes(yintercept = sum_ppt, colour = site)) -> figpptsite_prism
 
 ggplot(data = climate_garden_SPEI_2023_2024, mapping = aes(x = tmean, y = ppt)) +
   geom_point(shape = 21, fill = "#0f993d", color = "white", size = 3) +
