@@ -32,7 +32,7 @@ parameters {
   real<lower=0> pop_tau_g; 
   vector[n_pops] pop_rfx_g;
   real<lower=0> site_tau_g; 
-  vector[n_sites] site_rfx_g;
+  matrix[n_species,n_sites] site_rfx_g;
   real<lower=0> sigma;
   }
 
@@ -54,7 +54,7 @@ transformed parameters {
                 //random effects
                 plot_rfx_g[plot_g[igrow]] +
                 pop_rfx_g[pop_g[igrow]]+
-                site_rfx_g[site_g[igrow]];
+                site_rfx_g[species_g[igrow],site_g[igrow]];
     }
 
 }
