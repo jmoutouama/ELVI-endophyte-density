@@ -1,101 +1,113 @@
 data {
   // Data for survival sub-model (s)
-  int<lower=1> n_species;         // N. of species
-  int<lower=1> n_sites;         // N. of sites
-  int<lower=1> n_pops;         // N. of source populations
-  int<lower=1> n_g;    // N. of data points for the surival  model
-  int<lower=1> n_plot_g;         // N. of plots
-  int<lower=1> species_g[n_g];  // species index
-  int<lower=1> site_g[n_g];  // site index
-  int<lower=1> plot_g[n_g];  // plot index
-  int<lower=1> pop_g[n_g];  // population  index
-  vector [n_g] y_g; // grow from t to t+1.
-  int<lower=0,upper=1> endo_g[n_g];  // endophyte status (positive=1, negative=0)
-  int<lower=0,upper=1> herb_g[n_g];  // herbivory  (herb=1, noherb=0)
-  vector[n_g] clim_g;  // climate covariate (preciptation, pet, spei or Mahalanobis Distance)
+  int<lower=1> nSpp;         // Number of species
+  int<lower=1> nSite;        // Number of sites
+  int<lower=1> nPop;         // Number of source populations
+  int<lower=1> N;            // Number of data points for the survival model
+  int<lower=1> nPlot;        // Number of plots
   
+  // Indices for categorical variables
+  int<lower=1> Spp[N];       // Species index
+  int<lower=1> site[N];      // Site index
+  int<lower=1> plot[N];      // Plot index
+  int<lower=1> pop[N];       // Population index
+  
+  // Response variable (growth from t to t+1)
+  vector[N] y;              
+
+  // Binary covariates
+  int<lower=0,upper=1> endo[N];  // Endophyte status (1 = positive, 0 = negative)
+  int<lower=0,upper=1> herb[N];  // Herbivory (1 = present, 0 = absent)
+  
+  // Continuous covariate (climate variable)
+  vector[N] clim;  // Climate covariate (e.g., precipitation, PET, SPEI, or Mahalanobis Distance)
 }
 
 parameters {
-  //fixed effects
-  vector[n_species] b0_g;    
-  vector[n_species] bendo_g;   
-  vector[n_species] bherb_g; 
-  vector[n_species] bclim_g;  
-  vector[n_species] bendoclim_g;  
-  vector[n_species] bendoherb_g;  
-  vector[n_species] bclim2_g;  
-  vector[n_species] bendoclim2_g;
-  //random effects
-  real<lower=0> plot_tau_g; 
-  vector[n_plot_g] plot_rfx_g;  
-  real<lower=0> pop_tau_g; 
-  vector[n_pops] pop_rfx_g;
-  real<lower=0> site_tau_g; 
-  matrix[n_species,n_sites] site_rfx_g;
-  real<lower=0> sigma;
-  }
+  // Fixed effect parameters for species-level effects
+  vector[nSpp] b0;           // Intercept for each species
+  vector[nSpp] bendo;        // Effect of endophyte presence
+  vector[nSpp] bherb;        // Effect of herbivory
+  vector[nSpp] bclim;        // Effect of climate
+  vector[nSpp] bendoclim;    // Interaction: Endophyte × Climate
+  vector[nSpp] bendoherb;    // Interaction: Endophyte × Herbivory
+  vector[nSpp] bclim2;       // Quadratic effect of climate
+  vector[nSpp] bendoclim2;   // Quadratic interaction: Endophyte × Climate
+
+  // Random effect variances (hierarchical structure)
+  real<lower=0> plot_tau;   // Variance for plot-level random effects
+  vector[nPlot] plot_rfx;  // Random effects for plots
+
+  real<lower=0> pop_tau;    // Variance for population-level random effects
+  vector[nPop] pop_rfx;   // Random effects for populations
+
+  real<lower=0> site_tau;   // Variance for site-level random effects
+  matrix[nSpp, nSite] site_rfx;  // Random effects for species within sites
+
+  real<lower=0> sigma;  // Residual standard deviation
+}
 
 transformed parameters {
-  vector[n_g] predG;
-  // prediction for growth
-  for(igrow in 1:n_g){
-    predG[igrow] = b0_g[species_g[igrow]] + 
-                //main effects
-                bendo_g[species_g[igrow]] * endo_g[igrow] +
-                bclim_g[species_g[igrow]] * clim_g[igrow] +
-                bherb_g[species_g[igrow]] * herb_g[igrow] + 
-                //2-way interactions
-                bendoclim_g[species_g[igrow]] * clim_g[igrow] * endo_g[igrow] +
-                bendoherb_g[species_g[igrow]] * endo_g[igrow] * herb_g[igrow] +
-                //quadratic climate effects
-                bclim2_g[species_g[igrow]] * pow(clim_g[igrow],2) +  
-                bendoclim2_g[species_g[igrow]] * endo_g[igrow] * pow(clim_g[igrow],2) + 
-                //random effects
-                plot_rfx_g[plot_g[igrow]] +
-                pop_rfx_g[pop_g[igrow]]+
-                site_rfx_g[species_g[igrow],site_g[igrow]];
-    }
+  vector[N] predG;  // Vector to store predicted growth values
 
+  // Compute predicted growth for each data point
+  for (igrow in 1:N){
+    predG[igrow] = b0[Spp[igrow]] +  // Species-specific intercept
+                   // Main effects
+                   bendo[Spp[igrow]] * endo[igrow] +
+                   bclim[Spp[igrow]] * clim[igrow] +
+                   bherb[Spp[igrow]] * herb[igrow] + 
+                   // Two-way interactions
+                   bendoclim[Spp[igrow]] * clim[igrow] * endo[igrow] +
+                   bendoherb[Spp[igrow]] * endo[igrow] * herb[igrow] +
+                   // Quadratic climate effects
+                   bclim2[Spp[igrow]] * pow(clim[igrow], 2) +  
+                   bendoclim2[Spp[igrow]] * endo[igrow] * pow(clim[igrow], 2) + 
+                   // Random effects
+                   plot_rfx[plot[igrow]] +
+                   pop_rfx[pop[igrow]] +
+                   site_rfx[Spp[igrow], site[igrow]];
+  }
 }
 
 model {
-  // priors on parameters
-  //Survival
-  b0_g ~ normal(0,10);    
-  bendo_g ~ normal(0,10);   
-  bherb_g ~ normal(0,10); 
-  bclim_g ~ normal(0,10);  
-  bendoclim_g ~ normal(0,10);  
-  bendoherb_g ~ normal(0,10); 
-  bclim2_g ~ normal(0,10);  
-  bendoclim2_g ~ normal(0,10);
-  sigma ~ normal(0, 10);
-  plot_tau_g ~ inv_gamma(2, 1);
-  for (i in 1:n_plot_g){
-    plot_rfx_g[i] ~ normal(0, plot_tau_g);
+  // Priors on fixed effect parameters (assume normal distribution)
+  b0 ~ normal(0, 5);    
+  bendo ~ normal(0, 5);   
+  bherb ~ normal(0, 5); 
+  bclim ~ normal(0, 5);  
+  bendoclim ~ normal(0, 5);  
+  bendoherb ~ normal(0, 5); 
+  bclim2 ~ normal(0, 5);  
+  bendoclim2 ~ normal(0, 5);
+  sigma ~ normal(0, 5);  // Prior for residual standard deviation
+
+  // Priors for random effect variances
+  plot_tau ~ inv_gamma(2, 1);
+  for (i in 1:nPlot){
+    plot_rfx[i] ~ normal(0, plot_tau);  // Plot-level random effects
   }
-  pop_tau_g ~ inv_gamma(2, 1);
-  for (i in 1:n_pops){
-    pop_rfx_g[i] ~ normal(0, pop_tau_g);
+
+  pop_tau ~ inv_gamma(2, 1);
+  for (i in 1:nPop){
+    pop_rfx[i] ~ normal(0, pop_tau);  // Population-level random effects
   }
-  site_tau_g ~ inv_gamma(2,1);
-  for (i in 1:n_sites){
-    site_rfx_g[i] ~ normal(0, site_tau_g);
+
+  site_tau ~ inv_gamma(2, 1);  // Site-level variance (species-specific)
+  for (i in 1:nSpp) {
+    for (j in 1:nSite) {
+      site_rfx[i, j] ~ normal(0, site_tau);  // Site-level random effects
+    }
   }
   
-  // sampling  
-  //survival
-  y_g ~ normal(predG, sigma);
+  // Likelihood function: survival model
+  y ~ normal(predG, sigma);
 }
 
 generated quantities {
-  vector[n_g] log_lik;
-  for (ngi in 1:n_g) {
-    log_lik[ngi] = normal_lpdf(y_g[ngi] | predG[ngi], sigma);
+  vector[N] log_lik;  // Log-likelihood for model evaluation (e.g., WAIC or LOO)
+
+  for (i in 1:N) {
+    log_lik[i] = normal_lpdf(y[i] | predG[i], sigma);
   }
 }
-
-
-
-

@@ -38,20 +38,19 @@ library(bayesplot)
 library(extraDistr)
 
 # Surivival models
-fit_allsites_surv_aghy_ppt <- readRDS(url("https://www.dropbox.com/scl/fi/kpac617znxe2arebi8wqf/fit_allsites_surv_aghy_ppt.rds?rlkey=8okogsfhm0abkeeus810gsgy8&dl=1"))
-fit_allsites_surv_aghy_pet <- readRDS(url("https://www.dropbox.com/scl/fi/e98tc65ecu5kq0z90tmuc/fit_allsites_surv_aghy_pet.rds?rlkey=zav1ijycjc0odvfszc3i17w2a&dl=1"))
-fit_allsites_surv_aghy_spei <- readRDS(url("https://www.dropbox.com/scl/fi/0wx8mr8ignd36dl5utlrj/fit_allsites_surv_aghy_spei.rds?rlkey=i1w37cl91823m7eioi2gup80i&dl=1"))
-fit_allsites_surv_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/ap0uys7p36wy6fl5zm4gk/fit_allsites_surv_aghy_distance.rds?rlkey=ro1rdaplg8hx9dfbx9v5jw605&dl=1"))
-fit_allsites_surv_aghy_distance_linear <- readRDS(url("https://www.dropbox.com/scl/fi/3u88o5n2bq1zb74wvsgx7/fit_allsites_surv_aghy_distance_linear.rds?rlkey=igquh02xfwrh1dp8danzv6w0r&dl=1"))
+fit_surv_ppt <- readRDS(url("https://www.dropbox.com/scl/fi/hi11gxhpqlrdfg389ir0w/fit_surv_ppt.rds?rlkey=22ujyjnm74c6pw9biw50uasvu&dl=1"))
+fit_surv_spei <- readRDS(url("https://www.dropbox.com/scl/fi/0js0md2myjvl2scu69bnm/fit_surv_spei.rds?rlkey=scn11z3a3epfgis8y8jrxke91&dl=1"))
+fit_surv_distance <- readRDS(url("https://www.dropbox.com/scl/fi/gxc8edjzdjvsrtlb8zm5o/fit_surv_distance.rds?rlkey=bmtq9q0bxf6ooafq8pz3tyavp&dl=1"))
 
 ## Plot the coefficients
-posterior_samples_surv_ppt <- rstan::extract(fit_allsites_surv_aghy_ppt)
+### Precipitation
+posterior_samples_surv_ppt <- rstan::extract(fit_surv_ppt)
 # Convert to data frame
 posterior_samples_surv_ppt_df <- as.data.frame(posterior_samples_surv_ppt)
 # Get the number of species
 n_species <- length(posterior_samples_surv_ppt$bendo_s[1, ])
 # Convert each coefficient into a long-format data frame
-surv_ppt_coef_list <- c("bendo_s", "bherb_s", "bclim_s", "bendoclim_s", "bendoherb_s", "bclim2_s", "bendoclim2_s")
+surv_ppt_coef_list <- c("b0","bendo", "bherb", "bclim", "bendoclim", "bendoherb", "bclim2", "bendoclim2")
 surv_ppt_long_data <- list()
 for (coef in surv_ppt_coef_list) {
   # Extract the coefficient matrix for the current parameter
@@ -81,19 +80,160 @@ summary_stats_surv_ppt$species <- recode(summary_stats_surv_ppt$species,
                                          "2" = "ELVI",
                                          "3" = "PAOU"
 )
-unique(summary_stats_surv_ppt$parameter)
+# unique(summary_stats_surv_ppt$parameter)
 # Create the coefficient plot with error bars (credible intervals)
 ggplot(summary_stats_surv_ppt, aes(x = factor(species), y = mean_estimate, color = species)) +
   geom_pointrange(aes(ymin = lower_CI, ymax = upper_CI),
                   position = position_dodge(width = 0.6),
                   size = 1
   ) + # Adds the error bars with credible intervals
-  facet_grid(parameter ~ ., scales = "free") + # Facet by both species and parameter
+  facet_grid(parameter ~ ., 
+             scales = "free_y",
+             labeller = labeller(parameter = as_labeller(
+               c("b0" = "Intercept", 
+                 "bendo" = "Endophyte",
+                 "bherb" = "Herbivory",
+                 "bclim" = "Climate",
+                 "bendoclim" = "Endophyte:Climate",
+                 "bendoherb" = "Endophyte:Herbivory",
+                 "bclim2" = "b[clim]^2",  # Use plotmath syntax
+                 "bendoclim2" = "b[endo:clim]^2"  # Use plotmath syntax
+               ), 
+               default = label_parsed  # This tells ggplot to interpret as expressions
+             ))) + # Facet by parameter
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") + # Add horizontal dashed line at y = 0
   theme_bw() +
   labs(x = "Species", y = "Coefficient Estimate", title = "") +
   theme(legend.position = "none") +
   scale_color_manual(values = c("AGHY" = "blue", "ELVI" = "red", "PAOU" = "green")) # Assign unique colors for species
+
+### SPEI
+posterior_samples_surv_spei <- rstan::extract(fit_surv_spei)
+# Convert to data frame
+posterior_samples_surv_spei_df <- as.data.frame(posterior_samples_surv_spei)
+# Get the number of species
+n_species <- length(posterior_samples_surv_spei$bendo_s[1, ])
+# Convert each coefficient into a long-format data frame
+surv_spei_coef_list <- c("b0","bendo", "bherb", "bclim", "bendoclim", "bendoherb", "bclim2", "bendoclim2")
+surv_spei_long_data <- list()
+for (coef in surv_spei_coef_list) {
+  # Extract the coefficient matrix for the current parameter
+  surv_spei_coef_matrix <- posterior_samples_surv_spei[[coef]]
+  # Convert to long format
+  surv_spei_long_data[[coef]] <- as.data.frame(surv_spei_coef_matrix) %>%
+    pivot_longer(cols = everything(), names_to = "species", values_to = "estimate") %>%
+    mutate(parameter = coef) # Use 'coef' instead of 'surv_spei_coef_list'
+}
+# Combine all into one dataframe
+plot_data_surv_spei <- bind_rows(surv_spei_long_data)
+# Convert species index to numeric
+plot_data_surv_spei$species <- as.numeric(gsub("V", "", plot_data_surv_spei$species))
+# Calculate the mean, median, and 95% credible intervals for each species and coefficient
+summary_stats_surv_spei <- plot_data_surv_spei %>%
+  group_by(parameter, species) %>%
+  summarize(
+    mean_estimate = mean(estimate),
+    median_estimate = median(estimate),
+    lower_CI = quantile(estimate, 0.025),
+    upper_CI = quantile(estimate, 0.975)
+  ) %>%
+  ungroup()
+# Change species names
+summary_stats_surv_spei$species <- recode(summary_stats_surv_spei$species,
+                                         "1" = "AGHY",
+                                         "2" = "ELVI",
+                                         "3" = "PAOU"
+)
+# unique(summary_stats_surv_spei$parameter)
+# Create the coefficient plot with error bars (credible intervals)
+ggplot(summary_stats_surv_spei, aes(x = factor(species), y = mean_estimate, color = species)) +
+  geom_pointrange(aes(ymin = lower_CI, ymax = upper_CI),
+                  position = position_dodge(width = 0.6),
+                  size = 1
+  ) + # Adds the error bars with credible intervals
+  facet_grid(parameter ~ ., 
+             scales = "free_y",
+             labeller = labeller(parameter = as_labeller(
+               c("b0" = "Intercept", 
+                 "bendo" = "Endophyte",
+                 "bherb" = "Herbivory",
+                 "bclim" = "Climate",
+                 "bendoclim" = "Endophyte:Climate",
+                 "bendoherb" = "Endophyte:Herbivory",
+                 "bclim2" = "b[clim]^2",  # Use plotmath syntax
+                 "bendoclim2" = "b[endo:clim]^2"  # Use plotmath syntax
+               ), 
+               default = label_parsed  # This tells ggplot to interpret as expressions
+             ))) + # Facet by parameter
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") + # Add horizontal dashed line at y = 0
+  theme_bw() +
+  labs(x = "Species", y = "Coefficient Estimate", title = "") +
+  theme(legend.position = "none") +
+  scale_color_manual(values = c("AGHY" = "blue", "ELVI" = "red", "PAOU" = "green")) # Assign unique colors for species
+
+### Distance
+posterior_samples_surv_distance <- rstan::extract(fit_surv_distance)
+# Convert to data frame
+posterior_samples_surv_distance_df <- as.data.frame(posterior_samples_surv_distance)
+# Get the number of species
+n_species <- length(posterior_samples_surv_distance$bendo_s[1, ])
+# Convert each coefficient into a long-format data frame
+surv_distance_coef_list <- c("b0","bendo", "bherb", "bclim", "bendoclim", "bendoherb")
+surv_distance_long_data <- list()
+for (coef in surv_distance_coef_list) {
+  # Extract the coefficient matrix for the current parameter
+  surv_distance_coef_matrix <- posterior_samples_surv_distance[[coef]]
+  # Convert to long format
+  surv_distance_long_data[[coef]] <- as.data.frame(surv_distance_coef_matrix) %>%
+    pivot_longer(cols = everything(), names_to = "species", values_to = "estimate") %>%
+    mutate(parameter = coef) # Use 'coef' instead of 'surv_distance_coef_list'
+}
+# Combine all into one dataframe
+plot_data_surv_distance <- bind_rows(surv_distance_long_data)
+# Convert species index to numeric
+plot_data_surv_distance$species <- as.numeric(gsub("V", "", plot_data_surv_distance$species))
+# Calculate the mean, median, and 95% credible intervals for each species and coefficient
+summary_stats_surv_distance <- plot_data_surv_distance %>%
+  group_by(parameter, species) %>%
+  summarize(
+    mean_estimate = mean(estimate),
+    median_estimate = median(estimate),
+    lower_CI = quantile(estimate, 0.025),
+    upper_CI = quantile(estimate, 0.975)
+  ) %>%
+  ungroup()
+# Change species names
+summary_stats_surv_distance$species <- recode(summary_stats_surv_distance$species,
+                                          "1" = "AGHY",
+                                          "2" = "ELVI",
+                                          "3" = "PAOU"
+)
+# unique(summary_stats_surv_distance$parameter)
+# Create the coefficient plot with error bars (credible intervals)
+ggplot(summary_stats_surv_distance, aes(x = factor(species), y = mean_estimate, color = species)) +
+  geom_pointrange(aes(ymin = lower_CI, ymax = upper_CI),
+                  position = position_dodge(width = 0.6),
+                  size = 1
+  ) + # Adds the error bars with credible intervals
+  facet_grid(parameter ~ ., 
+             scales = "free_y",
+             labeller = labeller(parameter = as_labeller(
+               c("b0" = "Intercept", 
+                 "bendo" = "Endophyte",
+                 "bherb" = "Herbivory",
+                 "bclim" = "Climate",
+                 "bendoclim" = "Endophyte:Climate",
+                 "bendoherb" = "Endophyte:Herbivory"
+               ), 
+               default = label_parsed  # This tells ggplot to interpret as expressions
+             ))) + # Facet by parameter
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") + # Add horizontal dashed line at y = 0
+  theme_bw() +
+  labs(x = "Species", y = "Coefficient Estimate", title = "") +
+  theme(legend.position = "none") +
+  scale_color_manual(values = c("AGHY" = "blue", "ELVI" = "red", "PAOU" = "green")) # Assign unique colors for species
+
+
 
 
 ## Growth----
