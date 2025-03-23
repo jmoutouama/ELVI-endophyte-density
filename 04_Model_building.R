@@ -227,13 +227,13 @@ ggplot(df, aes(x, density, color = Prior)) +
 # The half-Normal(1) prior is much more concentrated near small values, leading to stronger regularization.
 
 ## Running the stan model
-# sim_pars <- list(
-#   warmup = 1000,
-#   iter = 4000,
-#   thin = 2,
-#   chains = 4,
-#   control = list(adapt_delta = 0.99, max_treedepth = 15)
-# )
+sim_pars <- list(
+  warmup = 1000,
+  iter = 4000,
+  thin = 2,
+  chains = 4,
+  control = list(adapt_delta = 0.99, max_treedepth = 15)
+)
 
 # Survival----
 ## Read and format survival data to build the model
@@ -562,3 +562,97 @@ bayesplot::mcmc_trace(posterior_grow_distance,
 # saveRDS(fit_grow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_ppt.rds')
 # saveRDS(fit_grow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_spei.rds')
 # saveRDS(fit_grow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_distance.rds')
+
+# Flowering----
+demography_climate_distance %>%
+  subset(tiller_t1 > 0) %>%
+  dplyr::select(
+    Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
+    tiller_t, inf_t1, sum_ppt, mean_pet, mean_spei, distance
+  ) %>%
+  na.omit() %>%
+  mutate(
+    Site = as.integer(factor(Site)),
+    Species = as.integer(factor(Species)),
+    Population = as.integer(factor(Population)),
+    site_species_plot = as.integer(factor(site_species_plot)),
+    Endo = as.integer(factor(Endo)) - 1,
+    Herbivory = as.integer(factor(Herbivory)) - 1
+  ) %>%
+  mutate(
+    log_size_t0 = log(tiller_t),
+    flow_t1 = inf_t1,
+    ppt = log(sum_ppt),
+    pet = log(mean_pet),
+    spei = mean_spei,
+    distance = log(distance)
+  ) -> demography_climate_distance_flow
+
+## Separate each variable to use the same model stan
+### Preciptation 
+demography_flow_ppt <- list(
+  nSpp = demography_climate_distance_flow$Species %>% n_distinct(),
+  nSite = demography_climate_distance_flow$Site %>% n_distinct(),
+  nPop = demography_climate_distance_flow$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_flow$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_flow$Species,
+  site = demography_climate_distance_flow$Site,
+  pop = demography_climate_distance_flow$Population,
+  plot = demography_climate_distance_flow$site_species_plot,
+  clim = as.vector(demography_climate_distance_flow$ppt),
+  endo = demography_climate_distance_flow$Endo,
+  herb = demography_climate_distance_flow$Herbivory,
+  size = demography_climate_distance_flow$log_size_t0,
+  y = demography_climate_distance_flow$flow_t1,
+  N = nrow(demography_climate_distance_flow)
+)
+
+fit_flow_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = demography_flow_ppt,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
+
+summary(fit_flow_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_flow_ppt <- as.array(fit_flow_ppt) # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_ppt,
+                      pars = quote_bare(
+                        b0[1], b0[2], b0[3],
+                        bendo[1], bendo[2], bendo[3],
+                        bherb[1], bherb[2], bherb[3],
+                        bclim[1], bclim[2], bclim[3],
+                        bendoclim[1], bendoclim[2], bendoclim[3],
+                        bendoherb[1], bendoherb[2], bendoherb[3],
+                        bclim2[1], bclim2[2], bclim2[3],
+                        bendoclim2[1], bendoclim2[2], bendoclim2[3]
+                      )
+) + theme_bw()
+
+demography_flow_spei <- list(
+  nSpp = demography_climate_distance_flow$Species %>% n_distinct(),
+  nSite = demography_climate_distance_flow$Site %>% n_distinct(),
+  nPop = demography_climate_distance_flow$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_flow$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_flow$Species,
+  site = demography_climate_distance_flow$Site,
+  pop = demography_climate_distance_flow$Population,
+  plot = demography_climate_distance_flow$site_species_plot,
+  clim = as.vector(demography_climate_distance_flow$spei),
+  endo = demography_climate_distance_flow$Endo,
+  herb = demography_climate_distance_flow$Herbivory,
+  size = demography_climate_distance_flow$log_size_t0,
+  y = demography_climate_distance_flow$flow_t1,
+  N = nrow(demography_climate_distance_flow)
+)
+
+fit_flow_spei <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+  data = demography_flow_spei,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
