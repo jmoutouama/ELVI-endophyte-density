@@ -218,7 +218,7 @@ ggplot(summary_stats_surv_distance, aes(x = factor(species), y = mean_estimate, 
   facet_grid(parameter ~ ., 
              scales = "free_y",
              labeller = labeller(parameter = as_labeller(
-               c("b0" = "Intercept", 
+               c("b0" = "Grand mean", 
                  "bendo" = "Endophyte",
                  "bherb" = "Herbivory",
                  "bclim" = "Climate",
@@ -238,10 +238,8 @@ ggplot(summary_stats_surv_distance, aes(x = factor(species), y = mean_estimate, 
 
 ## Growth----
 fit_allsites_grow_aghy_ppt <- readRDS(url("https://www.dropbox.com/scl/fi/dqhqkqev0y7uem3jwenc8/fit_allsites_grow_aghy_ppt.rds?rlkey=639eok3pace9i05xaft2dyvbe&dl=1"))
-fit_allsites_grow_aghy_pet <- readRDS(url("https://www.dropbox.com/scl/fi/xudvskieehqlyg1i0hljr/fit_allsites_grow_aghy_pet.rds?rlkey=wgk79j044fsumqtb2xpqvwzb1&dl=1"))
 fit_allsites_grow_aghy_spei <- readRDS(url("https://www.dropbox.com/scl/fi/ojs1ut85cc650j3o8kub1/fit_allsites_grow_aghy_spei.rds?rlkey=chlnweg1fdql1wshfhwfs7act&dl=1"))
 fit_allsites_grow_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/fss05g51j0llees9srzr8/fit_allsites_grow_aghy_distance.rds?rlkey=ni7wzy958fwu10jfsq4svle5r&dl=1"))
-fit_allsites_grow_aghy_distance_linear <- readRDS(url("https://www.dropbox.com/scl/fi/cw4dtk21twaillwpb64ul/fit_allsites_grow_aghy_distance_linear.rds?rlkey=chptnx9km9yrmqgikvlvwr73s&dl=1"))
 
 posterior_samples_grow_ppt <- rstan::extract(fit_allsites_grow_aghy_ppt)
 # Convert to data frame
@@ -298,10 +296,8 @@ ggplot(summary_stats_grow_ppt, aes(x = factor(species), y = mean_estimate, color
 
 ## Flowering----
 fit_allsites_flow_aghy_ppt <- readRDS(url("https://www.dropbox.com/scl/fi/is4m1b6je38i68dfn6bkf/fit_allsites_flow_aghy_ppt.rds?rlkey=oc3jeswl8jpfkrjb0r20jfnng&dl=1"))
-fit_allsites_flow_aghy_pet <- readRDS(url("https://www.dropbox.com/scl/fi/8u4tr13xs7jennhsrnbpq/fit_allsites_flow_aghy_pet.rds?rlkey=f2e65i0lu0j81abyiwwtxl2ss&dl=1"))
 fit_allsites_flow_aghy_spei <- readRDS(url("https://www.dropbox.com/scl/fi/yaybwm6qn65vg0swkhing/fit_allsites_flow_aghy_spei.rds?rlkey=ncu9cicj1j658r7usohgvxhcw&dl=1"))
 fit_allsites_flow_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/lufyihvzkf7gbl8tfyl1n/fit_allsites_flow_aghy_distance.rds?rlkey=aknvr6uyc5ntyf9m033ycrzrx&dl=1"))
-fit_allsites_flow_aghy_distance_linear <- readRDS(url("https://www.dropbox.com/scl/fi/bxcpb1vacfdr2tq368arv/fit_allsites_flow_aghy_distance_linear.rds?rlkey=13v9pfkt59ybfjlyntm8r54ef&dl=1"))
 
 posterior_samples_flow_ppt <- rstan::extract(fit_allsites_flow_aghy_ppt)
 # Convert to data frame
@@ -359,7 +355,6 @@ ggplot(summary_stats_flow_ppt, aes(x = factor(species), y = mean_estimate, color
 
 ## Spikelet----
 fit_allsites_spik_aghy_ppt <- readRDS(url("https://www.dropbox.com/scl/fi/8rtir221u5ml997h9usgf/fit_allsites_spik_aghy_ppt.rds?rlkey=4e4ya6tnhnosqqhwu76hfpb2x&dl=1"))
-fit_allsites_spik_aghy_pet <- readRDS(url("https://www.dropbox.com/scl/fi/wmn81q56ya2ykf0hk4rrg/fit_allsites_spik_aghy_pet.rds?rlkey=1ifut2cb3zdhh19qm8t53mefh&dl=1"))
 fit_allsites_spik_aghy_spei <- readRDS(url("https://www.dropbox.com/scl/fi/swhi510v2mhnlb62xrcvo/fit_allsites_spik_aghy_spei.rds?rlkey=s9szgdfhokb7jjn7zxix5t93e&dl=1"))
 fit_allsites_spik_aghy_distance <- readRDS(url("https://www.dropbox.com/scl/fi/7apjqo8nris1vlgih4enz/fit_allsites_spik_aghy_distance.rds?rlkey=lhcl48ud0uuve6wetkwx4ov14&dl=1"))
 

@@ -24,9 +24,7 @@ parameters {
   vector[nSpp] bclim;   // Effect of climate variable
   vector[nSpp] bendoclim;  // Interaction between endophyte and climate
   vector[nSpp] bendoherb;  // Interaction between endophyte and herbivory
-  vector[nSpp] bclim2;   // Quadratic effect of climate
-  vector[nSpp] bendoclim2; // Quadratic interaction of endophyte and climate
-
+  
   // Random effects
   real<lower=0> plot_tau;  // Standard deviation of plot-level random effect
   vector[nPlot] plot_rfx;  // Random effect for each plot
@@ -50,9 +48,6 @@ transformed parameters {
                 // Two-way interactions
                 bendoclim[Spp[iflow]] * clim[iflow] * endo[iflow] +
                 bendoherb[Spp[iflow]] * endo[iflow] * herb[iflow] +
-                // Quadratic climate effects
-                bclim2[Spp[iflow]] * pow(clim[iflow],2) +  
-                bendoclim2[Spp[iflow]] * endo[iflow] * pow(clim[iflow],2) + 
                 // Random effects
                 plot_rfx[plot[iflow]] +
                 pop_rfx[pop[iflow]] +
@@ -68,8 +63,6 @@ model {
   bclim ~ normal(0,5);  
   bendoclim ~ normal(0,5);  
   bendoherb ~ normal(0,5); 
-  bclim2 ~ normal(0,5);  
-  bendoclim2 ~ normal(0,5);
   phi ~ normal(0,5);
   
   // Priors for random effects

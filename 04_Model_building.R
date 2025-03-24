@@ -656,3 +656,218 @@ fit_flow_spei <- stan(
   thin = sim_pars$thin,
   chains = sim_pars$chains,
   control = sim_pars$control)
+
+summary(fit_flow_spei)$summary[, c("Rhat", "n_eff")]
+posterior_flow_spei <- as.array(fit_flow_spei) # Converts to an array
+bayesplot::mcmc_trace(posterior_flow_spei,
+                      pars = quote_bare(
+                        b0[1], b0[2], b0[3],
+                        bendo[1], bendo[2], bendo[3],
+                        bherb[1], bherb[2], bherb[3],
+                        bclim[1], bclim[2], bclim[3],
+                        bendoclim[1], bendoclim[2], bendoclim[3],
+                        bendoherb[1], bendoherb[2], bendoherb[3]
+                      )
+) + theme_bw()
+
+
+
+demography_flow_distance <- list(
+  nSpp = demography_climate_distance_flow$Species %>% n_distinct(),
+  nSite = demography_climate_distance_flow$Site %>% n_distinct(),
+  nPop = demography_climate_distance_flow$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_flow$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_flow$Species,
+  site = demography_climate_distance_flow$Site,
+  pop = demography_climate_distance_flow$Population,
+  plot = demography_climate_distance_flow$site_species_plot,
+  clim = as.vector(demography_climate_distance_flow$distance),
+  endo = demography_climate_distance_flow$Endo,
+  herb = demography_climate_distance_flow$Herbivory,
+  size = demography_climate_distance_flow$log_size_t0,
+  y = demography_climate_distance_flow$flow_t1,
+  N = nrow(demography_climate_distance_flow)
+)
+
+fit_flow_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering_distance.stan",
+  data = demography_flow_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
+
+summary(fit_flow_distance)$summary[, c("Rhat", "n_eff")]
+posterior_flow_distance <- as.array(fit_flow_distance) # Converts to an array
+bayesplot::mcmc_trace(fit_flow_distance,
+                      pars = quote_bare(
+                        b0[1], b0[2], b0[3],
+                        bendo[1], bendo[2], bendo[3],
+                        bherb[1], bherb[2], bherb[3],
+                        bclim[1], bclim[2], bclim[3],
+                        bendoclim[1], bendoclim[2], bendoclim[3],
+                        bendoherb[1], bendoherb[2], bendoherb[3]
+                      )
+) + theme_bw()
+## Save RDS file for further use
+saveRDS(fit_flow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_ppt.rds')
+saveRDS(fit_flow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_spei.rds')
+saveRDS(fit_flow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_distance.rds')
+
+# Spikelet----
+demography_climate_distance %>%
+  filter(Species %in% c("ELVI", "POAU")) %>%
+  subset(tiller_t1 > 0) %>%
+  dplyr::select(
+    Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
+    tiller_t, spikelet_t1, sum_ppt, mean_pet, mean_spei, distance
+  ) %>%
+  na.omit() %>%
+  mutate(
+    Site = as.integer(factor(Site)),
+    Species = as.integer(factor(Species)),
+    Population = as.integer(factor(Population)),
+    site_species_plot = as.integer(factor(site_species_plot)),
+    Endo = as.integer(factor(Endo)) - 1,
+    Herbivory = as.integer(factor(Herbivory)) - 1
+  ) %>%
+  mutate(
+    log_size_t0 = log(tiller_t),
+    spi_t1 = spikelet_t1,
+    ppt = log(sum_ppt),
+    pet = log(mean_pet),
+    spei = mean_spei,
+    distance = log(distance)
+  ) -> demography_climate_distance_spik
+
+### Precipitation
+demography_spik_ppt <- list(
+  nSpp = demography_climate_distance_spik$Species %>% n_distinct(),
+  nSite = demography_climate_distance_spik$Site %>% n_distinct(),
+  nPop = demography_climate_distance_spik$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_spik$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_spik$Species,
+  site = demography_climate_distance_spik$Site,
+  pop = demography_climate_distance_spik$Population,
+  plot = demography_climate_distance_spik$site_species_plot,
+  clim = as.vector(demography_climate_distance_spik$ppt),
+  endo = demography_climate_distance_spik$Endo,
+  herb = demography_climate_distance_spik$Herbivory,
+  size = demography_climate_distance_spik$log_size_t0,
+  y = demography_climate_distance_spik$spikelet_t1,
+  N = nrow(demography_climate_distance_spik)
+)
+
+fit_spik_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+  data = demography_spik_ppt,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control =sim_pars$control)
+
+summary(fit_spik_ppt)$summary[, c("Rhat", "n_eff")]
+posterior_spik_ppt <- as.array(fit_spik_ppt) # Converts to an array
+bayesplot::mcmc_trace(posterior_spik_ppt,
+                      pars = quote_bare(
+                        b0[1], b0[2],
+                        bendo[1], bendo[2],
+                        bherb[1], bherb[2],
+                        bclim[1], bclim[2],
+                        bendoclim[1], bendoclim[2],
+                        bendoherb[1], bendoherb[2],
+                        bclim2[1], bclim2[2],
+                        bendoclim2[1], bendoclim2[2]
+                      )
+) + theme_bw()
+
+### SPEI
+demography_spik_spei <- list(
+  nSpp = demography_climate_distance_spik$Species %>% n_distinct(),
+  nSite = demography_climate_distance_spik$Site %>% n_distinct(),
+  nPop = demography_climate_distance_spik$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_spik$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_spik$Species,
+  site = demography_climate_distance_spik$Site,
+  pop = demography_climate_distance_spik$Population,
+  plot = demography_climate_distance_spik$site_species_plot,
+  clim = as.vector(demography_climate_distance_spik$spei),
+  endo = demography_climate_distance_spik$Endo,
+  herb = demography_climate_distance_spik$Herbivory,
+  size = demography_climate_distance_spik$log_size_t0,
+  y = demography_climate_distance_spik$spikelet_t1,
+  N = nrow(demography_climate_distance_spik)
+)
+
+fit_spik_spei <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+  data = demography_spik_spei,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control
+)
+
+summary(fit_spik_spei)$summary[, c("Rhat", "n_eff")]
+posterior_spik_spei <- as.array(fit_spik_spei) # Converts to an array
+bayesplot::mcmc_trace(posterior_spik_spei,
+                      pars = quote_bare(
+                        b0[1], b0[2],
+                        bendo[1], bendo[2],
+                        bherb[1], bherb[2],
+                        bclim[1], bclim[2],
+                        bendoclim[1], bendoclim[2],
+                        bendoherb[1], bendoherb[2],
+                        bclim2[1], bclim2[2],
+                        bendoclim2[1], bendoclim2[2]
+                      )
+) + theme_bw()
+
+### Distance from niche centroid
+demography_spik_distance <- list(
+  nSpp = demography_climate_distance_spik$Species %>% n_distinct(),
+  nSite = demography_climate_distance_spik$Site %>% n_distinct(),
+  nPop = demography_climate_distance_spik$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_spik$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_spik$Species,
+  site = demography_climate_distance_spik$Site,
+  pop = demography_climate_distance_spik$Population,
+  plot = demography_climate_distance_spik$site_species_plot,
+  clim = as.vector(demography_climate_distance_spik$distance),
+  endo = demography_climate_distance_spik$Endo,
+  herb = demography_climate_distance_spik$Herbivory,
+  size = demography_climate_distance_spik$log_size_t0,
+  y = demography_climate_distance_spik$spikelet_t1,
+  N = nrow(demography_climate_distance_spik)
+)
+
+fit_spik_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+  data = demography_spik_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control
+)
+
+summary(fit_spik_distance)$summary[, c("Rhat", "n_eff")]
+posterior_spik_distance <- as.array(fit_spik_distance) # Converts to an array
+bayesplot::mcmc_trace(posterior_spik_distance,
+                      pars = quote_bare(
+                        b0[1], b0[2],
+                        bendo[1], bendo[2],
+                        bherb[1], bherb[2],
+                        bclim[1], bclim[2],
+                        bendoclim[1], bendoclim[2],
+                        bendoherb[1], bendoherb[2]
+                      )
+) + theme_bw()
+
+## Save RDS file for further use
+# saveRDS(fit_spik_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_ppt.rds')
+# saveRDS(fit_spik_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_spei.rds')
+# saveRDS(fit_spik_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_distance.rds')
