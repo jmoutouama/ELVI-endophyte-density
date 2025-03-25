@@ -290,7 +290,6 @@ fit_surv_ppt <- stan(
   chains = sim_pars$chains
 )
 
-fit_surv_ppt<-readRDS(url("https://www.dropbox.com/scl/fi/hi11gxhpqlrdfg389ir0w/fit_surv_ppt.rds?rlkey=22ujyjnm74c6pw9biw50uasvu&dl=1"))
 
 summary(fit_surv_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_surv_ppt <- as.array(fit_surv_ppt) # Converts to an array
@@ -335,8 +334,6 @@ demography_surv_spei <- list(
 #   chains = sim_pars$chains
 # )
 
-fit_surv_spei<-readRDS(url("https://www.dropbox.com/scl/fi/0js0md2myjvl2scu69bnm/fit_surv_spei.rds?rlkey=scn11z3a3epfgis8y8jrxke91&dl=1"))
-
 summary(fit_surv_spei)$summary[, c("Rhat", "n_eff")]
 posterior_surv_spei <- as.array(fit_surv_spei) # Converts to an array
 bayesplot::mcmc_trace(posterior_surv_spei,
@@ -357,12 +354,11 @@ demography_surv_distance <- list(
   nSpp = demography_climate_distance_surv$Species %>% n_distinct(),
   nSite = demography_climate_distance_surv$Site %>% n_distinct(),
   nPop = demography_climate_distance_surv$Population %>% n_distinct(),
-  # survival data
   nPlot = demography_climate_distance_surv$site_species_plot %>% n_distinct(),
   Spp = demography_climate_distance_surv$Species,
   site = demography_climate_distance_surv$Site,
   pop = demography_climate_distance_surv$Population,
-  plot = demography_climate_distance_surv$Plot,
+  plot = demography_climate_distance_surv$site_species_plot,
   clim = as.vector(demography_climate_distance_surv$distance),
   endo = demography_climate_distance_surv$Endo,
   herb = demography_climate_distance_surv$Herbivory,
@@ -371,16 +367,15 @@ demography_surv_distance <- list(
   N = nrow(demography_climate_distance_surv)
 )
 
-# fit_surv_distance <- stan(
-#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival_distance.stan",
-#   data = demography_surv_distance,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains
-# )
+fit_surv_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/survival_distance.stan",
+  data = demography_surv_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains
+)
 
-fit_surv_distance<-readRDS(url("https://www.dropbox.com/scl/fi/gxc8edjzdjvsrtlb8zm5o/fit_surv_distance.rds?rlkey=bmtq9q0bxf6ooafq8pz3tyavp&dl=1"))
 
 summary(fit_surv_distance)$summary[, c("Rhat", "n_eff")]
 posterior_surv_distance <- as.array(fit_surv_distance) # Converts to an array
@@ -436,7 +431,7 @@ demography_grow_ppt <- list(
   Spp = demography_climate_distance_grow$Species,
   site = demography_climate_distance_grow$Site,
   pop = demography_climate_distance_grow$Population,
-  plot = demography_climate_distance_grow$Plot,
+  plot = demography_climate_distance_grow$site_species_plot,
   clim = as.vector(demography_climate_distance_grow$ppt),
   endo = demography_climate_distance_grow$Endo,
   herb = demography_climate_distance_grow$Herbivory,
@@ -445,16 +440,14 @@ demography_grow_ppt <- list(
   N = nrow(demography_climate_distance_grow)
 )
 
-# fit_grow_ppt <- stan(
-#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
-#   data = demography_grow_ppt,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains,
-#   control = sim_pars$control)
-
-fit_grow_ppt<-readRDS(url("https://www.dropbox.com/scl/fi/85pzzrgvkxwogoybr004t/fit_grow_ppt.rds?rlkey=rz2xlg00u1aqhkxeaix7wiu9e&dl=1"))
+fit_grow_ppt <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = demography_grow_ppt,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
 
 summary(fit_grow_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_grow_ppt <- as.array(fit_grow_ppt) # Converts to an array
@@ -476,11 +469,11 @@ demography_grow_spei <- list(
   nSpp = demography_climate_distance_grow$Species %>% n_distinct(),
   nSite = demography_climate_distance_grow$Site %>% n_distinct(),
   nPop = demography_climate_distance_grow$Population %>% n_distinct(),
-  nPlot = demography_climate_distance_grow$Plot %>% n_distinct(),
+  nPlot = demography_climate_distance_grow$site_species_plot %>% n_distinct(),
   Spp = demography_climate_distance_grow$Species,
   site = demography_climate_distance_grow$Site,
   pop = demography_climate_distance_grow$Population,
-  plot = demography_climate_distance_grow$Plot,
+  plot = demography_climate_distance_grow$site_species_plot,
   clim = as.vector(demography_climate_distance_grow$spei),
   endo = demography_climate_distance_grow$Endo,
   herb = demography_climate_distance_grow$Herbivory,
@@ -489,16 +482,15 @@ demography_grow_spei <- list(
   N = nrow(demography_climate_distance_grow)
 )
 
-# fit_grow_spei <- stan(
-#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
-#   data = demography_grow_spei,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains,
-#   control = sim_pars$control)
+fit_grow_spei <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
+  data = demography_grow_spei,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
 
-fit_grow_spei<-readRDS(url("https://www.dropbox.com/scl/fi/4iuz5ay461qkjv732b5yb/fit_grow_spei.rds?rlkey=gq68ixyetb3v4o3ds7uo24cwk&dl=1"))
 
 summary(fit_grow_spei)$summary[, c("Rhat", "n_eff")]
 posterior_grow_spei <- as.array(fit_grow_spei) # Converts to an array
@@ -521,11 +513,11 @@ demography_grow_distance <- list(
   nSpp= demography_climate_distance_grow$Species %>% n_distinct(),
   nSite = demography_climate_distance_grow$Site %>% n_distinct(),
   nPop = demography_climate_distance_grow$Population %>% n_distinct(),
-  nPlot = demography_climate_distance_grow$Plot %>% n_distinct(),
+  nPlot = demography_climate_distance_grow$site_species_plot %>% n_distinct(),
   Spp = demography_climate_distance_grow$Species,
   site = demography_climate_distance_grow$Site,
   pop = demography_climate_distance_grow$Population,
-  plot = demography_climate_distance_grow$Plot,
+  plot = demography_climate_distance_grow$site_species_plot,
   clim = as.vector(demography_climate_distance_grow$distance),
   endo = demography_climate_distance_grow$Endo,
   herb = demography_climate_distance_grow$Herbivory,
@@ -534,16 +526,15 @@ demography_grow_distance <- list(
   N = nrow(demography_climate_distance_grow)
 )
 
-# fit_grow_distance <- stan(
-#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth.stan",
-#   data = demography_grow_distance,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains,
-#   control = sim_pars$control)
+fit_grow_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/growth_distance.stan",
+  data = demography_grow_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
 
-fit_grow_distance<-readRDS(url("https://www.dropbox.com/scl/fi/fhwjeizspvvd2dbz11195/fit_grow_distance.rds?rlkey=yt863sjawv1zliwem6a9ved1h&dl=1"))
 
 summary(fit_grow_distance)$summary[, c("Rhat", "n_eff")]
 posterior_grow_distance <- as.array(fit_grow_distance) # Converts to an array
@@ -559,9 +550,9 @@ bayesplot::mcmc_trace(posterior_grow_distance,
 ) + theme_bw()
 
 ## Save RDS file for further use
-# saveRDS(fit_grow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_ppt.rds')
-# saveRDS(fit_grow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_spei.rds')
-# saveRDS(fit_grow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_grow_distance.rds')
+# saveRDS(fit_grow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_grow_ppt.rds')
+# saveRDS(fit_grow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_grow_spei.rds')
+# saveRDS(fit_grow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_grow_distance.rds')
 
 # Flowering----
 demography_climate_distance %>%
@@ -711,9 +702,9 @@ bayesplot::mcmc_trace(fit_flow_distance,
                       )
 ) + theme_bw()
 ## Save RDS file for further use
-saveRDS(fit_flow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_ppt.rds')
-saveRDS(fit_flow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_spei.rds')
-saveRDS(fit_flow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_distance.rds')
+# saveRDS(fit_flow_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_ppt.rds')
+# saveRDS(fit_flow_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_spei.rds')
+# saveRDS(fit_flow_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_flow_distance.rds')
 
 # Spikelet----
 demography_climate_distance %>%
@@ -845,7 +836,7 @@ demography_spik_distance <- list(
 )
 
 fit_spik_distance <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/Spikelet_distance.stan",
   data = demography_spik_distance,
   warmup = sim_pars$warmup,
   iter = sim_pars$iter,
@@ -868,6 +859,6 @@ bayesplot::mcmc_trace(posterior_spik_distance,
 ) + theme_bw()
 
 ## Save RDS file for further use
-# saveRDS(fit_spik_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_ppt.rds')
-# saveRDS(fit_spik_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_spei.rds')
-# saveRDS(fit_spik_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo Model output/fit_spik_distance.rds')
+# saveRDS(fit_spik_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_ppt.rds')
+# saveRDS(fit_spik_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_spei.rds')
+# saveRDS(fit_spik_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_distance.rds')
