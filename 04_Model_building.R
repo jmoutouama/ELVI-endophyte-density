@@ -580,7 +580,7 @@ demography_climate_distance %>%
   ) -> demography_climate_distance_flow
 
 ## Separate each variable to use the same model stan
-### Preciptation 
+### Precipitation 
 demography_flow_ppt <- list(
   nSpp = demography_climate_distance_flow$Species %>% n_distinct(),
   nSite = demography_climate_distance_flow$Site %>% n_distinct(),
@@ -598,14 +598,14 @@ demography_flow_ppt <- list(
   N = nrow(demography_climate_distance_flow)
 )
 
-fit_flow_ppt <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
-  data = demography_flow_ppt,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control = sim_pars$control)
+# fit_flow_ppt <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+#   data = demography_flow_ppt,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control = sim_pars$control)
 
 summary(fit_flow_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_flow_ppt <- as.array(fit_flow_ppt) # Converts to an array
@@ -639,14 +639,14 @@ demography_flow_spei <- list(
   N = nrow(demography_climate_distance_flow)
 )
 
-fit_flow_spei <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
-  data = demography_flow_spei,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control = sim_pars$control)
+# fit_flow_spei <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering.stan",
+#   data = demography_flow_spei,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control = sim_pars$control)
 
 summary(fit_flow_spei)$summary[, c("Rhat", "n_eff")]
 posterior_flow_spei <- as.array(fit_flow_spei) # Converts to an array
@@ -680,14 +680,14 @@ demography_flow_distance <- list(
   N = nrow(demography_climate_distance_flow)
 )
 
-fit_flow_distance <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering_distance.stan",
-  data = demography_flow_distance,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control = sim_pars$control)
+# fit_flow_distance <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering_distance.stan",
+#   data = demography_flow_distance,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control = sim_pars$control)
 
 summary(fit_flow_distance)$summary[, c("Rhat", "n_eff")]
 posterior_flow_distance <- as.array(fit_flow_distance) # Converts to an array
@@ -750,14 +750,14 @@ demography_spik_ppt <- list(
   N = nrow(demography_climate_distance_spik)
 )
 
-fit_spik_ppt <- stan(
-  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
-  data = demography_spik_ppt,
-  warmup = sim_pars$warmup,
-  iter = sim_pars$iter,
-  thin = sim_pars$thin,
-  chains = sim_pars$chains,
-  control =sim_pars$control)
+# fit_spik_ppt <- stan(
+#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/spikelet.stan",
+#   data = demography_spik_ppt,
+#   warmup = sim_pars$warmup,
+#   iter = sim_pars$iter,
+#   thin = sim_pars$thin,
+#   chains = sim_pars$chains,
+#   control =sim_pars$control)
 
 summary(fit_spik_ppt)$summary[, c("Rhat", "n_eff")]
 posterior_spik_ppt <- as.array(fit_spik_ppt) # Converts to an array

@@ -1,11 +1,7 @@
-#### Project: 
-#### PURPOSE: Estimating distance from climatic niche center (Mahalanobis distance)
-#### AUTHOR: Jacob Moutouama
-#### DATE LAST MODIFIED: 
 # remove objects and clear workspace
 rm(list = ls(all=TRUE))
-#load packages
-# devtools::install_github("luismurao/ntbox")
+
+# Load packages
 library(tidyverse)
 library(terra)
 library(geojsonio)
@@ -17,321 +13,434 @@ library(rgl)
 library(stringr)
 library(prism)
 library("RColorBrewer")
-#Set seed 13
+
+# Set seed 13
 set.seed(13)
+
 # Climatic data----
 ## Data from PRISM
 # making a folder to store prism data
 options(prism.path = '/Users/jm200/Documents/Prism Range limit/')
+
 # getting monthly data for mean temp and precipitation
 # takes a long time the first time, but can skip when you have raster files saved on your computer.
 # get_prism_monthlys(type = "tmean", years = 1990:2024, mon = 1:12, keepZip = FALSE)
 # get_prism_monthlys(type = "ppt", years = 1990:2024, mon = 1:12, keepZip = FALSE)
+
 # pulling out values to get normals for old and new time periods
-tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024))))
-tmean_spring_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 1:4))))
-tmean_summer_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 5:8))))
-tmean_autumn_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 9:12))))
+tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
+tmean_spring_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
+tmean_summer_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
+tmean_autumn_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
 
 # calculating standard deviation in temp
-tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024))))
-tmean_spring_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 1:4))))
-tmean_summer_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 5:8))))
-tmean_autumn_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1994:2024, mon = 9:12))))
+tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
+tmean_spring_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
+tmean_summer_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
+tmean_autumn_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
 
 # calculating the cumulative precipitation for each year and for each season within the year
 ppt_annual <- ppt_spring <- ppt_summer <- ppt_autumn <- ppt_winter<- list()
-for(y in 1994:2024){
+for(y in 1993:2023){
   ppt_annual[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y))))
   ppt_spring[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 1:4))))
   ppt_summer[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 5:8))))
   ppt_autumn[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 9:12)))) 
 }
 
-# Taking the mean of the cumulative precipation values
+# Taking the mean of the cumulative precipitation values
 ppt_annual_norm <- terra::mean(terra::rast(unlist(ppt_annual)))
 ppt_spring_norm <- terra::mean(terra::rast(unlist(ppt_spring)))
 ppt_summer_norm <- terra::mean(terra::rast(unlist(ppt_summer)))
 ppt_autumn_norm <- terra::mean(terra::rast(unlist(ppt_autumn)))
 
-#calculating the standard devation in precip
+# calculating the standard deviation in precip
 ppt_annual_sd <- terra::stdev(terra::rast(unlist(ppt_annual)))
 ppt_spring_sd <- terra::stdev(terra::rast(unlist(ppt_spring)))
 ppt_summer_sd <- terra::stdev(terra::rast(unlist(ppt_summer)))
 ppt_autumn_sd <- terra::stdev(terra::rast(unlist(ppt_autumn)))
 
 # Study area shapefile 
-US<-terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
-plot(US)
-US_land<-US[(!US$State_Name %in% c("HAWAII","ALASKA","ARIZONA","COLORADO","UTAH","NEVADA","NEW MEXICO","IDAHO","MONTANA","WYOMING","CALIFORNIA","WASHINGTON","OREGON" )),]
+US <- terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
+US_land <- US[(!US$State_Name %in% c("HAWAII", "ALASKA", "ARIZONA", "COLORADO", "UTAH", "NEVADA", "NEW MEXICO", "IDAHO", "MONTANA", "WYOMING", "CALIFORNIA", "WASHINGTON", "OREGON")),]
 US_land_reprojected <- project(US_land, crs(tmean_annual_norm))
 plot(US_land_reprojected)
 
 # Crop the study area-----
-tmean_spring_norm<-terra::crop(tmean_spring_norm, US_land_reprojected,mask=TRUE)
-tmean_summer_norm<-terra::crop(tmean_summer_norm, US_land_reprojected,mask=TRUE)
-tmean_autumn_norm<-terra::crop(tmean_autumn_norm, US_land_reprojected,mask=TRUE)
-tmean_spring_sd<-terra::crop(tmean_spring_sd, US_land_reprojected,mask=TRUE)
-tmean_summer_sd<-terra::crop(tmean_summer_sd, US_land_reprojected,mask=TRUE)
-tmean_autumn_sd<-terra::crop(tmean_autumn_sd, US_land_reprojected,mask=TRUE)
-ppt_spring_norm<-terra::crop(ppt_spring_norm, US_land_reprojected,mask=TRUE)
-ppt_summer_norm<-terra::crop(ppt_summer_norm, US_land_reprojected,mask=TRUE)
-ppt_autumn_norm<-terra::crop(ppt_autumn_norm, US_land_reprojected,mask=TRUE)
-ppt_spring_sd<-terra::crop(ppt_spring_sd, US_land_reprojected,mask=TRUE)
-ppt_summer_sd<-terra::crop(ppt_summer_sd, US_land_reprojected,mask=TRUE)
-ppt_autumn_sd<-terra::crop(ppt_autumn_sd, US_land_reprojected,mask=TRUE)
+tmean_spring_norm <- terra::crop(tmean_spring_norm, US_land_reprojected, mask = TRUE)
+tmean_summer_norm <- terra::crop(tmean_summer_norm, US_land_reprojected, mask = TRUE)
+tmean_autumn_norm <- terra::crop(tmean_autumn_norm, US_land_reprojected, mask = TRUE)
+tmean_spring_sd <- terra::crop(tmean_spring_sd, US_land_reprojected, mask = TRUE)
+tmean_summer_sd <- terra::crop(tmean_summer_sd, US_land_reprojected, mask = TRUE)
+tmean_autumn_sd <- terra::crop(tmean_autumn_sd, US_land_reprojected, mask = TRUE)
+ppt_spring_norm <- terra::crop(ppt_spring_norm, US_land_reprojected, mask = TRUE)
+ppt_summer_norm <- terra::crop(ppt_summer_norm, US_land_reprojected, mask = TRUE)
+ppt_autumn_norm <- terra::crop(ppt_autumn_norm, US_land_reprojected, mask = TRUE)
+ppt_spring_sd <- terra::crop(ppt_spring_sd, US_land_reprojected, mask = TRUE)
+ppt_summer_sd <- terra::crop(ppt_summer_sd, US_land_reprojected, mask = TRUE)
+ppt_autumn_sd <- terra::crop(ppt_autumn_sd, US_land_reprojected, mask = TRUE)
 
-##  Stacking all the climatic variables 
-US_land_clim<-terra::rast(list(tmean_spring_norm,tmean_summer_norm,tmean_autumn_norm,
-                                    tmean_spring_sd,tmean_summer_sd,tmean_autumn_sd,
-                                    ppt_spring_norm,ppt_summer_norm,ppt_autumn_norm,
-                                    ppt_spring_sd,ppt_summer_sd,ppt_autumn_sd))
-names(US_land_clim) <- c("tmean_spring_norm","tmean_summer_norm","tmean_autumn_norm",
-                              "tmean_spring_sd","tmean_summer_sd","tmean_autumn_sd",
-                              "ppt_spring_norm","ppt_summer_norm","ppt_autumn_norm",
-                              "ppt_spring_sd","ppt_summer_sd","ppt_autumn_sd")
-US_land_clim_stack<-stack(US_land_clim)
+## Stacking all the climatic variables 
+US_land_clim <- terra::rast(list(tmean_spring_norm, tmean_summer_norm, tmean_autumn_norm,
+                                 tmean_spring_sd, tmean_summer_sd, tmean_autumn_sd,
+                                 ppt_spring_norm, ppt_summer_norm, ppt_autumn_norm,
+                                 ppt_spring_sd, ppt_summer_sd, ppt_autumn_sd))
+
+names(US_land_clim) <- c("tmean_spring_norm", "tmean_summer_norm", "tmean_autumn_norm",
+                         "tmean_spring_sd", "tmean_summer_sd", "tmean_autumn_sd",
+                         "ppt_spring_norm", "ppt_summer_norm", "ppt_autumn_norm",
+                         "ppt_spring_sd", "ppt_summer_sd", "ppt_autumn_sd")
+
+US_land_clim_stack <- stack(US_land_clim)
 plot(US_land_clim_stack)
 
+# Function to thin occurrences - Keep only one per climatic data pixel
+thin_occurrences <- function(occ_data, clim_raster) {
+  occ_data <- occ_data %>% 
+    filter(!is.na(lat) & !is.na(lon)) %>%
+    unique()
+  
+  # Assign raster cell ID to each occurrence point
+  occ_data$cell <- terra::cellFromXY(clim_raster, occ_data[, c("lon", "lat")])
+  
+  # Keep only one occurrence per pixel (cell)
+  occ_thinned <- occ_data %>%
+    group_by(cell) %>%
+    slice(1) %>%
+    ungroup() %>%
+    dplyr::select(-cell)  # Remove temporary column
+  
+  return(occ_thinned)
+}
+
 # Agrostis hyemalis-----
-#aghy_occ_raw <- gbif(genus="Agrostis",species="hyemalis",download=TRUE) 
-aghy_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/ijl1i7964qxzcxvm7blz8/aghy_occ_raw.rds?rlkey=msbs3xzkjc719uld8yw7hb6cj&dl=1"))
-names(aghy_occ_raw) 
+# Apply thinning function to each species dataset
+aghy_occ_raw <- readRDS(url("https://www.dropbox.com/scl/fi/ijl1i7964qxzcxvm7blz8/aghy_occ_raw.rds?rlkey=msbs3xzkjc719uld8yw7hb6cj&dl=1"))
+# names(aghy_occ_raw)
 aghy_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year)  & as.numeric(lon >=-102.6458) & country=="United States" ) %>%
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year)  & as.numeric(lon >=-102.6458) & as.numeric(lat <45) & country == "United States") %>%
   unique() %>% 
-  dplyr::select(country,lon, lat,year)%>% 
-  arrange(lat)->aghy
-#dim(aghy)
+  dplyr::select(country, lon, lat, year) %>% 
+  arrange(lat) -> aghy
+
+# Thin occurrences
+aghy_occ_thinned <- thin_occurrences(aghy, US_land_clim)
+
+# Plot thinned occurrence points for Agrostis hyemalis
 plot(US_land_reprojected)
-points(aghy[,c("lon","lat")],pch=20,cex=0.5,col="red")
-# Model calibration selection using Minimum Volume Ellipsoids (MVEs).
-# Random sample indexes
-train_index_aghy <- sample(1:nrow(aghy), 0.80 * nrow(aghy))
-test_index_aghy <- setdiff(1:nrow(aghy), train_index_aghy)
-## Split occurences in train and test
-aghy_train <- aghy[train_index_aghy, ]
-aghy_test <- aghy[test_index_aghy, ]
+points(aghy_occ_thinned[, c("lon", "lat")], pch = 20, cex = 0.5, col = "red")
 
-# Extracts the environmental information for both train and test data
-aghy_etrain <- raster::extract(US_land_clim_stack,aghy_train[,c("lon", "lat")],df=TRUE)
-sum(is.na(aghy_etrain))
-aghy_etrain<-na.omit(aghy_etrain)
-aghy_etrain <- aghy_etrain[,-1]
-head(aghy_etrain)
+# Model calibration selection using Minimum Volume Ellipsoids (MVEs)
+train_index_aghy <- sample(1:nrow(aghy_occ_thinned), 0.80 * nrow(aghy_occ_thinned))
+test_index_aghy <- setdiff(1:nrow(aghy_occ_thinned), train_index_aghy)
 
-aghy_etest <- raster::extract(US_land_clim_stack,aghy_test[,c("lon","lat")], df=TRUE)
-aghy_etest<-na.omit(aghy_etest)
-aghy_etest <- aghy_etest[,-1]
-head(aghy_etest)
+# Split occurrences into train and test
+aghy_train <- aghy_occ_thinned[train_index_aghy, ]
+aghy_test <- aghy_occ_thinned[test_index_aghy, ]
 
-env_varsL_aghy <- ntbox::correlation_finder(cor(aghy_etrain, method = "spearman"),threshold = 0.70,verbose = F)
+# Extract environmental information for both train and test data
+aghy_etrain <- raster::extract(US_land_clim_stack, aghy_train[, c("lon", "lat")], df = TRUE)
+sum(na.omit(aghy_etrain))
+aghy_etrain <- na.omit(aghy_etrain)[,-1]
+
+aghy_etest <- raster::extract(US_land_clim_stack, aghy_test[, c("lon", "lat")], df = TRUE)
+aghy_etest <- na.omit(aghy_etest)[,-1]
+
+# Find correlated environmental variables
+env_varsL_aghy <- ntbox::correlation_finder(cor(aghy_etrain, method = "spearman"), threshold = 0.75, verbose = F)
 env_vars_aghy <- env_varsL_aghy$descriptors
-print(env_vars_aghy )
+print(env_vars_aghy)
 
-#Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- 3
-## This parameter is to specify the proportion of training points that will be used to fit the minimum volume ellipsoid (Van Aelst and Rousseeuw 2009).
-# Level
+# Fit ellipsoid models
+nvarstest <- c(3,4)
 level <- 0.99
-# This background data is just to compute the partial ROC test
-env_bg <- ntbox::sample_envbg(US_land_clim_stack,10000)
-## For selecting the model we will use an arbitrary value of 6 percent of omission; it is not a rule but accepted omission rates are those bellow 10%. We will ask the function to return the partial ROC value (Peterson, Papes, and Soberon 2008)
+env_bg <- ntbox::sample_envbg(US_land_clim_stack, 10000)
 omr_criteria <- 0.06
 proc <- TRUE
 
-# Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_aghy <- ntbox::ellipsoid_selection(env_train = aghy_etrain,
                                             env_test = aghy_etest,
                                             env_vars = env_vars_aghy,
                                             level = level,
                                             nvarstest = nvarstest,
                                             env_bg = env_bg,
-                                            omr_criteria= omr_criteria,
+                                            omr_criteria = omr_criteria,
                                             proc = proc)
 
+# Display the first 10 rows of the results
+head(e_select_aghy, 10)
 
-# Let’s see the first 10 rows of the results
-head(e_select_aghy,10)
-# With the following lines of code, I am going to display the model in the first row of the table
-# Best ellipsoid model for "omr_criteria" 
-bestvarcomb_aghy <- stringr::str_split(e_select_aghy$fitted_vars,",")[[1]]
-# Ellipsoid model (environmental space)
-best_mod_aghy <- ntbox::cov_center(aghy_etrain[,bestvarcomb_aghy],
-                                   mve = T,
+# Best ellipsoid model for "omr_criteria"
+bestvarcomb_aghy <- stringr::str_split(e_select_aghy$fitted_vars, ",")[[1]]
+best_mod_aghy <- ntbox::cov_center(aghy_etrain[, bestvarcomb_aghy],
+                                   mve = TRUE,
                                    level = 0.99,
                                    vars = 1:length(bestvarcomb_aghy))
 
-
 # Projection model in geographic space
-#install.packages("rgl",dependencies = TRUE)
 mProj_aghy <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
-                             centroid = best_mod_aghy$centroid,
-                             covar = best_mod_aghy$covariance,
-                             level = 0.99,size = 3)
+                                  centroid = best_mod_aghy$centroid,
+                                  covar = best_mod_aghy$covariance,
+                                  level = 0.99, size = 3)
 
-# Elymus virginicus---
-#elvi_occ_raw <- gbif(genus="Elymus",species="virginicus",download=TRUE) 
-#saveRDS(elvi_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/elvi_occ_raw.rds")
-elvi_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/0ssa5gepxyz28b7ykw1x8/elvi_occ_raw.rds?rlkey=4dx0q4lw2112droh73hmh7xte&dl=1"))
-elvi_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & as.numeric(lon >=-102.6458) & country=="United States") %>% 
+# Mahalanobis distance for common garden populations
+garden <- read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = FALSE) %>% 
   unique() %>% 
-  dplyr::select(country,lon, lat,year)%>% 
-  arrange(lat)->elvi
-dim(elvi)
+  arrange(latitude)
+
+garden_clim <- raster::extract(US_land_clim_stack, garden[, c("longitude", "latitude")], df = TRUE)
+garden_clim <- garden_clim[, -1]
+mhd_aghy <- stats::mahalanobis(garden_clim[, bestvarcomb_aghy], center = best_mod_aghy$centroid, cov = best_mod_aghy$covariance)
+distance_aghy <- data.frame(garden, distance = mhd_aghy)
+distance_aghy$Species <- rep("AGHY", length(mhd_aghy))
+
+plot(mhd_aghy ~ longitude, data=distance_aghy)
+cor.test(distance_aghy$longitude,distance_aghy$distance)
+
+# Elymus virginicus----
+# elvi_occ_raw <- gbif(genus="Elymus",species="virginicus",download=TRUE) 
+# saveRDS(elvi_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/elvi_occ_raw.rds")
+elvi_occ_raw <- readRDS(url("https://www.dropbox.com/scl/fi/0ssa5gepxyz28b7ykw1x8/elvi_occ_raw.rds?rlkey=4dx0q4lw2112droh73hmh7xte&dl=1"))
+
+elvi_occ_raw %>% 
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & as.numeric(lon >= -102.6458) & country == "United States") %>% 
+  unique() %>% 
+  dplyr::select(country, lon, lat, year) %>% 
+  arrange(lat) -> elvi
+
+# dim(elvi)
+
+# Thin occurrences
+elvi_occ_thinned <- thin_occurrences(elvi, US_land_clim)
+
+# Plot thinned occurrences
 plot(US_land_reprojected)
-points(elvi[,c("lon","lat")],pch=20,cex=0.5,col="red")
+points(elvi_occ_thinned[, c("lon", "lat")], pch = 20, cex = 0.5, col = "red")
+
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs).
 # Random sample indexes
-train_index_elvi <- sample(1:nrow(elvi), 0.80 * nrow(elvi))
-test_index_elvi <- setdiff(1:nrow(elvi), train_index_elvi)
-# # Split occurences in train and test
-elvi_train <- elvi[train_index_elvi, ]
-elvi_test <- elvi[test_index_elvi, ]
+train_index_elvi <- sample(1:nrow(elvi_occ_thinned), 0.80 * nrow(elvi_occ_thinned))
+test_index_elvi <- setdiff(1:nrow(elvi_occ_thinned), train_index_elvi)
+
+# Split occurrences into train and test
+elvi_train <- elvi_occ_thinned[train_index_elvi, ]
+elvi_test <- elvi_occ_thinned[test_index_elvi, ]
 
 # Extracts the environmental information for both train and test data
-elvi_etrain <- raster::extract(US_land_clim_stack,elvi_train[,c("lon", "lat")],df=TRUE)
-elvi_etrain<-na.omit(elvi_etrain)
-elvi_etrain <- elvi_etrain[,-1]
-head(elvi_etrain)
+elvi_etrain <- raster::extract(US_land_clim_stack, elvi_train[, c("lon", "lat")], df = TRUE)
+elvi_etrain <- na.omit(elvi_etrain)
+elvi_etrain <- elvi_etrain[, -1]
 
-elvi_etest <- raster::extract(US_land_clim_stack,elvi_test[,c("lon","lat")], df=TRUE)
-elvi_etest<-na.omit(elvi_etest)
-elvi_etest <- elvi_etest[,-1]
-head(elvi_etest)
+elvi_etest <- raster::extract(US_land_clim_stack, elvi_test[, c("lon", "lat")], df = TRUE)
+elvi_etest <- na.omit(elvi_etest)
+elvi_etest <- elvi_etest[, -1]
 
-env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"),threshold = 0.70,verbose = F)
+env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"), threshold = 0.70, verbose = F)
 env_vars_elvi <- env_varsL_elvi$descriptors
-print(env_vars_elvi )
+print(env_vars_elvi)
 
-#Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- 3
+# Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3 dimensions
+nvarstest <- c(3,4)
 
-# Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
+# Now we use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_elvi <- ntbox::ellipsoid_selection(env_train = elvi_etrain,
                                             env_test = elvi_etest,
                                             env_vars = env_vars_elvi,
                                             level = level,
                                             nvarstest = nvarstest,
                                             env_bg = env_bg,
-                                            omr_criteria= omr_criteria,
+                                            omr_criteria = omr_criteria,
                                             proc = proc)
 
-
 # Let’s see the first 10 rows of the results
-head(e_select_elvi,10)
-# With the following lines of code, I am going to display the model in the first row of the table
-# Best ellipsoid model for "omr_criteria" 
-bestvarcomb_elvi <- stringr::str_split(e_select_elvi$fitted_vars,",")[[1]]
+head(e_select_elvi, 10)
+
+# Best ellipsoid model for "omr_criteria"
+bestvarcomb_elvi <- stringr::str_split(e_select_elvi$fitted_vars, ",")[[1]]
+
 # Ellipsoid model (environmental space)
-best_mod_elvi <- ntbox::cov_center(elvi_etrain[,bestvarcomb_elvi],
+best_mod_elvi <- ntbox::cov_center(elvi_etrain[, bestvarcomb_elvi],
                                    mve = T,
                                    level = 0.99,
                                    vars = 1:length(bestvarcomb_elvi))
 
-
 # Projection model in geographic space
 mProj_elvi <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_elvi]],
-                             centroid = best_mod_elvi$centroid,
-                             covar = best_mod_elvi$covariance,
-                             level = 0.99,size = 3)
+                                  centroid = best_mod_elvi$centroid,
+                                  covar = best_mod_elvi$covariance,
+                                  level = 0.99, size = 3)
+
+# Mahalanobis distance for common garden populations
+mhd_elvi <- stats::mahalanobis(garden_clim[, bestvarcomb_elvi], center = best_mod_elvi$centroid, cov = best_mod_elvi$covariance)
+distance_elvi <- data.frame(garden, distance = mhd_elvi)
+distance_elvi$Species <- rep("ELVI", length(mhd_elvi))
+
+plot(mhd_elvi ~ longitude, data = distance_elvi)
+cor.test(distance_elvi$longitude, distance_elvi$distance)
 
 # Poa autumnalis---
-#poa_occ_raw <- gbif(genus="Poa",species="autumnalis",download=TRUE) 
-#saveRDS(poa_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/poa_occ_raw.rds")
-poa_occ_raw<-readRDS(url("https://www.dropbox.com/scl/fi/oip7ndyf0d99rqxcqxb0q/poa_occ_raw.rds?rlkey=920uql1gd4gahnh8utw9fz96l&dl=1"))
+# poa_occ_raw <- gbif(genus="Poa", species="autumnalis", download=TRUE) 
+# saveRDS(poa_occ_raw, file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/ELVI Model output/occurence/poa_occ_raw.rds")
+
+poa_occ_raw <- readRDS(url("https://www.dropbox.com/scl/fi/oip7ndyf0d99rqxcqxb0q/poa_occ_raw.rds?rlkey=920uql1gd4gahnh8utw9fz96l&dl=1"))
+
 poa_occ_raw %>% 
-  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & as.numeric(lon >=-102.6458) & country=="United States") %>% 
+  filter(!is.na(lat) & !is.na(lon) & !is.na(year) & as.numeric(lon >= -102.6458) & as.numeric(lat < 45) & country == "United States") %>% 
   unique() %>% 
-  dplyr::select(country,lon, lat,year)%>% 
-  arrange(lat)->poa
+  dplyr::select(country, lon, lat, year) %>% 
+  arrange(lat) -> poa
+
 dim(poa)
+
+# Thin occurrences
+poa_occ_thinned <- thin_occurrences(poa, US_land_clim)
+
+# Plot thinned occurrences
 plot(US_land_reprojected)
-points(poa[,c("lon","lat")],pch=20,cex=0.5,col="red")
+points(poa_occ_thinned[, c("lon", "lat")], pch = 20, cex = 0.5, col = "red")
 
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs).
 # Random sample indexes
-train_index_poa <- sample(1:nrow(poa), 0.80 * nrow(poa))
-test_index_poa <- setdiff(1:nrow(poa), train_index_poa)
-# # Split occurences in train and test
-poa_train <- poa[train_index_poa, ]
-poa_test <- poa[test_index_poa, ]
+train_index_poa <- sample(1:nrow(poa_occ_thinned), 0.80 * nrow(poa_occ_thinned))
+test_index_poa <- setdiff(1:nrow(poa_occ_thinned), train_index_poa)
+
+# Split occurrences into train and test
+poa_train <- poa_occ_thinned[train_index_poa, ]
+poa_test <- poa_occ_thinned[test_index_poa, ]
 
 # Extracts the environmental information for both train and test data
-poa_etrain <- raster::extract(US_land_clim_stack,poa_train[,c("lon", "lat")],df=TRUE)
-poa_etrain<-na.omit(poa_etrain)
-poa_etrain <- poa_etrain[,-1]
-head(poa_etrain)
+poa_etrain <- raster::extract(US_land_clim_stack, poa_train[, c("lon", "lat")], df = TRUE)
+poa_etrain <- na.omit(poa_etrain)
+poa_etrain <- poa_etrain[, -1]
 
-poa_etest <- raster::extract(US_land_clim_stack,poa_test[,c("lon","lat")], df=TRUE)
-poa_etest<-na.omit(poa_etest)
-poa_etest <- poa_etest[,-1]
-head(poa_etest)
+poa_etest <- raster::extract(US_land_clim_stack, poa_test[, c("lon", "lat")], df = TRUE)
+poa_etest <- na.omit(poa_etest)
+poa_etest <- poa_etest[, -1]
 
-env_varsL_poa <- ntbox::correlation_finder(cor(poa_etrain, method = "spearman"),threshold = 0.70,verbose = F)
+env_varsL_poa <- ntbox::correlation_finder(cor(poa_etrain, method = "spearman"), threshold = 0.70, verbose = F)
 env_vars_poa <- env_varsL_poa$descriptors
-print(env_vars_poa )
+print(env_vars_poa)
 
-#Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3,5, and 6 dimensions
-nvarstest <- 3
+# Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3 dimensions
+nvarstest <- c(3,4)
 
-# Now we just need to use the function ellipsoid_selection to run the model calibration and selection protocol
+# Now we use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_poa <- ntbox::ellipsoid_selection(env_train = poa_etrain,
-                                            env_test = poa_etest,
-                                            env_vars = env_vars_poa,
-                                            level = level,
-                                            nvarstest = nvarstest,
-                                            env_bg = env_bg,
-                                            omr_criteria= omr_criteria,
-                                            proc = proc)
-
+                                           env_test = poa_etest,
+                                           env_vars = env_vars_poa,
+                                           level = level,
+                                           nvarstest = nvarstest,
+                                           env_bg = env_bg,
+                                           omr_criteria = omr_criteria,
+                                           proc = proc)
 
 # Let’s see the first 10 rows of the results
-head(e_select_poa,10)
-# With the following lines of code, I am going to display the model in the first row of the table
-# Best ellipsoid model for "omr_criteria" 
-bestvarcomb_poa <- stringr::str_split(e_select_poa$fitted_vars,",")[[1]]
+head(e_select_poa, 10)
+
+# Best ellipsoid model for "omr_criteria"
+bestvarcomb_poa <- stringr::str_split(e_select_poa$fitted_vars, ",")[[1]]
+
 # Ellipsoid model (environmental space)
-best_mod_poa <- ntbox::cov_center(poa_etrain[,bestvarcomb_poa],
-                                   mve = T,
-                                   level = 0.99,
-                                   vars = 1:length(bestvarcomb_poa))
+best_mod_poa <- ntbox::cov_center(poa_etrain[, bestvarcomb_poa],
+                                  mve = T,
+                                  level = 0.99,
+                                  vars = 1:length(bestvarcomb_poa))
 
-
-# Projection model in geographic space")
+# Projection model in geographic space
 mProj_poa <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_poa]],
-                             centroid = best_mod_poa$centroid,
-                             covar = best_mod_poa$covariance,
-                             level = 0.99,size = 3)
+                                 centroid = best_mod_poa$centroid,
+                                 covar = best_mod_poa$covariance,
+                                 level = 0.99, size = 3)
 
-# mahalanobis distance 
-read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
-  unique() %>% 
-  arrange(latitude)->garden ## common garden populations
+# Mahalanobis distance for common garden populations
+mhd_poa <- stats::mahalanobis(garden_clim[, bestvarcomb_poa], center = best_mod_poa$centroid, cov = best_mod_poa$covariance)
+distance_poa <- data.frame(garden, distance = mhd_poa)
+distance_poa$Species <- rep("POAU", length(mhd_poa))
 
-garden_clim<- raster::extract(US_land_clim_stack,garden[,c("longitude","latitude")], df=TRUE)
-garden_clim <- garden_clim[,-1]
-mhd_aghy <- stats::mahalanobis(garden_clim[,bestvarcomb_aghy],center = best_mod_aghy$centroid,cov = best_mod_aghy$covariance)
-distance_aghy<-data.frame(garden,distance=mhd_aghy)
-distance_aghy$Species<-rep("AGHY",length(mhd_aghy))
+plot(mhd_poa ~ longitude, data = distance_poa)
+cor.test(distance_poa$longitude, distance_poa$distance)
 
-plot(mhd_aghy ~ longitude, data=distance_aghy)
-cor.test(distance_aghy$longitude,distance_aghy$distance)
+# Combine distance data for all species
+distance_species <- bind_rows(distance_aghy, distance_elvi, distance_poa)
+Species.label <- c("AGHY", "ELVI", "POAU")
+names(Species.label) <- c("A. hyemalis", "E. virginicus", "P. autumnalis")
 
-mhd_elvi <- stats::mahalanobis(garden_clim[,bestvarcomb_elvi],center = best_mod_elvi$centroid,cov = best_mod_elvi$covariance)
-distance_elvi<-data.frame(garden,distance=mhd_elvi)
-distance_elvi$Species<-rep("ELVI",length(mhd_elvi))
 
-plot(mhd_elvi ~ longitude, data=distance_elvi)
-cor.test(distance_elvi$longitude,distance_elvi$distance)
+# Load necessary package
+library(geosphere)
 
-mhd_poa <- stats::mahalanobis(garden_clim[,bestvarcomb_poa],center = best_mod_poa$centroid,cov = best_mod_poa$covariance)
-distance_poa<-data.frame(garden,distance=mhd_poa)
-distance_poa$Species<-rep("POAU",length(mhd_poa))
+# Function to calculate the distance to the centroid using Earth's curvature
+calculate_distance_to_centroid <- function(occurrence_data, garden_data) {
+  
+  # Filter the occurrence data (remove NA values)
+  occurrence_data <- occurrence_data %>%
+    filter(!is.na(lat) & !is.na(lon))
+  
+  # Calculate the centroid (mean latitude and longitude)
+  centroid_lon <- mean(occurrence_data$lon, na.rm = TRUE)
+  centroid_lat <- mean(occurrence_data$lat, na.rm = TRUE)
+  
+  # Calculate the distance from each garden point to the centroid using the Vincenty formula (takes curvature into account)
+  garden_data$distance_to_centroid <- distVincentySphere(
+    cbind(garden_data$longitude, garden_data$latitude),
+    c(centroid_lon, centroid_lat)
+  )
+  
+  return(garden_data)
+}
 
-plot(mhd_poa ~ longitude, data=distance_poa)
-cor.test(distance_poa$longitude,distance_poa$distance)
+# Example Usage:
+# Assuming you have the `elvi_occ_thinned` data and `garden_clim` data
+
+# Calculate the distance from each row in garden_clim to the centroid of elvi_occ_thinned
+garden_coordinate<-garden[,1:2]
+aghy_with_distance <- calculate_distance_to_centroid(aghy_occ_thinned, garden_coordinate)
+plot(distance_to_centroid ~ longitude, data = aghy_with_distance)
+cor.test(aghy_with_distance$longitude, aghy_with_distance$distance_to_centroid)
+elvi_with_distance <- calculate_distance_to_centroid(elvi_occ_thinned, garden_coordinate)
+plot(distance_to_centroid ~ longitude, data = elvi_with_distance)
+cor.test(elvi_with_distance$longitude, elvi_with_distance$distance_to_centroid)
+poa_with_distance <- calculate_distance_to_centroid(poa_occ_thinned, garden_coordinate)
+plot(distance_to_centroid ~ longitude, data = poa_with_distance)
+cor.test(poa_with_distance$longitude, poa_with_distance$distance_to_centroid)
+
+
+# Load necessary packages
+library(ggplot2)
+library(patchwork)
+
+# Function to create regression plots with coefficients and R2
+plot_regression_with_stats <- function(data, species_name) {
+  # Perform linear regression
+  lm_model <- lm(distance_to_centroid ~ longitude, data = data)
+  
+  # Get the regression coefficient and R-squared value
+  coef_val <- coef(lm_model)[2]  # Slope of the regression line
+  r2_val <- summary(lm_model)$r.squared  # R-squared value
+  
+  # Create the plot
+  p <- ggplot(data, aes(x = longitude, y = distance_to_centroid)) +
+    geom_point(color = "blue", size = 1) +  # Scatter plot points
+    geom_smooth(method = "lm", se = TRUE, color = "red") +  # Regression line
+    labs(title = paste(species_name),
+         x = "Longitude",
+         y = "Distance to Centroid (m)") +
+    annotate("text", x = -94, y = max(data$distance_to_centroid),
+             label = paste("Slope: ", round(coef_val, 2), "\nR²: ", round(r2_val, 2)),
+             hjust = 0, vjust = 1, size = 3, color = "black")
+  return(p)
+}
+
+# Create plots for each species
+plot_aghy <- plot_regression_with_stats(aghy_with_distance, "A. hyemalis")
+plot_elvi <- plot_regression_with_stats(elvi_with_distance, "E. virginicus")
+plot_poa <- plot_regression_with_stats(poa_with_distance, "P. autumnalis")
+
+# Combine the plots into one using patchwork
+combined_plot <- plot_aghy + plot_elvi + plot_poa + plot_layout(ncol = 1)
+
+# Print the combined plot
+combined_plot
 
 distance_species<-bind_rows(distance_aghy,distance_elvi,distance_poa)
 Species.label<-c("AGHY","ELVI","POAU")
@@ -361,8 +470,8 @@ ggplot(distance_species, aes(x = longitude, y = distance))+
   theme(legend.position ="none",
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
-    strip.text.x = element_text(size=12, color="black",
-                                   face="bold.italic"))
+        strip.text.x = element_text(size=12, color="black",
+                                    face="bold.italic"))
 dev.off() 
 
 
