@@ -680,14 +680,14 @@ demography_flow_distance <- list(
   N = nrow(demography_climate_distance_flow)
 )
 
-# fit_flow_distance <- stan(
-#   file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering_distance.stan",
-#   data = demography_flow_distance,
-#   warmup = sim_pars$warmup,
-#   iter = sim_pars$iter,
-#   thin = sim_pars$thin,
-#   chains = sim_pars$chains,
-#   control = sim_pars$control)
+fit_flow_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/flowering_distance.stan",
+  data = demography_flow_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control)
 
 summary(fit_flow_distance)$summary[, c("Rhat", "n_eff")]
 posterior_flow_distance <- as.array(fit_flow_distance) # Converts to an array
