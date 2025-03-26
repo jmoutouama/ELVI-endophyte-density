@@ -860,7 +860,7 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
   geom_point(data = observed_distance, aes(x = exp(clim), y = y, color = factor(endo)), size = 3) +  # Observed data points
   facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
   labs(
-    x = "Mahalanobis distance (log scale)",
+    x = "Mahalanobis distance",
     y = "Predicted relative growth",
     color = "Endophyte",
     fill = "Endophyte",
@@ -1172,15 +1172,15 @@ get_predictions_distance <- function(clim, endo, herb, species_index, posterior_
   bendoclim <- posterior_samples_distance$bendoclim[, species_index]
   bendoherb <- posterior_samples_distance$bendoherb[, species_index]
   # Predicted survival
-  predg <- b0 +
+  predf <- b0 +
     bendo * endo +
     bclim * clim +
     bherb * herb +
     bendoclim * clim * endo +
     bendoherb * endo * herb 
   # Convert logit to probability using logistic function
-  pred_probg <-predg
-  return(pred_probg)
+  pred_probf <-exp(predf)
+  return(pred_probf)
 }
 
 # Generate predictions for each combination of climate, endophyte, herbivory, and species
@@ -1237,7 +1237,7 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
   geom_point(data = observed_distance, aes(x = exp(clim), y = y, color = factor(endo)), size = 3) +  # Observed data points
   facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
   labs(
-    x = "Mahalanobis distance (log scale)",
+    x = "Mahalanobis distance",
     y = "Inflorescences",
     color = "Endophyte",
     fill = "Endophyte",
@@ -1551,7 +1551,7 @@ get_predictions_distance <- function(clim, endo, herb, species_index, posterior_
     bendoclim * clim * endo +
     bendoherb * endo * herb 
   # Convert logit to probability using logistic function
-  pred_probspk <-predspk
+  pred_probspk <-exp(predspk)
   return(pred_probspk)
 }
 
@@ -1609,7 +1609,7 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
   geom_point(data = observed_distance, aes(x = exp(clim), y = y, color = factor(endo)), size = 3) +  # Observed data points
   facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "ELVI", "2" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
   labs(
-    x = "Mahalanobis distance (log scale)",
+    x = "Mahalanobis distance",
     y = "Spikelets",
     color = "Endophyte",
     fill = "Endophyte",
