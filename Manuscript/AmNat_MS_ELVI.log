@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  14 MAR 2025 11:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  26 MAR 2025 15:10
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -299,31 +299,25 @@ File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 
 {/usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
 al/texlive/2023/texmf-dist/fonts/enc/dvips/base/8r.enc}] [2] [3] [4]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//clim_map.pdf, id=20, 650.43pt x 578.16pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//clim_map.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//clim_map.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//clim_map.pdf  used on input line 162.
+(pdftex.def)             Requested size: 469.75502pt x 417.57172pt.
 
-LaTeX Warning: File `clim_map_v1.pdf' not found on input line 162.
-
-
-./AmNat_MS_ELVI.tex:162: Package pdftex.def Error: File `clim_map_v1.pdf' not f
-ound: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.162 ...phics[width=1\textwidth]{clim_map_v1.pdf}
-                                                  
-? 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[5]
-Overfull \vbox (22.63336pt too high) has occurred while \output is active []
-
-
-[6]
+[5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
+yte-density/Figure//clim_map.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+pplx on input line 
 189.
- (/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
+
+(/usr/local/texlive/2023/texmf-dist/tex/latex/psnfss/ts1pplx.fd
 File: ts1pplx.fd 2004/09/06 font definitions for TS1/pplx.
 ) [7]
 
@@ -435,10 +429,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4632 strings out of 476025
- 71778 string characters out of 5790018
+ 4611 strings out of 476025
+ 71827 string characters out of 5790018
  1863388 words of memory out of 5000000
- 24981 multiletter control sequences out of 15000+600000
+ 24959 multiletter control sequences out of 15000+600000
  545581 words of font info for 114 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,16n,62p,488b,301s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -451,10 +445,10 @@ al/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmri.pfb></usr/local/t
 exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/local/texlive/
 2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/texlive/2023/te
 xmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on AmNat_MS_ELVI.pdf (21 pages, 137796 bytes).
+Output written on AmNat_MS_ELVI.pdf (21 pages, 269656 bytes).
 PDF statistics:
- 118 PDF objects out of 1000 (max. 8388607)
- 76 compressed objects within 1 object stream
+ 135 PDF objects out of 1000 (max. 8388607)
+ 83 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
 

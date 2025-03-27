@@ -6,11 +6,8 @@
 rm(list = ls(all=TRUE))
 # load packages
 library(sp)
-library(rgdal)
 library(raster)
 library(terra)
-library(maptools)
-library(rgeos)
 library(RColorBrewer)
 library(tidyverse)
 library(dismo)
@@ -137,6 +134,9 @@ crs(elvi) <- CRS1
 crs(garden) <- CRS1
 crs(source) <- CRS1
 
+# Prism data----
+climate_summary <- readRDS(url("https://www.dropbox.com/scl/fi/z7a57xv1ago4erqrnp0tx/prism_means.rds?rlkey=z0ddxpr7ls4k0x527k5pp2wsx&dl=1"))
+
 # Study area shapefile ----
 study_area<-terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
 study_area <- study_area[(study_area$State_Name %in% c("TEXAS","LOUISIANA")), ]
@@ -155,26 +155,11 @@ ppt_annual_norm <- terra::mean(terra::rast(unlist(ppt_annual)))
 crs(ppt_annual_norm)<-CRS1
 crop_ppt_annual <- terra::crop(ppt_annual_norm, study_area,mask=TRUE)
 col_precip <- terrain.colors(30)
+
+
 # Maps (Figure 1) ----
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/clim_map.pdf",width=9,height=8)
 op<-par(mfrow = c(2,2), mar=c(0,1,3.75,1),oma = c(0, 1, 1, 0))
-#par(mar=c(5,0,4,0),mfrow=c(2,2))
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
-#text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area,add=T)
-plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
-#mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
-legend(-106, 28.5, 
-       legend=c( "Common garden sites","Source populations"),
-       pch = c(3,21),
-       pt.cex=c(1,1),
-       col = c("black","black"),
-       pt.bg=c("black","red"),
-       cex = 0.7, 
-       bty = "n", 
-       horiz = F , 
-)
 plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
@@ -182,6 +167,7 @@ plot(aghy,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
 plot(garden,add=T,pch = 3,col="black",cex =2)
 plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+mtext("A",side = 3, adj = 0,cex=1.25,line=0.2)
 legend(-106, 28.5, 
        legend=c( "GBIF occurences","Common garden sites","Source populations"),
        pch = c(23,3,21),
@@ -200,6 +186,7 @@ plot(elvi,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
 plot(garden,add=T,pch = 3,col="black",cex =2)
 plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext(~ italic ("Elymus virginicus"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+mtext("B",side = 3, adj = 0,cex=1.25,line=0.2)
 legend(-106, 28.5, 
        legend=c( "GBIF occurences","Common garden sites","Source populations"),
        pch = c(23,3,21),
@@ -219,6 +206,7 @@ plot(poa,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
 plot(garden,add=T,pch = 3,col="black",cex =2)
 plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext( ~ italic ("Poa autumnalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
+mtext("C",side = 3, adj = 0,cex=1.25,line=0.2)
 legend(-106, 28.5, 
        legend=c( "GBIF occurences","Common garden sites","Source populations"),
        pch = c(23,3,21),
@@ -229,6 +217,10 @@ legend(-106, 28.5,
        bty = "n", 
        horiz = F , 
 )
+par(mar=c(5,3,3.75,1))  
+barplot(climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 2], names.arg = climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 2000))
+mtext("Precipitation", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+mtext("D", side = 3, adj = 0, cex = 1.25)
 par(op)
 dev.off()
 
