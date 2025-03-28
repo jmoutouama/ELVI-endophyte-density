@@ -179,7 +179,7 @@ legend(-106, 28.5,
        horiz = F , 
 )
 
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
+plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
 plot(elvi,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
@@ -218,8 +218,9 @@ legend(-106, 28.5,
        horiz = F , 
 )
 par(mar=c(5,3,3.75,1))  
-barplot(climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 2], names.arg = climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 2000))
-mtext("Precipitation", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+barplot(climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 2], names.arg = climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 2000),cex.lab=1.2)
+box()
+mtext("Precipitation (mm)", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
 mtext("D", side = 3, adj = 0, cex = 1.25)
 par(op)
 dev.off()
