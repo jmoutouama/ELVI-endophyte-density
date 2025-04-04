@@ -133,7 +133,6 @@ points(aghy_occ_thinned[, c("lon", "lat")], pch = 20, cex = 0.5, col = "red")
 # Model calibration selection using Minimum Volume Ellipsoids (MVEs)
 train_index_aghy <- sample(1:nrow(aghy_occ_thinned), 0.80 * nrow(aghy_occ_thinned))
 test_index_aghy <- setdiff(1:nrow(aghy_occ_thinned), train_index_aghy)
-
 # Split occurrences into train and test
 aghy_train <- aghy_occ_thinned[train_index_aghy, ]
 aghy_test <- aghy_occ_thinned[test_index_aghy, ]
@@ -142,9 +141,11 @@ aghy_test <- aghy_occ_thinned[test_index_aghy, ]
 aghy_etrain <- raster::extract(US_land_clim_stack, aghy_train[, c("lon", "lat")], df = TRUE)
 sum(na.omit(aghy_etrain))
 aghy_etrain <- na.omit(aghy_etrain)[,-1]
+summary(aghy_etrain)
 
 aghy_etest <- raster::extract(US_land_clim_stack, aghy_test[, c("lon", "lat")], df = TRUE)
 aghy_etest <- na.omit(aghy_etest)[,-1]
+summary(aghy_etest)
 
 # Find correlated environmental variables
 env_varsL_aghy <- ntbox::correlation_finder(cor(aghy_etrain, method = "spearman"), threshold = 0.75, verbose = F)
@@ -181,7 +182,17 @@ best_mod_aghy <- ntbox::cov_center(aghy_etrain[, bestvarcomb_aghy],
 mProj_aghy <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
                                   centroid = best_mod_aghy$centroid,
                                   covar = best_mod_aghy$covariance,
-                                  level = 0.99, size = 3)
+                                  level = 0.95, size = 3)
+box3d()
+axis3d('x--',labels=T,tick=T)
+axis3d('y+-',labels=T,tick=T)
+axis3d('z-+',labels=T,tick=T)
+title3d(xlab = "Custom X Axis", ylab = "Custom Y Axis", zlab = "Custom Z Axis")
+
+if(length(bestvarcomb_aghy)==3){
+  rgl::rglwidget(reuse = FALSE)
+}
+
 
 # Mahalanobis distance for common garden populations
 garden <- read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = FALSE) %>% 
@@ -350,7 +361,7 @@ best_mod_poa <- ntbox::cov_center(poa_etrain[, bestvarcomb_poa],
 mProj_poa <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_poa]],
                                  centroid = best_mod_poa$centroid,
                                  covar = best_mod_poa$covariance,
-                                 level = 0.99, size = 3)
+                                 level = 0.95, size = 3)
 
 # Mahalanobis distance for common garden populations
 mhd_poa <- stats::mahalanobis(garden_clim[, bestvarcomb_poa], center = best_mod_poa$centroid, cov = best_mod_poa$covariance)
@@ -397,13 +408,19 @@ garden_coordinate<-garden[,1:2]
 aghy_with_distance <- calculate_distance_to_centroid(aghy_occ_thinned, garden_coordinate)
 plot(distance_to_centroid ~ longitude, data = aghy_with_distance)
 cor.test(aghy_with_distance$longitude, aghy_with_distance$distance_to_centroid)
+aghy_geo_distance<-data.frame(site_code=garden$site_code,aghy_with_distance)
+aghy_geo_distance$Species <- rep("AGHY", nrow(aghy_geo_distance))
 elvi_with_distance <- calculate_distance_to_centroid(elvi_occ_thinned, garden_coordinate)
 plot(distance_to_centroid ~ longitude, data = elvi_with_distance)
 cor.test(elvi_with_distance$longitude, elvi_with_distance$distance_to_centroid)
+elvi_geo_distance<-data.frame(site_code=garden$site_code,elvi_with_distance)
+elvi_geo_distance$Species <- rep("ELVI", nrow(elvi_geo_distance))
 poa_with_distance <- calculate_distance_to_centroid(poa_occ_thinned, garden_coordinate)
 plot(distance_to_centroid ~ longitude, data = poa_with_distance)
 cor.test(poa_with_distance$longitude, poa_with_distance$distance_to_centroid)
-
+poa_geo_distance<-data.frame(site_code=garden$site_code,poa_with_distance)
+poa_geo_distance$Species <- rep("POAU", nrow(poa_geo_distance))
+geo_distance<-bind_rows(aghy_geo_distance,elvi_geo_distance,poa_geo_distance)
 
 # Load necessary packages
 library(ggplot2)
@@ -493,6 +510,7 @@ ggplot(distance_species, aes(x = longitude, y = distance))+
                                     face="bold.italic"))
 dev.off()
 
+distance_species<-cbind(distance_species,geo_distance=geo_distance[,4])
 saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
 
 
@@ -511,35 +529,36 @@ crs(garden_map) <- CRS1
 crs(source_map) <- CRS1
 cuts = round(seq(0, 1, length.out=10),2)
 
+library(viridis)
 
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/SDM.pdf",width=12,height=10,useDingbats = F)
 par(mar=c(5,5,2,3),mfrow=c(2,2))
-raster::plot(mProj_aghy$suitRaster,main="",xlab="Longitude", ylab="Latitude",cex.lab=1.5,col=rev(rainbow(99, start=0,end=1)),legend=TRUE)
+raster::plot(mProj_aghy$suitRaster,main="",xlab="Longitude", ylab="Latitude",cex.lab=1.5,col=viridis(99),legend=TRUE)
 #points(aghy[,c("lon","lat")],pch=23,cex=0.3,col="grey")
 #plot(garden_map,add=T,pch = 3,col="black",cex =2)
 #plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext("A",side = 3, adj = 0,cex=1.25)
 mtext(~ italic("A. hyemalis"),side = 3, adj = 0.5,cex=1.2,line=0.3)
-raster::plot(mProj_elvi$suitRaster,main="",xlab="Longitude", ylab="Latitude",cex.lab=1.5,col=rev(rainbow(99, start=0,end=1)),legend=TRUE)
+raster::plot(mProj_elvi$suitRaster,main="",xlab="Longitude", ylab="",cex.lab=1.5,col=viridis(99),legend=TRUE)
 #points(elvi[,c("lon","lat")],pch=23,cex=0.3,col="grey")
 #plot(garden_map,add=T,pch = 3,col="black",cex =2)
 #plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext("B",side = 3, adj = 0,cex=1.25)
 mtext(~ italic("E. virginicus"),side = 3, adj = 0.5,cex=1.2,line=0.3)
-raster::plot(mProj_poa$suitRaster,xlab="Longitude", ylab="Latitude",cex.lab=1.5,col=rev(rainbow(99, start=0,end=1)))
+raster::plot(mProj_poa$suitRaster,xlab="Longitude", ylab="Latitude",cex.lab=1.5,col=viridis(99))
 #points(poa[,c("lon","lat")],pch=23,cex=0.3,col="grey")
 #plot(garden_map,add=T,pch = 3,col="black",cex =2)
 #plot(source_map,add=T,pch = 21,col="black",bg="red",cex =1)
 mtext("C",side = 3, adj = 0,cex=1.25)
 mtext(~ italic("P. autumnalis"),side = 3, adj = 0.5,cex=1.2,line=0.3)
-legend(-119, 25.5, 
-       legend=c( "GBIF occurences","Common garden sites"),
-       pch = c(23,3),
-       pt.cex=c(1.5,1.5),
-       col = c("grey50","black"),
-       pt.bg=c("grey","black"),
-       cex = 1, 
-       bty = "n", 
-       horiz = F , 
-)
+# legend(-119, 25.5, 
+#        legend=c( "GBIF occurences","Common garden sites"),
+#        pch = c(23,3),
+#        pt.cex=c(1.5,1.5),
+#        col = c("grey50","black"),
+#        pt.bg=c("grey","black"),
+#        cex = 1, 
+#        bty = "n", 
+#        horiz = F , 
+# )
 dev.off()

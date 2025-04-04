@@ -1,0 +1,60 @@
+This is BibTeX, Version 0.99d (TeX Live 2023)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Range_limit.aux
+The style file: apalike.bst
+Database file #1: References.bib
+Repeated entry---line 50 of file References.bib
+ : @article{gundel2020simulated
+ :                             ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 72 of file References.bib
+ : @article{donald2021context
+ :                           ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 551 of file References.bib
+ : @article{yule2013costs
+ :                       ,
+I'm skipping whatever remains of this entry
+Warning--empty journal in fine1975vectors
+You've used 41 entries,
+            1935 wiz_defined-function locations,
+            744 strings with 11981 characters,
+and the built_in function-call counts, 17098 in all, are:
+= -- 1687
+> -- 734
+< -- 20
++ -- 259
+- -- 248
+* -- 1560
+:= -- 2981
+add.period$ -- 121
+call.type$ -- 41
+change.case$ -- 327
+chr.to.int$ -- 40
+cite$ -- 42
+duplicate$ -- 572
+empty$ -- 1167
+format.name$ -- 309
+if$ -- 3268
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 39
+newline$ -- 206
+num.names$ -- 123
+pop$ -- 242
+preamble$ -- 1
+purify$ -- 329
+quote$ -- 0
+skip$ -- 435
+stack$ -- 0
+substring$ -- 1376
+swap$ -- 48
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 244
+warning$ -- 1
+while$ -- 148
+width$ -- 0
+write$ -- 527
+(There were 3 error messages)
