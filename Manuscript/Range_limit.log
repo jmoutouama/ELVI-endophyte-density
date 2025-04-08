@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  4 APR 2025 12:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  8 APR 2025 12:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1038,42 +1038,34 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
  [2] [3] [4]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//clim_map.pdf, id=132, 650.43pt x 578.16pt>
+sity/Figure//clim_map.pdf, id=133, 650.43pt x 578.16pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//clim_map.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//clim_map.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//clim_map.pdf  used on input line 226.
+ithub/ELVI-endophyte-density/Figure//clim_map.pdf  used on input line 236.
 (pdftex.def)             Requested size: 469.75502pt x 417.57172pt.
+ [5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endop
+hyte-density/Figure//clim_map.pdf>]
+
+LaTeX Warning: Reference `sup:ppc_surv' on page 7 undefined on input line 283.
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[5] [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endoph
-yte-density/Figure//clim_map.pdf>]
-
-LaTeX Warning: Reference `fig:climate' on page 7 undefined on input line 266.
-
-[7]
-
-LaTeX Warning: Reference `sup:ppc_surv' on page 8 undefined on input line 318.
-
-
-LaTeX Warning: Reference `sup:ppc_growth' on page 8 undefined on input line 318
+LaTeX Warning: Reference `sup:ppc_growth' on page 7 undefined on input line 283
 .
 
 
-LaTeX Warning: Reference `sup:ppc_spikelet' on page 8 undefined on input line 3
-18.
+LaTeX Warning: Reference `sup:ppc_spikelet' on page 7 undefined on input line 2
+83.
 
 
-LaTeX Warning: Reference `sup:ppc_flowering' on page 8 undefined on input line 
-318.
+LaTeX Warning: Reference `sup:ppc_flowering' on page 7 undefined on input line 
+283.
 
-[8] (./Range_limit.bbl [9] [10] [11]) [12] [13
+[7] [8] (./Range_limit.bbl [9] [10] [11]) [12] [13
 
-] (./Range_limit.aux)
+] [14] (./Range_limit.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -1085,13 +1077,13 @@ Package rerunfilecheck Info: File `Range_limit.out' has not changed.
 ### semi simple group (level 1) entered at line 163 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 28371 strings out of 476025
- 524999 string characters out of 5790018
- 1874388 words of memory out of 5000000
- 47607 multiletter control sequences out of 15000+600000
- 617633 words of font info for 597 fonts, out of 8000000 for 9000
+ 28383 strings out of 476025
+ 525121 string characters out of 5790018
+ 1872388 words of memory out of 5000000
+ 47608 multiletter control sequences out of 15000+600000
+ 618919 words of font info for 604 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 99i,16n,94p,1008b,817s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 99i,15n,94p,1008b,789s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmss8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/
@@ -1101,10 +1093,10 @@ mtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/t
 exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Range_limit.pdf (13 pages, 260830 bytes).
+Output written on Range_limit.pdf (14 pages, 265049 bytes).
 PDF statistics:
- 296 PDF objects out of 1000 (max. 8388607)
- 252 compressed objects within 3 object streams
- 66 named destinations out of 1000 (max. 500000)
- 182802 words of extra memory for PDF output out of 184870 (max. 10000000)
+ 291 PDF objects out of 1000 (max. 8388607)
+ 246 compressed objects within 3 object streams
+ 65 named destinations out of 1000 (max. 500000)
+ 186898 words of extra memory for PDF output out of 221844 (max. 10000000)
 
