@@ -13,6 +13,7 @@ library(tidyverse)
 library(dismo)
 library(prism)
 library(MESS)
+library(mgcv)
 # Climatic data----
 ## Data from PRISM---- 
 # making a folder to store prism data
@@ -134,9 +135,11 @@ crs(elvi) <- CRS1
 crs(garden) <- CRS1
 crs(source) <- CRS1
 
-# Prism data----
-climate_summary <- readRDS(url("https://www.dropbox.com/scl/fi/z7a57xv1ago4erqrnp0tx/prism_means.rds?rlkey=z0ddxpr7ls4k0x527k5pp2wsx&dl=1"))
-
+# Climatic and distance data----
+#climate_summary <- readRDS(url("https://www.dropbox.com/scl/fi/z7a57xv1ago4erqrnp0tx/prism_means.rds?rlkey=z0ddxpr7ls4k0x527k5pp2wsx&dl=1"))
+distance_summary <- readRDS(url("https://www.dropbox.com/scl/fi/kv9j0n2pbiqgrfnm5a4wn/distance_species.rds?rlkey=vni9e8tjw9enwki0mwgnllzjc&dl=1"))
+distance_summary$geo_distance<-distance_summary$geo_distance/1000
+distance_summary_ordered <- distance_summary[order(distance_summary$longitude), ]
 # Study area shapefile ----
 study_area<-terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
 study_area <- study_area[(study_area$State_Name %in% c("TEXAS","LOUISIANA")), ]
@@ -155,12 +158,13 @@ ppt_annual_norm <- terra::mean(terra::rast(unlist(ppt_annual)))
 crs(ppt_annual_norm)<-CRS1
 crop_ppt_annual <- terra::crop(ppt_annual_norm, study_area,mask=TRUE)
 col_precip <- terrain.colors(30)
+col_precip_rev <- rev(col_precip)
 
 
 # Maps (Figure 1) ----
 pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/clim_map.pdf",width=9,height=8)
-op<-par(mfrow = c(2,2), mar=c(0,1,3.75,1),oma = c(0, 1, 1, 0))
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
+op <- par(mfrow = c(2,2), mar=c(0,1,3.75,1), oma = c(0, 2, 1, 0)) 
+plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip_rev,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
 plot(aghy,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
@@ -179,7 +183,7 @@ legend(-106, 28.5,
        horiz = F , 
 )
 
-plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip,cex.lab=1.2)
+plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip_rev,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
 plot(elvi,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
@@ -199,7 +203,7 @@ legend(-106, 28.5,
 )
 
 par(mar=c(0,3,3.75,1))
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip,cex.lab=1.2)
+plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip_rev,cex.lab=1.2)
 #text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
 plot(study_area,add=T)
 plot(poa,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
@@ -217,11 +221,63 @@ legend(-106, 28.5,
        bty = "n", 
        horiz = F , 
 )
-par(mar=c(5,3,3.75,1))  
-barplot(climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 2], names.arg = climate_summary[order(climate_summary[, 2], decreasing = FALSE), ][, 1], col = "#E69F00", xlab = "Sites", ylab = "Mean", main = "", ylim = c(0, 2000),cex.lab=1.2)
-box()
-mtext("Precipitation (mm)", side = 3, adj = 0.5, cex = 1.2, line = 0.3)
+par(mar=c(5,4,3.75,1))  # Was 3, now 4 for left margin
+#dev.new(width = 7, height = 7) 
+plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"],type = "l",lty =1,xlab="Longitude",ylab="Distance from geographic center",cex.lab=1.2,col="#000000",cex.axis=0.8)
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"],pch = 16, cex = 2,col="#000000")
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"],col="#E69F00")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"],pch = 16, cex = 2,col="#E69F00")
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"],col="#56B4E9")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"],pch = 16, cex = 2,col="#56B4E9")
+legend("bottomleft", 
+       legend = c("AGHY", "ELVI", "POAU"), 
+       col = c("#000000", "#E69F00", "#56B4E9"), 
+       lwd = 2,            # Line width for the curves
+       lty = 1,            # Line type for the curves (solid)
+       pch = 16,           # Point symbol (circle)
+       pt.cex = 2,         # Size of the points in the legend
+       cex = 1)     
 mtext("D", side = 3, adj = 0, cex = 1.25)
+# === INSET PLOT inside Panel D ===
+# Get coordinates of current plot region (Panel D)
+usr <- par("usr")  # xmin, xmax, ymin, ymax
+
+# Define inset plot region relative to plot coordinates
+x_inset_min <- usr[1] + 0.55 * (usr[2] - usr[1])
+x_inset_max <- usr[1] + 1.00 * (usr[2] - usr[1])
+y_inset_min <- usr[3] + 0.35 * (usr[4] - usr[3])
+y_inset_max <- usr[3] + 1.05 * (usr[4] - usr[3])
+
+# Enable plotting over current panel
+par(xpd = NA)
+
+# Use fig = c(...) again but this time match device coordinates
+par(fig = c(grconvertX(c(x_inset_min, x_inset_max), from="user", to="ndc"),
+            grconvertY(c(y_inset_min, y_inset_max), from="user", to="ndc")),
+    new = TRUE, mar = c(1, 1, 0.5, 0.5))
+par(mgp = c(1.3, 0.5, 0))  # Move y-axis label closer
+# Now the inset plot, this time inside the panel
+plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],
+     distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"],
+     type = "l", col = "#000000", axes = TRUE, xlab = "", ylab = "MD",ylim=c(0,27),cex.axis=0.6)
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],
+       distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"],pch=16, col = "#000000")
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],
+      distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"],
+      col = "#E69F00")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],
+      distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"],
+      col = "#E69F00",pch=16)
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],
+      distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"],
+      col = "#56B4E9")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],
+      distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"],
+      col = "#56B4E9",pch=16)
+# Custom dashed axes
+# axis(1, lty = 2, cex.axis = 0.6)
+# axis(2, lty = 2, cex.axis = 0.6)
+#box(lty = 2,lwd = 1.2)
 par(op)
 dev.off()
 
