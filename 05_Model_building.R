@@ -841,7 +841,7 @@ demography_climate_distance %>%
   subset(tiller_t1 > 0) %>%
   dplyr::select(
     Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
-    tiller_t, spikelet_t1, sum_ppt, mean_pet, mean_spei, distance
+    tiller_t, spikelet_t1, sum_ppt, mean_pet, mean_spei, distance,geo_distance
   ) %>%
   na.omit() %>%
   mutate(
@@ -858,7 +858,8 @@ demography_climate_distance %>%
     ppt = log(sum_ppt),
     pet = log(mean_pet),
     spei = mean_spei,
-    distance = log(distance)
+    distance = log(distance),
+    geo_distance=log(geo_distance)
   ) -> demography_climate_distance_spik
 
 ### Precipitation
@@ -987,7 +988,50 @@ bayesplot::mcmc_trace(posterior_spik_distance,
                       )
 ) + theme_bw()
 
+### Distance from niche centroid
+demography_spik_geo_distance <- list(
+  nSpp = demography_climate_distance_spik$Species %>% n_distinct(),
+  nSite = demography_climate_distance_spik$Site %>% n_distinct(),
+  nPop = demography_climate_distance_spik$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_spik$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_spik$Species,
+  site = demography_climate_distance_spik$Site,
+  pop = demography_climate_distance_spik$Population,
+  plot = demography_climate_distance_spik$site_species_plot,
+  clim = as.vector(demography_climate_distance_spik$geo_distance),
+  endo = demography_climate_distance_spik$Endo,
+  herb = demography_climate_distance_spik$Herbivory,
+  size = demography_climate_distance_spik$log_size_t0,
+  y = demography_climate_distance_spik$spikelet_t1,
+  N = nrow(demography_climate_distance_spik)
+)
+
+fit_spik_geo_distance <- stan(
+  file = "/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/stan/Spikelet_distance.stan",
+  data = demography_spik_geo_distance,
+  warmup = sim_pars$warmup,
+  iter = sim_pars$iter,
+  thin = sim_pars$thin,
+  chains = sim_pars$chains,
+  control = sim_pars$control
+)
+
+summary(fit_spik_geo_distance)$summary[, c("Rhat", "n_eff")]
+posterior_spik_geo_distance <- as.array(fit_spik_geo_distance) # Converts to an array
+bayesplot::mcmc_trace(posterior_spik_geo_distance,
+                      pars = quote_bare(
+                        b0[1], b0[2],
+                        bendo[1], bendo[2],
+                        bherb[1], bherb[2],
+                        bclim[1], bclim[2],
+                        bendoclim[1], bendoclim[2],
+                        bendoherb[1], bendoherb[2]
+                      )
+) + theme_bw()
+
+
 ## Save RDS file for further use
 # saveRDS(fit_spik_ppt, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_ppt.rds')
 # saveRDS(fit_spik_spei, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_spei.rds')
-# saveRDS(fit_spik_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_distance.rds')
+saveRDS(fit_spik_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_distance.rds')
+saveRDS(fit_spik_geo_distance, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/Endo model output/fit_spik_geo_distance.rds')

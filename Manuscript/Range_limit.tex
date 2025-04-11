@@ -409,21 +409,48 @@ This was necessary due to the varying success of the heat treatment and differen
 Leaf tissues were stained with aniline blue lactic acid and viewed under a compound microscope at 200x-400x to identify fungal hyphae. 
 The immunoblot assay (Phytoscreen field tiller endophyte detection kit, Agrinostics Ltd. Co.) uses monoclonal antibodies that target proteins of Epichloë spp. and chromagen to visually indicate presence or absence. Both methods yield similar detection rates.  
 
-\begin{table}[ht]
+%\begin{table}[ht]
+%\centering
+%\caption{Populations and Coordinates}
+%\begin{tabular}{|p{2in}|l|l|l|}
+%\hline
+%\textbf{Population} & \textbf{Location} & \textbf{Coordinates} & \textbf{NE+ / NE-} \\ \hline
+%Sam Houston State University Field Station  & Huntsville, TX & 30°44'30.5"N, 95°28'28.2"W & NE+ = 39, NE- = 50 \\ \hline
+%Texas Tech University  & Junction, TX & 30°28'18.2"N, 99°47'01.7"W & NE+ = 49, NE- = 83 \\ \hline
+%Palmetto State Park  & Palmetto, TX & 29.591623, -97.584781 & NE+ = 250, NE- = 192 \\ \hline
+%Jean Lafitte National Historical Park and Preserve  & Jean Lafitte, LA & 29.785105, -90.114933 & NE+ = 83, NE- = 94 \\ \hline
+%\end{tabular}
+%\end{table}
+
+\begin{table}[H]
+\caption{Model comparison by vital rate using ELPD differences. Best models are bolded.}
 \centering
-\caption{Populations and Coordinates}
-\begin{tabular}{|p{2in}|l|l|l|}
+\begin{tabular}{|l|l|r|r|}
 \hline
-\textbf{Population} & \textbf{Location} & \textbf{Coordinates} & \textbf{NE+ / NE-} \\ \hline
-Sam Houston State University Field Station  & Huntsville, TX & 30°44'30.5"N, 95°28'28.2"W & NE+ = 39, NE- = 50 \\ \hline
-Texas Tech University  & Junction, TX & 30°28'18.2"N, 99°47'01.7"W & NE+ = 49, NE- = 83 \\ \hline
-Palmetto State Park  & Palmetto, TX & 29.591623, -97.584781 & NE+ = 250, NE- = 192 \\ \hline
-Jean Lafitte National Historical Park and Preserve  & Jean Lafitte, LA & 29.785105, -90.114933 & NE+ = 83, NE- = 94 \\ \hline
+\textbf{Vital rate} & \textbf{Model} & \textbf{elpd\_diff} & \textbf{se\_diff} \\
+\hline
+Survival   & \textbf{model1} & \textbf{0.0}   & \textbf{0.0} \\
+           & model2          & -1.0           & 1.5          \\
+           & model3          & -1.0           & 1.5          \\
+\hline
+Growth     & \textbf{model3} & \textbf{0.0}   & \textbf{0.0} \\
+           & model2          & -1.3           & 2.0          \\
+           & model1          & -2.1           & 2.2          \\
+\hline
+Flowering  & \textbf{model2} & \textbf{0.0}   & \textbf{0.0} \\
+           & model3          & 0.0            & 3.2          \\
+           & model1          & -1.3           & 3.9          \\
+%\hline
+%Spikelet   & \textbf{model2} & \textbf{0.0}   & \textbf{0.0} \\
+%           & model3          & -4.6           & 4.2          \\
+%           & model1          & -6.4           & 5.3          \\
+\hline
 \end{tabular}
+\label{tab:elpd_vital_rates}
 \end{table}
 
 
-%The vegetatively cloned plants were distributed across all sites intentionally to allow for comparison of endophyte hyphae densities.
+
 
 
 %\section {Supporting Figures}
