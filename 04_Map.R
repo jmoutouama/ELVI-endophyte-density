@@ -162,122 +162,128 @@ col_precip_rev <- rev(col_precip)
 
 
 # Maps (Figure 1) ----
-pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/clim_map.pdf",width=9,height=8)
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/clim_map1.pdf",width=9,height=8)
 op <- par(mfrow = c(2,2), mar=c(0,1,3.75,1), oma = c(0, 2, 1, 0)) 
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip_rev,cex.lab=1.2)
-#text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area,add=T)
-plot(aghy,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
-plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
-mtext(~ italic("Agrostis hyemalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
-mtext("A",side = 3, adj = 0,cex=1.25,line=0.2)
-legend(-106, 28.5, 
-       legend=c( "GBIF occurences","Common garden sites","Source populations"),
-       pch = c(23,3,21),
-       pt.cex=c(0.55,1,1),
-       col = c("grey50","black","black"),
-       pt.bg=c("grey","black","red"),
+
+# First plot (A)
+plot(crop_ppt_annual, xlab="Longitude", ylab="Latitude", col=col_precip_rev, cex.lab=1.2)
+plot(study_area, add=T)
+plot(aghy, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
+plot(garden, add=T, pch = 3, col="black", cex=2)
+plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+mtext(~ italic("Agrostis hyemalis"), side = 3, adj = 0.5, cex=1.25, line=0.2)
+mtext("A", side = 3, adj = 0, cex=1.25, line=0.2)
+legend(-106, 28, 
+       legend = c("GBIF occurences", "Common garden sites", "Source populations"),
+       pch = c(23, 3, 21),
+       pt.cex = c(0.55, 1, 1),
+       col = c("grey50", "black", "black"),
+       pt.bg = c("grey", "black", "red"),
        cex = 0.7, 
        bty = "n", 
-       horiz = F , 
-)
+       horiz = F)
 
-plot(crop_ppt_annual,xlab="Longitude",ylab="",col=col_precip_rev,cex.lab=1.2)
-#text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area,add=T)
-plot(elvi,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
-plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
-mtext(~ italic ("Elymus virginicus"),side = 3, adj = 0.5,cex=1.25,line=0.2)
-mtext("B",side = 3, adj = 0,cex=1.25,line=0.2)
-legend(-106, 28.5, 
-       legend=c( "GBIF occurences","Common garden sites","Source populations"),
-       pch = c(23,3,21),
-       pt.cex=c(0.55,1,1),
-       col = c("grey50","black","black"),
-       pt.bg=c("grey","black","red"),
+# Second plot (B)
+plot(crop_ppt_annual, xlab="Longitude", ylab="", col=col_precip_rev, cex.lab=1.2)
+plot(study_area, add=T)
+plot(elvi, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
+plot(garden, add=T, pch = 3, col="black", cex=2)
+plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+mtext(~ italic ("Elymus virginicus"), side = 3, adj = 0.5, cex=1.25, line=0.2)
+mtext("B", side = 3, adj = 0, cex=1.25, line=0.2)
+legend(-106, 28, 
+       legend = c("GBIF occurences", "Common garden sites", "Source populations"),
+       pch = c(23, 3, 21),
+       pt.cex = c(0.55, 1, 1),
+       col = c("grey50", "black", "black"),
+       pt.bg = c("grey", "black", "red"),
        cex = 0.7, 
        bty = "n", 
-       horiz = F , 
-)
+       horiz = F)
 
+# Third plot (C)
 par(mar=c(0,3,3.75,1))
-plot(crop_ppt_annual,xlab="Longitude",ylab="Latitude",col=col_precip_rev,cex.lab=1.2)
-#text(x=-85, y=34, "Precipitation (mm)", srt=-90, cex=0.8, xpd=NA, pos=4)
-plot(study_area,add=T)
-plot(poa,add=T,pch = 23,col="grey50",bg="grey",cex =0.55)
-plot(garden,add=T,pch = 3,col="black",cex =2)
-plot(source,add=T,pch = 21,col="black",bg="red",cex =1)
-mtext( ~ italic ("Poa autumnalis"),side = 3, adj = 0.5,cex=1.25,line=0.2)
-mtext("C",side = 3, adj = 0,cex=1.25,line=0.2)
-legend(-106, 28.5, 
-       legend=c( "GBIF occurences","Common garden sites","Source populations"),
-       pch = c(23,3,21),
-       pt.cex=c(0.55,1,1),
-       col = c("grey50","black","black"),
-       pt.bg=c("grey","black","red"),
+plot(crop_ppt_annual, xlab="Longitude", ylab="Latitude", col=col_precip_rev, cex.lab=1.2)
+plot(study_area, add=T)
+plot(poa, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
+plot(garden, add=T, pch = 3, col="black", cex=2)
+plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+mtext( ~ italic("Poa autumnalis"), side = 3, adj = 0.5, cex=1.25, line=0.2)
+mtext("C", side = 3, adj = 0, cex=1.25, line=0.2)
+legend(-106, 28, 
+       legend = c("GBIF occurences", "Common garden sites", "Source populations"),
+       pch = c(23, 3, 21),
+       pt.cex = c(0.55, 1, 1),
+       col = c("grey50", "black", "black"),
+       pt.bg = c("grey", "black", "red"),
        cex = 0.7, 
        bty = "n", 
-       horiz = F , 
-)
-par(mar=c(5,4,3.75,1))  # Was 3, now 4 for left margin
-#dev.new(width = 7, height = 7) 
-plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"],type = "l",lty =1,xlab="Longitude",ylab="Distance from geographic center",cex.lab=1.2,col="#000000",cex.axis=0.8)
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"],pch = 16, cex = 2,col="#000000")
-lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"],col="#E69F00")
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"],pch = 16, cex = 2,col="#E69F00")
-lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"],col="#56B4E9")
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"],pch = 16, cex = 2,col="#56B4E9")
-legend("bottomleft", 
-       legend = c("AGHY", "ELVI", "POAU"), 
-       col = c("#000000", "#E69F00", "#56B4E9"), 
+       horiz = F)
+
+# Fourth plot (D)
+par(mar=c(5,4,3.75,1))  
+plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
+     distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"], 
+     type = "l", lty = 1, xlab="Longitude", ylab="Distance from geographic center", 
+     cex.lab=1.2, col="#000000", cex.axis=0.8, ylim=c(600,1500))
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
+       distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"], 
+       pch = 16, cex = 2, col="#000000")
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
+      distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"], 
+      col="#E69F00")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
+       distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"], 
+       pch = 16, cex = 2, col="#E69F00")
+lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
+      distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"], 
+      col="#56B4E9")
+points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
+       distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"], 
+       pch = 16, cex = 2, col="#56B4E9")
+legend("topright",
+       legend = c("AGHY", "ELVI", "POAU"),
+       col = c("#000000", "#E69F00", "#56B4E9"),
        lwd = 2,            # Line width for the curves
        lty = 1,            # Line type for the curves (solid)
        pch = 16,           # Point symbol (circle)
        pt.cex = 2,         # Size of the points in the legend
-       cex = 1)     
+       cex = 1)
+
 mtext("D", side = 3, adj = 0, cex = 1.25)
-# === INSET PLOT inside Panel D ===
-# Get coordinates of current plot region (Panel D)
-usr <- par("usr")  # xmin, xmax, ymin, ymax
 
-# Define inset plot region relative to plot coordinates
-x_inset_min <- usr[1] + 0.55 * (usr[2] - usr[1])
-x_inset_max <- usr[1] + 1.00 * (usr[2] - usr[1])
-y_inset_min <- usr[3] + 0.35 * (usr[4] - usr[3])
-y_inset_max <- usr[3] + 1.05 * (usr[4] - usr[3])
+# Inset plot inside Panel D (move to bottom left)
+# usr <- par("usr")
+# x_inset_min <- usr[1] + 0.05 * (usr[2] - usr[1])
+# x_inset_max <- usr[1] + 0.45 * (usr[2] - usr[1])
+# y_inset_min <- usr[3] + 0.05 * (usr[4] - usr[3])
+# y_inset_max <- usr[3] + 0.57 * (usr[4] - usr[3])
+# 
+# par(xpd = NA)
+# par(fig = c(grconvertX(c(x_inset_min, x_inset_max), from="user", to="ndc"),
+#             grconvertY(c(y_inset_min, y_inset_max), from="user", to="ndc")),
+#     new = TRUE, mar = c(1, 1, 0.5, 0.5))
+# 
+# par(mgp = c(1.3, 0.5, 0))
+# plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
+#      distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"], 
+#      type = "l", col = "#000000", axes = TRUE, xlab = "", ylab = "DNC", ylim=c(0,40), cex.axis=0.5)
+# points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
+#        distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"], 
+#        pch=16, col = "#000000")
+# lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
+#       distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"], 
+#       col = "#E69F00")
+# points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
+#        distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"], 
+#        col = "#E69F00", pch=16)
+# lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
+#       distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"], 
+#       col = "#56B4E9")
+# points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
+#        distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"], 
+#        col = "#56B4E9", pch=16)
 
-# Enable plotting over current panel
-par(xpd = NA)
-
-# Use fig = c(...) again but this time match device coordinates
-par(fig = c(grconvertX(c(x_inset_min, x_inset_max), from="user", to="ndc"),
-            grconvertY(c(y_inset_min, y_inset_max), from="user", to="ndc")),
-    new = TRUE, mar = c(1, 1, 0.5, 0.5))
-par(mgp = c(1.3, 0.5, 0))  # Move y-axis label closer
-# Now the inset plot, this time inside the panel
-plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],
-     distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"],
-     type = "l", col = "#000000", axes = TRUE, xlab = "", ylab = "MD",ylim=c(0,27),cex.axis=0.6)
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"],
-       distance_summary_ordered$distance[distance_summary_ordered$Species=="AGHY"],pch=16, col = "#000000")
-lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],
-      distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"],
-      col = "#E69F00")
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"],
-      distance_summary_ordered$distance[distance_summary_ordered$Species=="ELVI"],
-      col = "#E69F00",pch=16)
-lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],
-      distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"],
-      col = "#56B4E9")
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],
-      distance_summary_ordered$distance[distance_summary_ordered$Species=="POAU"],
-      col = "#56B4E9",pch=16)
-# Custom dashed axes
-# axis(1, lty = 2, cex.axis = 0.6)
-# axis(2, lty = 2, cex.axis = 0.6)
-#box(lty = 2,lwd = 1.2)
 par(op)
 dev.off()
 

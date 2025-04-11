@@ -212,10 +212,11 @@ Our experiment was design to test the following hypotheses:
 %--------------------------------------------------------------------
 \section*{Materials and methods}
 \subsection*{Study system}
-Our study was conducted across seven sites along an aridity gradient spanning Louisiana and Texas in the United States (Fig.~\ref{fig:site}).  
+Our study was conducted across seven sites along a geographic and climatic gradient spanning Louisiana and Texas in the United States (Fig.~\ref{fig:site}; Fig.\ref{sup:md}).  
 At each site, we established eight plots (1.5 m $\times$ 1.5 m) containing individuals of three cool-season perennial grasses native to woodland and prairie habitats of eastern North America \citep{shaw2011guide}: \emph{Agrostis hyemalis}, \emph{Elymus virginicus}, and \emph{Poa autumnalis} (subfamily Pooideae).  
 These species are capable of both self-pollination and outcrossing \citep{church1958artificial}.  
-They typically host seed-transmitted fungal endophytes; however, \emph{Poa autumnalis} may also acquire endophytes via horizontal transmission \citep{gundel2020simulated}.
+They typically host seed-transmitted fungal endophytes.
+%however, \emph{Poa autumnalis} may also acquire endophytes via horizontal transmission \citep{gundel2020simulated}.
 Seeds were collected in summer–fall 2006 from naturally symbiotic populations (source populations) of the three focal host species. These seeds were either heat-treated to eliminate symbionts or left untreated, thereby generating symbiont-free ($E^-$) and symbiotic ($E^+$) plants from the same genetic lineages as the source populations.
 
 Across all sites, each plot was randomly assigned one of four initial endophyte frequency treatments (80\%, 60\%, 40\%, or 20\%) and one of two herbivory treatments (herbivore exclusion or herbivore access).  
@@ -233,14 +234,14 @@ We used the number of spikelets from these three tillers to estimate the average
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{clim_map.pdf}
-\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) Agrostis hyemalis, B) Elymus virginicus, and C) Poa autumnalis. Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and the niche centroid (MD) for each species.}
+\includegraphics[width=1\textwidth]{clim_map1.pdf}
+\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) Agrostis hyemalis, B) Elymus virginicus, and C) Poa autumnalis. Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
 \label{fig:site}
 \end{figure}
 
 
 \subsection*{Models building and models selection}
-To assess how stress associated with aridity affects plant–fungal  interactions, we developed four candidate models for each vital rate (survival, growth, flowering, and fertility).  
+To assess how stress associated with aridity affects plant–fungal  interactions, we developed four candidate models for each vital rate (survival, growth, and fertility).  
 Each vital rate was modeled using a grand mean intercept ($\beta_{0}$), slopes for variation in each covariate ($\beta_{1}$, $\beta_{2}$ and $\beta_{3}$), and interaction terms between covariates ($\beta_{4}$, $\beta_{5}$ and $\beta_{6}$).  
 Each model included normally distributed random effects to account for site-to-site variation ($\phi \sim N(0,\ \sigma_{site})$), plot-to-plot variation ($\rho \sim N(0,\ \sigma_{plot})$), and source-to-source variation associated with the provenance of transplants used in the common garden ($\omega \sim N(0,\ \sigma_{source})$) (Eq.~\ref{eq:candidates}).
 
@@ -276,7 +277,7 @@ Each model included normally distributed random effects to account for site-to-s
 \end{aligned}
 \end{equation}
 
-\noindent Where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, \( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, \( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte presence (binary), and \( \text{herb} \) represents Herbivory (binary). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
+\noindent where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, \( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, \( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte presence (binary), and \( \text{herb} \) represents Herbivory (binary). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
 
 Survival was modeled using a Bernoulli distribution, growth with a Gaussian distribution, flowering with a negative binomial distribution, and fertility (number of spikelets) also with a negative binomial distribution.
 To assess the goodness-of-fit of the models, we performed posterior predictive checks \citep{gelman2000diagnostic, berkhof2000posterior}.  
@@ -371,7 +372,7 @@ This research was supported by National Science Foundation Division of Environme
 \centerline{\Large{\textbf{Supporting Information}}}
 \subsection*{Study design}
 \paragraph {Experimental Design} 
-To understand the demographic effects of endophyte symbiosis from core to edge of the host range, we established  common gardens at 7 sites across the geographic range of \emph {Elymus virginicus} (fig. \ref{fig:site}).
+To understand the demographic effects of endophyte symbiosis from core to edge of the host range, we established  common gardens at 7 sites across the geographic range of \emph {Elymus virginicus} (Fig. \ref{sup:md}).
 Experimental sites spanned an aridity gradient (temperature gradient).
 Common gardens were established in 8 plots per site. 
 Plots were 1.5m * 1.5m and the area was tilled of existing vegetation to control for native plant competition.
@@ -386,8 +387,16 @@ For herbivory exclusion plots, we enclosed them with 1.2m tall mesh fencing to p
 For herbivores accessibility plots (control treatment), we half enclosed the plots with the mesh netting.
 %We stationed one HOBO MX2307 data logger at each site to collect temperature and volumetric water content in the soil every hour. 
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{distance_vs_longitude_gam.pdf}
+\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) Agrostis hyemalis, B) Elymus virginicus, and C) Poa autumnalis. Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
+\label{sup:md}
+\end{figure}
+
+
 \paragraph {Source populations and Identification of individual endophyte status} 
-Plants used  in the common garden experiment were derived from natural populations throughout the native range in the south-central US (fig.\ref{fig:site}, \jacob{Table X}{We need this table  in the Appendix}). 
+Plants used  in the common garden experiment were derived from natural populations throughout the native range in the south-central US. 
 At each of these natural populations we collected seeds. 
 Some of the seeds of \emph{E. virginicus} were heat treated to produce endophyte negative plants ($E^-$) . 
 To do so, we placed these seeds  in a drying oven set at 60°C for approximately five days (120 hours). 
@@ -399,6 +408,21 @@ Before planting in the field, we confirmed the endophyte status ($E^+$ or $E^-$)
 This was necessary due to the varying success of the heat treatment and differences in the prevalence of endophytes between the natural populations. 
 Leaf tissues were stained with aniline blue lactic acid and viewed under a compound microscope at 200x-400x to identify fungal hyphae. 
 The immunoblot assay (Phytoscreen field tiller endophyte detection kit, Agrinostics Ltd. Co.) uses monoclonal antibodies that target proteins of Epichloë spp. and chromagen to visually indicate presence or absence. Both methods yield similar detection rates.  
+
+\begin{table}[ht]
+\centering
+\caption{Populations and Coordinates}
+\begin{tabular}{|p{2in}|l|l|l|}
+\hline
+\textbf{Population} & \textbf{Location} & \textbf{Coordinates} & \textbf{NE+ / NE-} \\ \hline
+Sam Houston State University Field Station  & Huntsville, TX & 30°44'30.5"N, 95°28'28.2"W & NE+ = 39, NE- = 50 \\ \hline
+Texas Tech University  & Junction, TX & 30°28'18.2"N, 99°47'01.7"W & NE+ = 49, NE- = 83 \\ \hline
+Palmetto State Park  & Palmetto, TX & 29.591623, -97.584781 & NE+ = 250, NE- = 192 \\ \hline
+Jean Lafitte National Historical Park and Preserve  & Jean Lafitte, LA & 29.785105, -90.114933 & NE+ = 83, NE- = 94 \\ \hline
+\end{tabular}
+\end{table}
+
+
 %The vegetatively cloned plants were distributed across all sites intentionally to allow for comparison of endophyte hyphae densities.
 
 

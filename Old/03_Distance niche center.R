@@ -26,73 +26,87 @@ options(prism.path = '/Users/jm200/Documents/Prism Range limit/')
 # takes a long time the first time, but can skip when you have raster files saved on your computer.
 # get_prism_monthlys(type = "tmean", years = 1990:2024, mon = 1:12, keepZip = FALSE)
 # get_prism_monthlys(type = "ppt", years = 1990:2024, mon = 1:12, keepZip = FALSE)
+# get_prism_monthlys(type = "tdmean", years = 1990:2024, mon = 1:12, keepZip = FALSE)
 
-# pulling out values to get normals for old and new time periods
-tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
-tmean_spring_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
-tmean_summer_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
-tmean_autumn_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
+# Pulling out values to get normals for the new time periods (growing and dormant seasons)
+tmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020))))
+tmean_growing_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020, mon = 3:8)))) # Growing season (March to August)
+tmean_dormant_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020, mon = 9:2)))) # Dormant season (September to February)
 
-# calculating standard deviation in temp
-tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023))))
-tmean_spring_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 1:4))))
-tmean_summer_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 5:8))))
-tmean_autumn_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1993:2023, mon = 9:12))))
+# Calculate tdmean normals for the growing and dormant seasons
+tdmean_annual_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020))))
+tdmean_growing_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020, mon = 3:8)))) # Growing season (March to August)
+tdmean_dormant_norm <- terra::mean(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020, mon = 9:2)))) # Dormant season (September to February)
 
-# calculating the cumulative precipitation for each year and for each season within the year
-ppt_annual <- ppt_spring <- ppt_summer <- ppt_autumn <- ppt_winter<- list()
-for(y in 1993:2023){
-  ppt_annual[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y))))
-  ppt_spring[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 1:4))))
-  ppt_summer[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 5:8))))
-  ppt_autumn[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 9:12)))) 
+# Calculating the standard deviation in temperature for each season
+tmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020))))
+tmean_growing_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020, mon = 3:8)))) # Growing season
+tmean_dormant_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tmean", temp_period = "monthly", year = 1990:2020, mon = 9:2)))) # Dormant season
+
+# Calculate standard deviation for tdmean in both growing and dormant seasons
+tdmean_annual_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020))))
+tdmean_growing_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020, mon = 3:8)))) # Growing season
+tdmean_dormant_sd <- terra::stdev(terra::rast(pd_stack(prism_archive_subset(type = "tdmean", temp_period = "monthly", year = 1990:2020, mon = 9:2)))) # Dormant season
+
+# Calculating the cumulative precipitation for each year and each season within the year
+ppt_annual <- ppt_growing <- ppt_dormant <- list()
+for(y in 1990:2020){
+  ppt_annual[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y)))) # Annual precipitation
+  ppt_growing[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 3:8)))) # Growing season precipitation
+  ppt_dormant[[y]] <- sum(terra::rast(pd_stack(prism_archive_subset(type = "ppt", temp_period = "monthly", year = y, mon = 9:2)))) # Dormant season precipitation
 }
 
-# Taking the mean of the cumulative precipitation values
+# Taking the mean of the cumulative precipitation values for each season
 ppt_annual_norm <- terra::mean(terra::rast(unlist(ppt_annual)))
-ppt_spring_norm <- terra::mean(terra::rast(unlist(ppt_spring)))
-ppt_summer_norm <- terra::mean(terra::rast(unlist(ppt_summer)))
-ppt_autumn_norm <- terra::mean(terra::rast(unlist(ppt_autumn)))
+ppt_growing_norm <- terra::mean(terra::rast(unlist(ppt_growing)))
+ppt_dormant_norm <- terra::mean(terra::rast(unlist(ppt_dormant)))
 
-# calculating the standard deviation in precip
+# Calculating the standard deviation in precipitation for each season
 ppt_annual_sd <- terra::stdev(terra::rast(unlist(ppt_annual)))
-ppt_spring_sd <- terra::stdev(terra::rast(unlist(ppt_spring)))
-ppt_summer_sd <- terra::stdev(terra::rast(unlist(ppt_summer)))
-ppt_autumn_sd <- terra::stdev(terra::rast(unlist(ppt_autumn)))
+ppt_growing_sd <- terra::stdev(terra::rast(unlist(ppt_growing)))
+ppt_dormant_sd <- terra::stdev(terra::rast(unlist(ppt_dormant)))
 
-# Study area shapefile 
+# Study area shapefile (excluding specific states)
 US <- terra::vect("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/POAR-Forecasting/data/USA_vector_polygon/States_shapefile.shp")
 US_land <- US[(!US$State_Name %in% c("HAWAII", "ALASKA", "ARIZONA", "COLORADO", "UTAH", "NEVADA", "NEW MEXICO", "IDAHO", "MONTANA", "WYOMING", "CALIFORNIA", "WASHINGTON", "OREGON")),]
 US_land_reprojected <- terra::project(US_land, crs(tmean_annual_norm))
 plot(US_land_reprojected)
 
-# Crop the study area-----
-tmean_spring_norm <- terra::crop(tmean_spring_norm, US_land_reprojected, mask = TRUE)
-tmean_summer_norm <- terra::crop(tmean_summer_norm, US_land_reprojected, mask = TRUE)
-tmean_autumn_norm <- terra::crop(tmean_autumn_norm, US_land_reprojected, mask = TRUE)
-tmean_spring_sd <- terra::crop(tmean_spring_sd, US_land_reprojected, mask = TRUE)
-tmean_summer_sd <- terra::crop(tmean_summer_sd, US_land_reprojected, mask = TRUE)
-tmean_autumn_sd <- terra::crop(tmean_autumn_sd, US_land_reprojected, mask = TRUE)
-ppt_spring_norm <- terra::crop(ppt_spring_norm, US_land_reprojected, mask = TRUE)
-ppt_summer_norm <- terra::crop(ppt_summer_norm, US_land_reprojected, mask = TRUE)
-ppt_autumn_norm <- terra::crop(ppt_autumn_norm, US_land_reprojected, mask = TRUE)
-ppt_spring_sd <- terra::crop(ppt_spring_sd, US_land_reprojected, mask = TRUE)
-ppt_summer_sd <- terra::crop(ppt_summer_sd, US_land_reprojected, mask = TRUE)
-ppt_autumn_sd <- terra::crop(ppt_autumn_sd, US_land_reprojected, mask = TRUE)
+# Crop the study area based on the region of interest
+tmean_growing_norm <- terra::crop(tmean_growing_norm, US_land_reprojected, mask = TRUE)
+tmean_dormant_norm <- terra::crop(tmean_dormant_norm, US_land_reprojected, mask = TRUE)
+tdmean_growing_norm <- terra::crop(tdmean_growing_norm, US_land_reprojected, mask = TRUE)
+tdmean_dormant_norm <- terra::crop(tdmean_dormant_norm, US_land_reprojected, mask = TRUE)
 
-## Stacking all the climatic variables 
-US_land_clim <- terra::rast(list(tmean_spring_norm, tmean_summer_norm, tmean_autumn_norm,
-                                 tmean_spring_sd, tmean_summer_sd, tmean_autumn_sd,
-                                 ppt_spring_norm, ppt_summer_norm, ppt_autumn_norm,
-                                 ppt_spring_sd, ppt_summer_sd, ppt_autumn_sd))
+tmean_growing_sd <- terra::crop(tmean_growing_sd, US_land_reprojected, mask = TRUE)
+tmean_dormant_sd <- terra::crop(tmean_dormant_sd, US_land_reprojected, mask = TRUE)
+tdmean_growing_sd <- terra::crop(tdmean_growing_sd, US_land_reprojected, mask = TRUE)
+tdmean_dormant_sd <- terra::crop(tdmean_dormant_sd, US_land_reprojected, mask = TRUE)
 
-names(US_land_clim) <- c("tmean_spring_norm", "tmean_summer_norm", "tmean_autumn_norm",
-                         "tmean_spring_sd", "tmean_summer_sd", "tmean_autumn_sd",
-                         "ppt_spring_norm", "ppt_summer_norm", "ppt_autumn_norm",
-                         "ppt_spring_sd", "ppt_summer_sd", "ppt_autumn_sd")
+ppt_growing_norm <- terra::crop(ppt_growing_norm, US_land_reprojected, mask = TRUE)
+ppt_dormant_norm <- terra::crop(ppt_dormant_norm, US_land_reprojected, mask = TRUE)
+ppt_growing_sd <- terra::crop(ppt_growing_sd, US_land_reprojected, mask = TRUE)
+ppt_dormant_sd <- terra::crop(ppt_dormant_sd, US_land_reprojected, mask = TRUE)
+
+# Stacking all the climatic variables (temperature and precipitation for growing and dormant seasons, including tdmean)
+US_land_clim <- terra::rast(list(tmean_growing_norm, tmean_dormant_norm,
+                                 tmean_growing_sd,tmean_dormant_sd,
+                                 tdmean_growing_norm, tdmean_dormant_norm,
+                                 tdmean_growing_sd,tdmean_dormant_sd,
+                                 ppt_growing_norm, ppt_dormant_norm,
+                                 ppt_growing_sd,ppt_dormant_sd))
+
+# Naming the layers of the stacked data
+names(US_land_clim) <- c("tmean_growing_norm", "tmean_dormant_norm",
+                         "tmean_growing_sd","tmean_dormant_sd",
+                         "tdmean_growing_norm", "tdmean_dormant_norm",  
+                         "tdmean_growing_sd","tdmean_dormant_sd",
+                         "ppt_growing_norm", "ppt_dormant_norm",
+                         "ppt_growing_sd","ppt_dormant_sd")
 
 US_land_clim_stack <- stack(US_land_clim)
 plot(US_land_clim_stack)
+
 
 # Function to thin occurrences - Keep only one per climatic data pixel
 thin_occurrences <- function(occ_data, clim_raster) {
@@ -153,7 +167,7 @@ env_vars_aghy <- env_varsL_aghy$descriptors
 print(env_vars_aghy)
 
 # Fit ellipsoid models
-nvarstest <- c(3,4)
+nvarstest <- 3
 level <- 0.99
 env_bg <- ntbox::sample_envbg(US_land_clim_stack, 20000)
 omr_criteria <- 0.06
@@ -183,12 +197,6 @@ mProj_aghy <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_aghy]],
                                   centroid = best_mod_aghy$centroid,
                                   covar = best_mod_aghy$covariance,
                                   level = 0.95, size = 3)
-box3d()
-axis3d('x--',labels=T,tick=T)
-axis3d('y+-',labels=T,tick=T)
-axis3d('z-+',labels=T,tick=T)
-title3d(xlab = "Custom X Axis", ylab = "Custom Y Axis", zlab = "Custom Z Axis")
-
 if(length(bestvarcomb_aghy)==3){
   rgl::rglwidget(reuse = FALSE)
 }
@@ -219,6 +227,7 @@ elvi_occ_raw %>%
   dplyr::select(country, lon, lat, year) %>% 
   arrange(lat) -> elvi
 
+summary(elvi_occ_raw$coordinateUncertaintyInMeters)
 # dim(elvi)
 
 # Thin occurrences
@@ -246,12 +255,12 @@ elvi_etest <- raster::extract(US_land_clim_stack, elvi_test[, c("lon", "lat")], 
 elvi_etest <- na.omit(elvi_etest)
 elvi_etest <- elvi_etest[, -1]
 
-env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"), threshold = 0.70, verbose = F)
+env_varsL_elvi <- ntbox::correlation_finder(cor(elvi_etrain, method = "spearman"), threshold = 0.75, verbose = F)
 env_vars_elvi <- env_varsL_elvi$descriptors
 print(env_vars_elvi)
 
 # Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3 dimensions
-nvarstest <- c(3,4)
+nvarstest <- 3
 
 # Now we use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_elvi <- ntbox::ellipsoid_selection(env_train = elvi_etrain,
@@ -333,7 +342,7 @@ env_vars_poa <- env_varsL_poa$descriptors
 print(env_vars_poa)
 
 # Now we specify the number of variables to fit the ellipsoid models; in the example, we will fit for 3 dimensions
-nvarstest <- c(3,4)
+nvarstest <- 3
 
 # Now we use the function ellipsoid_selection to run the model calibration and selection protocol
 e_select_poa <- ntbox::ellipsoid_selection(env_train = poa_etrain,
