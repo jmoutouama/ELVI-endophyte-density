@@ -461,6 +461,7 @@ combined_plot
 distance_species<-bind_rows(distance_aghy,distance_elvi,distance_poa)
 Species.label<-c("AGHY","ELVI","POAU")
 names(Species.label)<-c("A. hyemalis","E. virginicus","P. autumnalis")
+distance_species<-readRDS(url("https://www.dropbox.com/scl/fi/kv9j0n2pbiqgrfnm5a4wn/distance_species.rds?rlkey=vni9e8tjw9enwki0mwgnllzjc&dl=1"))
 
 # Linear regression
 # Perform correlation tests and prepare annotation data
@@ -511,6 +512,93 @@ dev.off()
 
 distance_species<-cbind(distance_species,geo_distance=geo_distance[,4])
 saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
+
+
+# Load required packages
+library(dplyr)
+library(mgcv)
+
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/distance_plot.pdf", width = 9, height = 8)
+# Set up 2x2 layout
+par(mfrow = c(2, 2), mar = c(4.5, 4.5, 2, 1))
+
+# Custom colors and labels
+cols <- c("AGHY" = "#00AFBB", "ELVI" = "#E7B800", "POAU" = "#FC4E07")
+labels <- c("AGHY" = expression(italic("A. hyemalis")),
+            "ELVI" = expression(italic("E. virginicus")),
+            "POAU" = expression(italic("P. autumnalis")))
+
+# Panel labels
+panel_labels <- c("A", "B", "C", "D")
+
+# First 3 plots: Longitude vs. Mahalanobis distance by species
+for (i in 1:length(cols)) {
+  sp <- names(cols)[i]
+  dat <- subset(distance_species, Species == sp)
+  
+  # Fit GAM
+  gam_model <- gam(distance ~ s(longitude, k = 4), data = dat)
+  pred_long <- seq(min(dat$longitude), max(dat$longitude), length.out = 200)
+  pred <- predict(gam_model, newdata = data.frame(longitude = pred_long), se.fit = TRUE)
+  
+  # Plot points
+  plot(dat$longitude, dat$distance, col = cols[sp], pch = 16,
+       xlab = "Longitude", ylab = "Mahalanobis distance",
+       main = labels[[sp]], cex.lab = 1.3, cex.axis = 1.1)
+  
+  # Add smooth line with CI from GAM
+  polygon(c(pred_long, rev(pred_long)),
+          c(pred$fit + 2 * pred$se.fit, rev(pred$fit - 2 * pred$se.fit)),
+          col = adjustcolor(cols[sp], alpha.f = 0.2), border = NA)
+  lines(pred_long, pred$fit, col = cols[sp], lwd = 2)
+  
+  # Add panel label (A, B, C, D)
+  mtext(panel_labels[i], side = 3, line = 0.2, at = par("usr")[1], adj = 0, cex = 1.25, font = 1)
+}
+
+# 4th plot: log-log plot with GAM
+# Filter to valid values
+valid <- distance_species$geo_distance > 0 & distance_species$distance > 0
+log_geo <- log10(distance_species$geo_distance[valid])
+log_dist <- log10(distance_species$distance[valid])
+species_colors <- cols[distance_species$Species[valid]]
+
+# Fit GAM to log-log
+log_data <- data.frame(log_geo = log_geo, log_dist = log_dist)
+gam_log <- gam(log_dist ~ s(log_geo, k = 4), data = log_data)
+
+# Predictions
+new_logx <- seq(min(log_geo), max(log_geo), length.out = 200)
+pred_log <- predict(gam_log, newdata = data.frame(log_geo = new_logx), se.fit = TRUE)
+
+# Plot log-log data
+plot(log_geo, log_dist,
+     col = species_colors, pch = 16,
+     xlab = expression(log[10] * " Distance from geographic center"),
+     ylab = expression(log[10] * " Mahalanobis distance"),
+     main = "", cex.lab = 1.3, cex.axis = 1.1)
+
+# Add confidence band and smooth from GAM
+polygon(c(new_logx, rev(new_logx)),
+        c(pred_log$fit + 2 * pred_log$se.fit, rev(pred_log$fit - 2 * pred_log$se.fit)),
+        col = adjustcolor("black", alpha.f = 0.2), border = NA)
+lines(new_logx, pred_log$fit, col = "black", lwd = 2)
+
+# Add p-value from the GAM summary
+gam_p <- summary(gam_log)$s.table[1, "p-value"]
+p_label <- ifelse(gam_p < 0.001, "p < 0.001", paste0("p = ", signif(gam_p, 3)))
+
+# Add p-value label (for GAM)
+# text(x = min(log_geo) + 0.1, 
+#      y = max(log_dist) - 0.1, 
+#      labels = p_label, 
+#      cex = 1.5, 
+#      font = 1)
+
+# Add panel label (D)
+mtext(panel_labels[4], side = 3, line = 0.2, at = par("usr")[1], adj = 0, cex = 1.25, font = 1)
+
+dev.off()
 
 
 read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
