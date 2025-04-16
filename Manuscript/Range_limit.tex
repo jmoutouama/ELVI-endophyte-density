@@ -277,7 +277,7 @@ Each model included normally distributed random effects to account for site-to-s
 \end{aligned}
 \end{equation}
 
-\noindent where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, \( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, \( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte presence (binary), and \( \text{herb} \) represents Herbivory (binary). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
+\noindent where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, \( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, \( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte status (absence or present), and \( \text{herb} \) represents Herbivory (fenced and unfenced). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
 
 Survival was modeled using a Bernoulli distribution, growth with a Gaussian distribution, flowering with a negative binomial distribution, and fertility (number of spikelets) also with a negative binomial distribution.
 To assess the goodness-of-fit of the models, we performed posterior predictive checks \citep{gelman2000diagnostic, berkhof2000posterior}.  
@@ -350,7 +350,7 @@ All models were implemented in R \citep{RCoreTeam} using Stan via the RStan inte
 %
 
 \section*{Acknowledgements}
-This research was supported by National Science Foundation Division of Environmental Biology awards 1543651 and 1754468 and by the Rice University Faculty Initiatives Fund.
+This research was supported by National Science Foundation Division of Environmental Biology awards.
 
 
 
@@ -370,6 +370,7 @@ This research was supported by National Science Foundation Division of Environme
 \renewcommand{\thesection}{S.\arabic{section}}
 
 \centerline{\Large{\textbf{Supporting Information}}}
+\section {Supporting methods}
 \subsection*{Study design}
 \paragraph {Experimental Design} 
 To understand the demographic effects of endophyte symbiosis from core to edge of the host range, we established  common gardens at 7 sites across the geographic range of \emph {Elymus virginicus} (Fig. \ref{sup:md}).
@@ -387,25 +388,6 @@ For herbivory exclusion plots, we enclosed them with 1.2m tall mesh fencing to p
 For herbivores accessibility plots (control treatment), we half enclosed the plots with the mesh netting.
 %We stationed one HOBO MX2307 data logger at each site to collect temperature and volumetric water content in the soil every hour. 
 
-\begin{figure}[H]
-\centering
-\includegraphics[width=1\textwidth]{distance_plot.pdf}
-\caption{
-(A-C) Relationship between distance from geographic center and longitude for the focal species (\textit{Agrostis hyemalis}, \textit{Elymus virginicus}, and \textit{Poa autumnalis}). 
-A generalized additive model (GAM) with a smooth term was used to capture the non-linear trends in these relationships for each species.
-The solid lines represent the fitted GAM with shaded regions showing the 95\% confidence interval.
-D) displays the relationship between the distance from geographic center and the distance from niche centroid for all species also fitted with a GAM on a log scale. 
-The p-value for the smooth term in the GAM model is p$=$0.0166**, indicating a significant relationship between log-transformed geographic distance and Mahalanobis distance.
-}
-\label{sup:md}
-\end{figure}
-
-
-\end{document}
-
-
-
-
 \paragraph {Source populations and Identification of individual endophyte status} 
 Plants used  in the common garden experiment were derived from natural populations throughout the native range in the south-central US. 
 At each of these natural populations we collected seeds. 
@@ -420,18 +402,21 @@ This was necessary due to the varying success of the heat treatment and differen
 Leaf tissues were stained with aniline blue lactic acid and viewed under a compound microscope at 200x-400x to identify fungal hyphae. 
 The immunoblot assay (Phytoscreen field tiller endophyte detection kit, Agrinostics Ltd. Co.) uses monoclonal antibodies that target proteins of Epichloë spp. and chromagen to visually indicate presence or absence. Both methods yield similar detection rates.  
 
-%\begin{table}[ht]
-%\centering
-%\caption{Populations and Coordinates}
-%\begin{tabular}{|p{2in}|l|l|l|}
-%\hline
-%\textbf{Population} & \textbf{Location} & \textbf{Coordinates} & \textbf{NE+ / NE-} \\ \hline
-%Sam Houston State University Field Station  & Huntsville, TX & 30°44'30.5"N, 95°28'28.2"W & NE+ = 39, NE- = 50 \\ \hline
-%Texas Tech University  & Junction, TX & 30°28'18.2"N, 99°47'01.7"W & NE+ = 49, NE- = 83 \\ \hline
-%Palmetto State Park  & Palmetto, TX & 29.591623, -97.584781 & NE+ = 250, NE- = 192 \\ \hline
-%Jean Lafitte National Historical Park and Preserve  & Jean Lafitte, LA & 29.785105, -90.114933 & NE+ = 83, NE- = 94 \\ \hline
-%\end{tabular}
-%\end{table}
+
+\section {Supporting Tables}
+
+\begin{table}[H]
+\centering
+\caption{Populations and Coordinates}
+\begin{tabular}{|p{2in}|l|l|l|}
+\hline
+\textbf{Population} & \textbf{Location} & \textbf{Coordinates} & \textbf{NE+ / NE-} \\ \hline
+Sam Houston State University Field Station  & Huntsville, TX & 30°44'30.5"N, 95°28'28.2"W & NE+ = 39, NE- = 50 \\ \hline
+Texas Tech University  & Junction, TX & 30°28'18.2"N, 99°47'01.7"W & NE+ = 49, NE- = 83 \\ \hline
+Palmetto State Park  & Palmetto, TX & 29.591623, -97.584781 & NE+ = 250, NE- = 192 \\ \hline
+Jean Lafitte National Historical Park and Preserve  & Jean Lafitte, LA & 29.785105, -90.114933 & NE+ = 83, NE- = 94 \\ \hline
+\end{tabular}
+\end{table}
 
 \begin{table}[H]
 \caption{Model comparison by vital rate using ELPD (Expected Log Pointwise Density) differences. The values in the \textbf{elpd\_diff} column represent the difference in the model's ELPD relative to the best model for each vital rate, with positive values indicating a worse model fit. The \textbf{se\_diff} column shows the standard error of the ELPD difference. Best models for each vital rate are bolded. Model selection is based on the ELPD difference and associated standard error, with smaller ELPD differences and lower standard errors indicating better model fit.}
@@ -464,16 +449,53 @@ Flowering  & \textbf{model2} & \textbf{0.0}   & \textbf{0.0} \\
 
 
 
-%\section {Supporting Figures}
-%
-%\begin{figure}[H]
-%		\centering
-%		\includegraphics[width=0.95\linewidth]{Figures/fig_tas_past_present_future.pdf}
-%		\caption{Temperature variation across the study sites from 1990 to 2100,
-%		ds: Dormant season, dg: Growing season.}
-%		\label{Sup:temp_variation}
-%\end{figure}
-%
+\section {Supporting Figures}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=1\textwidth]{distance_plot.pdf}
+\caption{
+(A-C) Relationship between distance from geographic center and longitude for the focal species (\textit{Agrostis hyemalis}, \textit{Elymus virginicus}, and \textit{Poa autumnalis}). 
+A generalized additive model (GAM) with a smooth term was used to capture the non-linear trends in these relationships for each species.
+The solid lines represent the fitted GAM with shaded regions showing the 95\% confidence interval.
+D) displays the relationship between the distance from geographic center and the distance from niche centroid for all species also fitted with a GAM on a log scale. 
+The p-value for the smooth term in the GAM model is p$=$0.0166**, indicating a significant relationship between log-transformed geographic distance and Mahalanobis distance.
+}
+\label{sup:md}
+\end{figure}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.72\linewidth]{geodistance_surv_coeff.pdf}
+		\caption{Coefficient estimates from Bayesian models linking survival and geographic distance.
+		 Points represent posterior means and lines indicate 95\% credible intervals.
+		 Species abbreviations: \textit{Agrostis hyemalis} (AGHY), \textit{Elymus virginicus} (ELVI), and \textit{Poa autumnalis} (PAOU).
+		 Horizontal dashed lines denote zero effect.}
+		\label{Sup:temp_variation}
+\end{figure}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.72\linewidth]{geodistance_grow_coeff.pdf}
+		\caption{Coefficient estimates from Bayesian models linking growth and geographic distance.
+		 Points represent posterior means and lines indicate 95\% credible intervals.
+		 Species abbreviations: \textit{Agrostis hyemalis} (AGHY), \textit{Elymus virginicus} (ELVI), and \textit{Poa autumnalis} (PAOU).
+		 Horizontal dashed lines denote zero effect.}
+		\label{Sup:temp_variation}
+\end{figure}
+
+\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.72\linewidth]{geodistance_flow_coeff.pdf}
+		\caption{Coefficient estimates from Bayesian models linking flowering and geographic distance.
+		 Points represent posterior means and lines indicate 95\% credible intervals.
+		 Species abbreviations: \textit{Agrostis hyemalis} (AGHY), \textit{Elymus virginicus} (ELVI), and \textit{Poa autumnalis} (PAOU).
+		 Horizontal dashed lines denote zero effect.}
+		\label{Sup:temp_variation}
+\end{figure}
+
+
+
 %\begin{figure}[H]
 %		\centering
 %		\includegraphics[width=0.95\linewidth]{Figures/fig_pr_past_present_future.pdf}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  14 APR 2025 18:08
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  16 APR 2025 10:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -833,7 +833,14 @@ File: l3backend-pdftex.def 2023-01-16 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count333
 \l__pdf_internal_box=\box76
 )
-(./Range_limit.aux)
+(./Range_limit.aux
+
+LaTeX Warning: Label `Sup:temp_variation' multiply defined.
+
+
+LaTeX Warning: Label `Sup:temp_variation' multiply defined.
+
+)
 \openout1 = `Range_limit.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 123.
@@ -854,8 +861,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 123.
 LaTeX Font Info:    ... okay on input line 123.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 123.
 LaTeX Font Info:    ... okay on input line 123.
-
-(/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+ (/usr/local/texlive/2023/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count334
 \scratchdimen=\dimen304
@@ -1038,7 +1044,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
  [2] [3] [4]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//clim_map1.pdf, id=131, 650.43pt x 578.16pt>
+sity/Figure//clim_map1.pdf, id=143, 650.43pt x 578.16pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//clim_map1.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
@@ -1063,40 +1069,89 @@ LaTeX Warning: Reference `sup:ppc_spikelet' on page 7 undefined on input line 2
 LaTeX Warning: Reference `sup:ppc_flowering' on page 7 undefined on input line 
 284.
 
-[7] [8] (./Range_limit.bbl [9] [10] [11]) [12]
+[7] [8] (./Range_limit.bbl [9] [10] [11]) [12] [13
+
+]
+Overfull \hbox (53.2753pt too wide) in paragraph at lines 411--419
+ [][] 
+ []
+
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
-sity/Figure//distance_plot.pdf, id=215, 650.43pt x 578.16pt>
+sity/Figure//distance_plot.pdf, id=235, 650.43pt x 578.16pt>
 File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//distance_plot.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//distance_plot.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//distance_plot.pdf  used on input line 392.
+ithub/ELVI-endophyte-density/Figure//distance_plot.pdf  used on input line 456.
 
 (pdftex.def)             Requested size: 469.75502pt x 417.57172pt.
- [13
+[14]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//geodistance_surv_coeff.pdf, id=242, 361.35pt x 650.43pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_surv_coeff.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//geodistance_surv_coeff.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//geodistance_surv_coeff.pdf  used on input 
+line 469.
+(pdftex.def)             Requested size: 338.22418pt x 608.804pt.
+ [15 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//distance_plot.pdf>]
+Overfull \vbox (4.374pt too high) has occurred while \output is active []
 
-] [14 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophy
-te-density/Figure//distance_plot.pdf>] (./Range_limit.aux)
+ [16 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_surv_coeff.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//geodistance_grow_coeff.pdf, id=268, 361.35pt x 650.43pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_grow_coeff.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//geodistance_grow_coeff.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//geodistance_grow_coeff.pdf  used on input 
+line 479.
+(pdftex.def)             Requested size: 338.22418pt x 608.804pt.
+
+Overfull \vbox (4.374pt too high) has occurred while \output is active []
+
+ [17 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_grow_coeff.pdf>]
+</Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
+sity/Figure//geodistance_flow_coeff.pdf, id=280, 361.35pt x 650.43pt>
+File: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_flow_coeff.pdf Graphic file (type pdf)
+<use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
+-density/Figure//geodistance_flow_coeff.pdf>
+Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
+ithub/ELVI-endophyte-density/Figure//geodistance_flow_coeff.pdf  used on input 
+line 489.
+(pdftex.def)             Requested size: 338.22418pt x 608.804pt.
+
+Overfull \vbox (4.374pt too high) has occurred while \output is active []
+
+ [18 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
+e-density/Figure//geodistance_flow_coeff.pdf>] (./Range_limit.aux)
 
 LaTeX Warning: There were undefined references.
 
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Range_limit.out' has not changed.
-(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+(rerunfilecheck)             Checksum: A3760DABA503C977A7E40B131E1DD80F;403.
  )
 (\end occurred inside a group at level 1)
 
 ### semi simple group (level 1) entered at line 163 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 28380 strings out of 476025
- 525692 string characters out of 5790018
- 1871388 words of memory out of 5000000
- 47611 multiletter control sequences out of 15000+600000
- 617944 words of font info for 602 fonts, out of 8000000 for 9000
+ 28475 strings out of 476025
+ 529065 string characters out of 5790018
+ 1872388 words of memory out of 5000000
+ 47657 multiletter control sequences out of 15000+600000
+ 620396 words of font info for 627 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,15n,94p,1008b,789s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts
@@ -1108,10 +1163,10 @@ mtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/t
 exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Range_limit.pdf (14 pages, 282576 bytes).
+Output written on Range_limit.pdf (18 pages, 312575 bytes).
 PDF statistics:
- 292 PDF objects out of 1000 (max. 8388607)
- 245 compressed objects within 3 object streams
- 64 named destinations out of 1000 (max. 500000)
- 180759 words of extra memory for PDF output out of 184870 (max. 10000000)
+ 351 PDF objects out of 1000 (max. 8388607)
+ 294 compressed objects within 3 object streams
+ 77 named destinations out of 1000 (max. 500000)
+ 186942 words of extra memory for PDF output out of 221844 (max. 10000000)
 
