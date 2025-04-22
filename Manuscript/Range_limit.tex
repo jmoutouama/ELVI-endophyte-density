@@ -99,7 +99,7 @@
 
 %-------------------------------------------------------------------------
 \title{Effects of grass–endophyte symbiosis and herbivory on population demography across climatic and geographic gradients}
-\author[1]{Jacob K. Moutouama\,\textit{0000-0003-1599-1671} \thanks{Corresponding author: jmoutouama@gmail.com}}
+\author[1]{Jacob K. Moutouama\,\orcidlink{0000-0003-1599-1671} \thanks{Corresponding author: jmoutouama@gmail.com}}
 \author[1]{Julia Martin}
 \author[1]{Ulisses Rizo}
 \author[1]{Malcolm Sherwood}
@@ -110,7 +110,7 @@
 \author[1]{Ali Campbell}
 \author[1]{Chris Oxley}
 \author[1]{Karl Schrader}
-\author[1]{Tom E.X. Miller\,\textit{0000-0003-3208-6067}}
+\author[1]{Tom E.X. Miller\,\orcidlink{0000-0003-3208-6067}}
 \affil[1]{Program in Ecology and Evolutionary Biology, Department of BioSciences, Rice University, Houston, TX USA}
 \affil[2]{University of Miami, Department of Biology, Miami, FL USA}
 \date{} % clear date
@@ -219,17 +219,18 @@ At each site, we established eight plots (1.5 m $\times$ 1.5 m), with each plot 
 These species are capable of both self-pollination and outcrossing \citep{church1958artificial}.  
 They typically host seed-transmitted fungal endophytes.
 %however, \emph{Poa autumnalis} may also acquire endophytes via horizontal transmission \citep{gundel2020simulated}.
-Seeds were collected in summer–fall 2006 from naturally symbiotic populations (source populations) of the three focal host species. These seeds were either heat-treated to eliminate symbionts or left untreated, thereby generating symbiont-free ($E^-$) and symbiotic ($E^+$) plants from the same genetic lineages as the source populations.
+In \textcolor{red}{ summer–fall 2006}, seeds were collected from naturally symbiotic populations (source populations) of the three focal host species (Fig.~\ref{fig:site}). 
+These seeds were either heat-treated to eliminate symbionts or left untreated to generate symbiont-free ($E^-$) and symbiotic ($E^+$) plants from the same genetic lineages as the source populations.
 
 Across all sites, each plot was randomly assigned one of four initial endophyte frequency treatments (80\%, 60\%, 40\%, or 20\%) and one of two herbivory treatments (herbivore exclusion or herbivore access).  
 We ensured that all plots received comparable quantities of source plant material.
-This experimental design was informed by natural patterns of endophyte prevalence observed in Texas, where the proportion of symbiotic individuals has been reported as 86.55\% in \emph{A. hyemalis} (ranging from 77.16\% to 93.5\%) \citep{donald2021context}, 53\% in \emph{E. virginicus} (ranging from 10\% to 100\%) \citep{sneck2017variation}, and 96\% in \emph{P. autumnalis} \citep{rudgers2009fungus}.  
-Additionally, fungal genotyping has confirmed the presence of biosynthetic pathways for secondary metabolites such as peramine, loline, and ergot alkaloids, which may enhance host resistance to drought and herbivory \citep{beaudry1951seed}.
-Full details of the study design are provided in the supplementary materials.
+\jacob{This experimental design was informed by natural patterns of endophyte prevalence observed in Texas, where the proportion of symbiotic individuals has been reported as 86.55\% in \emph{A. hyemalis} (ranging from 77.16\% to 93.5\%) \citep{donald2021context}, 53\% in \emph{E. virginicus} (ranging from 10\% to 100\%) \citep{sneck2017variation}, and 96\% in \emph{P. autumnalis} \citep{rudgers2009fungus}.  
+Additionally, fungal genotyping has confirmed the presence of biosynthetic pathways for secondary metabolites such as peramine, loline, and ergot alkaloids, which may enhance host resistance to drought and herbivory \citep{beaudry1951seed}}{I am trying to justify why we choose the starting  endophyte prevalence}.
+Full details of the study design are provided in the supplementary materials (Supplementary Method \ref{sec:study_design}).
 
 \subsection*{Demographic data collection}
-We collected demographic data including survival, growth, and reproduction in May and June of 2023 and 2024, which coincided with the flowering season of \emph{Agrostis hyemalis}, \emph{Elymus virginicus}, and \emph{Poa autumnalis}. 
-For each individual, plant survival was recorded as a binary variable (alive or dead), and plant size was measured as the number of living tillers, indicated by the presence of green coloration.  
+We collected demographic data including survival, growth, and reproduction in May and June of 2023, 2024 and 2025, which coincided with the flowering season of \emph{Agrostis hyemalis}, \emph{Elymus virginicus}, and \emph{Poa autumnalis}. 
+For each individual, plant survival was recorded as a binary variable (alive or dead), and plant size was measured as the number of living tillers.  
 We recorded the number of inflorescences per plant and counted the number of spikelets on up to three inflorescences from three reproducing plants.  
 Spikelet counts were limited to three reproducing tillers per plot due to the time-consuming nature of this measurement.  
 We used the number of spikelets from these three tillers to estimate the average number of spikelets per plant.
@@ -237,7 +238,7 @@ We used the number of spikelets from these three tillers to estimate the average
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{clim_map1.pdf}
-\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) \emph{Agrostis hyemalis} (AGHY), B)  \emph{Elymus virginicus} (ELVI), and C)  \emph{Poa autumnalis} (POAU). Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
+\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) \emph{Agrostis hyemalis} (AGHY), B)  \emph{Elymus virginicus} (ELVI), and C)  \emph{Poa autumnalis} (POAU). Red dots indicate the locations of source populations, while grey dots represent the Global Biodiversity Information Facility (GBIF) occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
 \label{fig:site}
 \end{figure}
 
@@ -365,7 +366,7 @@ This research was supported by National Science Foundation Division of Environme
 
 \centerline{\Large{\textbf{Supporting Information}}}
 \section {Supporting methods}
-\subsection*{Study design}
+\subsection*{Study design} \label {sec:study_design}
 \paragraph {Experimental Design} 
 To understand the demographic effects of endophyte symbiosis from core to edge of the host range, we established  common gardens at 7 sites across the geographic range of \emph {Elymus virginicus} (Fig. \ref{sup:md}).
 Experimental sites spanned an aridity gradient (temperature gradient).

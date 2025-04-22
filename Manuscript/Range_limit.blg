@@ -16,45 +16,45 @@ Repeated entry---line 551 of file References.bib
  :                       ,
 I'm skipping whatever remains of this entry
 Warning--empty journal in fine1975vectors
-You've used 41 entries,
+You've used 36 entries,
             1935 wiz_defined-function locations,
-            744 strings with 11981 characters,
-and the built_in function-call counts, 17098 in all, are:
-= -- 1687
-> -- 734
-< -- 20
-+ -- 259
-- -- 248
-* -- 1560
-:= -- 2981
-add.period$ -- 121
-call.type$ -- 41
-change.case$ -- 327
-chr.to.int$ -- 40
-cite$ -- 42
-duplicate$ -- 572
-empty$ -- 1167
-format.name$ -- 309
-if$ -- 3268
+            716 strings with 11092 characters,
+and the built_in function-call counts, 15182 in all, are:
+= -- 1494
+> -- 659
+< -- 17
++ -- 235
+- -- 224
+* -- 1388
+:= -- 2646
+add.period$ -- 107
+call.type$ -- 36
+change.case$ -- 290
+chr.to.int$ -- 35
+cite$ -- 37
+duplicate$ -- 506
+empty$ -- 1034
+format.name$ -- 274
+if$ -- 2900
 int.to.chr$ -- 2
 int.to.str$ -- 0
-missing$ -- 39
-newline$ -- 206
-num.names$ -- 123
-pop$ -- 242
+missing$ -- 35
+newline$ -- 182
+num.names$ -- 108
+pop$ -- 217
 preamble$ -- 1
-purify$ -- 329
+purify$ -- 292
 quote$ -- 0
-skip$ -- 435
+skip$ -- 384
 stack$ -- 0
-substring$ -- 1376
-swap$ -- 48
+substring$ -- 1223
+swap$ -- 44
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 244
+type$ -- 214
 warning$ -- 1
-while$ -- 148
+while$ -- 131
 width$ -- 0
-write$ -- 527
+write$ -- 465
 (There were 3 error messages)
