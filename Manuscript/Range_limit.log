@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  22 APR 2025 11:54
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  22 APR 2025 11:58
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1061,19 +1061,19 @@ ithub/ELVI-endophyte-density/Figure//clim_map1.pdf  used on input line 240.
  [6 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//clim_map1.pdf>]
 
-LaTeX Warning: Reference `sup:ppc_surv' on page 7 undefined on input line 289.
+LaTeX Warning: Reference `sup:ppc_surv' on page 7 undefined on input line 288.
 
 
-LaTeX Warning: Reference `sup:ppc_growth' on page 7 undefined on input line 289
+LaTeX Warning: Reference `sup:ppc_growth' on page 7 undefined on input line 288
 .
 
 
 LaTeX Warning: Reference `sup:ppc_spikelet' on page 7 undefined on input line 2
-89.
+88.
 
 
 LaTeX Warning: Reference `sup:ppc_flowering' on page 7 undefined on input line 
-289.
+288.
 
 [7]
 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-den
@@ -1083,7 +1083,7 @@ e-density/Figure//PrSurival_ppt.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PrSurival_ppt.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//PrSurival_ppt.pdf  used on input line 316.
+ithub/ELVI-endophyte-density/Figure//PrSurival_ppt.pdf  used on input line 315.
 
 (pdftex.def)             Requested size: 422.77664pt x 543.57854pt.
  [8]
@@ -1095,7 +1095,7 @@ e-density/Figure//Growth_geo_distance.pdf Graphic file (type pdf)
 -density/Figure//Growth_geo_distance.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
 ithub/ELVI-endophyte-density/Figure//Growth_geo_distance.pdf  used on input lin
-e 324.
+e 323.
 (pdftex.def)             Requested size: 422.77664pt x 543.57854pt.
  [9 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//PrSurival_ppt.pdf>]
@@ -1107,7 +1107,7 @@ e-density/Figure//Flow_geo_distance.pdf Graphic file (type pdf)
 -density/Figure//Flow_geo_distance.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
 ithub/ELVI-endophyte-density/Figure//Flow_geo_distance.pdf  used on input line 
-332.
+331.
 (pdftex.def)             Requested size: 422.77664pt x 543.57854pt.
  [10 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//Growth_geo_distance.pdf>] [11 </Users/jm200/Library/CloudStor
@@ -1116,7 +1116,7 @@ pdf>] [12] (./Range_limit.bbl
 [13] [14]) [15] [16
 
 ]
-Overfull \hbox (53.2753pt too wide) in paragraph at lines 406--414
+Overfull \hbox (53.2753pt too wide) in paragraph at lines 405--413
  [][] 
  []
 
@@ -1127,7 +1127,7 @@ e-density/Figure//distance_plot.pdf Graphic file (type pdf)
 <use /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte
 -density/Figure//distance_plot.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
-ithub/ELVI-endophyte-density/Figure//distance_plot.pdf  used on input line 451.
+ithub/ELVI-endophyte-density/Figure//distance_plot.pdf  used on input line 450.
 
 (pdftex.def)             Requested size: 469.75502pt x 417.57172pt.
 [17]
@@ -1139,7 +1139,7 @@ e-density/Figure//geodistance_surv_coeff.pdf Graphic file (type pdf)
 -density/Figure//geodistance_surv_coeff.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
 ithub/ELVI-endophyte-density/Figure//geodistance_surv_coeff.pdf  used on input 
-line 464.
+line 463.
 (pdftex.def)             Requested size: 338.22418pt x 608.804pt.
  [18 </Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyt
 e-density/Figure//distance_plot.pdf>]
@@ -1155,7 +1155,7 @@ e-density/Figure//geodistance_grow_coeff.pdf Graphic file (type pdf)
 -density/Figure//geodistance_grow_coeff.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
 ithub/ELVI-endophyte-density/Figure//geodistance_grow_coeff.pdf  used on input 
-line 474.
+line 473.
 (pdftex.def)             Requested size: 338.22418pt x 608.804pt.
 
 Overfull \vbox (4.374pt too high) has occurred while \output is active []
@@ -1170,7 +1170,7 @@ e-density/Figure//geodistance_flow_coeff.pdf Graphic file (type pdf)
 -density/Figure//geodistance_flow_coeff.pdf>
 Package pdftex.def Info: /Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/g
 ithub/ELVI-endophyte-density/Figure//geodistance_flow_coeff.pdf  used on input 
-line 484.
+line 483.
 (pdftex.def)             Requested size: 338.22418pt x 608.804pt.
 
 Overfull \vbox (4.374pt too high) has occurred while \output is active []
@@ -1191,11 +1191,11 @@ Package rerunfilecheck Info: File `Range_limit.out' has not changed.
 ### semi simple group (level 1) entered at line 163 (\begingroup)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 28546 strings out of 476025
- 532278 string characters out of 5790018
+ 28541 strings out of 476025
+ 532229 string characters out of 5790018
  1872388 words of memory out of 5000000
  47710 multiletter control sequences out of 15000+600000
- 619817 words of font info for 639 fonts, out of 8000000 for 9000
+ 619515 words of font info for 635 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,15n,94p,1008b,884s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts
@@ -1207,7 +1207,7 @@ mtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/t
 exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Range_limit.pdf (21 pages, 392839 bytes).
+Output written on Range_limit.pdf (21 pages, 392864 bytes).
 PDF statistics:
  399 PDF objects out of 1000 (max. 8388607)
  332 compressed objects within 4 object streams
