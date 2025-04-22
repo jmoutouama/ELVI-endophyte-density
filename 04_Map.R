@@ -27,12 +27,12 @@ prism_archive_ls()
 
 # Common garden, natural  and source populations locations ---- 
 read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rlkey=tonb6sswc7zqf123ct06t64yp&dl=1", stringsAsFactors = F) %>% 
-  dplyr::select(latitude,longitude) %>%
+  # dplyr::select(latitude,longitude) %>%
   unique() %>% 
   arrange(latitude)->garden ## common garden populations
 
 read.csv("https://www.dropbox.com/scl/fi/go448bqe9z6meisgkd6g9/source_pop.csv?rlkey=oeutzzf4lgo616zeam06tul8t&dl=1", stringsAsFactors = F) %>% 
-  dplyr::select(latitude,longitude) %>% 
+  # dplyr::select(latitude,longitude) %>% 
   unique() %>% 
   arrange(latitude)->source ## source populations
 
@@ -123,17 +123,36 @@ poa_occ_raw %>%
 poa<-rbind(poa1,poa2,poa3)
 
 # Georeferencing the occurences -----
-coordinates(aghy) <- ~ longitude + latitude
-coordinates(elvi) <- ~ longitude + latitude
-coordinates(poa) <- ~ longitude + latitude
-coordinates(garden) <- ~ longitude + latitude
-coordinates(source) <- ~ longitude + latitude
+garden %>% 
+  filter(Species=="AGHY")->garden_aghy
+garden %>% 
+  filter(Species=="ELVI")->garden_elvi
+garden %>% 
+  filter(Species=="POAU")->garden_poau
+
+source %>% 
+  filter(Species=="AGHY")->source_aghy
+source %>% 
+  filter(Species=="ELVI")->source_elvi
+source %>% 
+  filter(Species=="POAU")->source_poau
+
+sp::coordinates(garden_aghy) <- ~ longitude + latitude
+sp::coordinates(garden_elvi) <- ~ longitude + latitude
+sp::coordinates(garden_poau) <- ~ longitude + latitude
+
+sp::coordinates(source_aghy) <- ~ longitude + latitude
+sp::coordinates(source_elvi) <- ~ longitude + latitude
+sp::coordinates(source_poau) <- ~ longitude + latitude
+
 CRS1 <- CRS("+init=epsg:4326") # WGS 84
-crs(aghy) <- CRS1
-crs(poa) <- CRS1
-crs(elvi) <- CRS1
-crs(garden) <- CRS1
-crs(source) <- CRS1
+crs(garden_aghy) <- CRS1
+crs(garden_elvi) <- CRS1
+crs(garden_poau) <- CRS1
+
+crs(source_aghy) <- CRS1
+crs(source_elvi) <- CRS1
+crs(source_poau) <- CRS1
 
 # Climatic and distance data----
 #climate_summary <- readRDS(url("https://www.dropbox.com/scl/fi/z7a57xv1ago4erqrnp0tx/prism_means.rds?rlkey=z0ddxpr7ls4k0x527k5pp2wsx&dl=1"))
@@ -169,8 +188,8 @@ op <- par(mfrow = c(2,2), mar=c(0,1,3.75,1), oma = c(0, 2, 1, 0))
 plot(crop_ppt_annual, xlab="Longitude", ylab="Latitude", col=col_precip_rev, cex.lab=1.2)
 plot(study_area, add=T)
 plot(aghy, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
-plot(garden, add=T, pch = 3, col="black", cex=2)
-plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+plot(garden_aghy, add=T, pch = 3, col="black", cex=2)
+plot(source_aghy, add=T, pch = 21, col="black", bg="red", cex=1)
 mtext(~ italic("Agrostis hyemalis"), side = 3, adj = 0.5, cex=1.25, line=0.2)
 mtext("A", side = 3, adj = 0, cex=1.25, line=0.2)
 legend(-106, 28, 
@@ -187,8 +206,8 @@ legend(-106, 28,
 plot(crop_ppt_annual, xlab="Longitude", ylab="", col=col_precip_rev, cex.lab=1.2)
 plot(study_area, add=T)
 plot(elvi, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
-plot(garden, add=T, pch = 3, col="black", cex=2)
-plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+plot(garden_elvi, add=T, pch = 3, col="black", cex=2)
+plot(source_elvi, add=T, pch = 21, col="black", bg="red", cex=1)
 mtext(~ italic ("Elymus virginicus"), side = 3, adj = 0.5, cex=1.25, line=0.2)
 mtext("B", side = 3, adj = 0, cex=1.25, line=0.2)
 legend(-106, 28, 
@@ -206,8 +225,8 @@ par(mar=c(0,3,3.75,1))
 plot(crop_ppt_annual, xlab="Longitude", ylab="Latitude", col=col_precip_rev, cex.lab=1.2)
 plot(study_area, add=T)
 plot(poa, add=T, pch = 23, col="grey50", bg="grey", cex=0.55)
-plot(garden, add=T, pch = 3, col="black", cex=2)
-plot(source, add=T, pch = 21, col="black", bg="red", cex=1)
+plot(garden_poau, add=T, pch = 3, col="black", cex=2)
+plot(source_poau, add=T, pch = 21, col="black", bg="red", cex=1)
 mtext( ~ italic("Poa autumnalis"), side = 3, adj = 0.5, cex=1.25, line=0.2)
 mtext("C", side = 3, adj = 0, cex=1.25, line=0.2)
 legend(-106, 28, 
@@ -224,26 +243,27 @@ legend(-106, 28,
 par(mar=c(5,4,3.75,1))  
 plot(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
      distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"], 
-     type = "l", lty = 1, xlab="Longitude", ylab="Distance from geographic center", 
+     type = "l", lty = 1, xlab="Longitude", ylab="Distance from geographic center (Km)", 
      cex.lab=1.2, col="#000000", cex.axis=0.8, ylim=c(600,1500))
 points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="AGHY"], 
        distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="AGHY"], 
        pch = 16, cex = 2, col="#000000")
 lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
       distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"], 
-      col="#E69F00")
+      col="#D55E00")
 points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="ELVI"], 
        distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="ELVI"], 
-       pch = 16, cex = 2, col="#E69F00")
+       pch = 16, cex = 2, col="#D55E00")
 lines(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
       distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"], 
-      col="#56B4E9")
-points(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"], 
+      col="#0072B2")
+points(jitter(distance_summary_ordered$longitude[distance_summary_ordered$Species=="POAU"],amount = 0.1), 
        distance_summary_ordered$geo_distance[distance_summary_ordered$Species=="POAU"], 
-       pch = 16, cex = 2, col="#56B4E9")
+       pch = 16, cex = 2, col="#0072B2")
+
 legend("topright",
        legend = c("AGHY", "ELVI", "POAU"),
-       col = c("#000000", "#E69F00", "#56B4E9"),
+       col = c("#000000", "#D55E00", "#0072B2"),
        lwd = 2,            # Line width for the curves
        lty = 1,            # Line type for the curves (solid)
        pch = 16,           # Point symbol (circle)
