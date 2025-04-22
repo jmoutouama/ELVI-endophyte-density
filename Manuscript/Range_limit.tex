@@ -98,7 +98,7 @@
 % I cannot get \orcidlink working on my computer so for now replacing this with \textit
 
 %-------------------------------------------------------------------------
-\title{Effect of grass-endophyte symbiosis and herbivory on population demography across a climatic and geographic gradient}
+\title{Effects of grass–endophyte symbiosis and herbivory on population demography across climatic and geographic gradients}
 \author[1]{Jacob K. Moutouama\,\textit{0000-0003-1599-1671} \thanks{Corresponding author: jmoutouama@gmail.com}}
 \author[1]{Julia Martin}
 \author[1]{Ulisses Rizo}
@@ -195,7 +195,7 @@ Yet, symbionts promote their own fitness by influencing host life history traits
 Theory predicts that exclusive vertical transmission fosters mutualism and leads to high symbiont prevalence in host populations \citep{fine1975vectors}. 
 Field studies suggest that, under stressful conditions, beneficial symbionts may increase in prevalence and even reach fixation if their fitness advantages outweigh reproductive costs \citep{donald2021context}. 
 However, populations with lower prevalence may experience higher symbiont loss among offspring \citep{afkhami2008symbiosis}. 
-Thus, overlooking symbiont dynamics could result in incomplete predictions of host population responses to global change.
+Thus, overlooking symbiont dynamics could result in inaccurate predictions of host population responses to global change.
 
 Additionally, few studies address the synergistic effects of abiotic and biotic stressors on host-symbiont dynamics across species’ ranges.
 For example, herbivory not only affects the fitness benefits of symbiosis but can also increase endophyte prevalence through enhanced vertical transmission \citep{gundel2020simulated, agrawal1999transgenerational}.
@@ -206,14 +206,16 @@ Working across a precipitation gradient in the south-central US, we investigated
 To answer that question, we studied the symbiotic association between cool-season grass species (\emph{Agrostis hyemalis}, \emph{Elymus virginicus} and \emph{Poa autumnalis}) and their  vertically transmitted fungal symbiont \emph{Epichloë} spp. 
 Our experiment was design to test the following hypotheses:
 \begin{enumerate}
-    \item Stress associated with aridity and low precipitation enhances plant–fungal mutualism, such that the fitness benefits of endophyte symbiosis (survival, growth, and fecundity) are maximized at the range edge.
-    \item Stress associated with herbivory weakens plant–fungal mutualism, such that the fitness costs of endophyte symbiosis (survival, growth, and fecundity) are maximized at the range edge.
+    \item Because endophytes often produce defensive compounds (e.g., alkaloids), plants with endophytes (endophyte-infected plants) will experience less herbivore damage and maintain higher vital rate compared to plants without endophytes (endophyte-free plants) when grazed.
+    \item Because endophytes can improve drought tolerance (e.g., by enhancing water use efficiency or root growth), plants with endophytes will outperform plants without endophytes more in dry conditions than in wet conditions.
+     \item The combined stresses of herbivory and low precipitation will create conditions where the mutualistic benefits of endophytes are most pronounced, giving plants with endophytes a strong performance advantage over plants without endophytes.
+     \item The combined stresses of herbivory and low precipitation will amplify the physiological demands on the host plant, such that the additional resource costs of maintaining endophyte associations may reduce overall plant performance resulting in endophyte-infected plants performing worse than uninfected plants under extreme stress conditions.
 \end{enumerate}
 %--------------------------------------------------------------------
 \section*{Materials and methods}
 \subsection*{Study system}
 Our study was conducted across seven sites along a geographic and climatic gradient spanning Louisiana and Texas in the United States (Fig.~\ref{fig:site}; Fig.\ref{sup:md}).  
-At each site, we established eight plots (1.5 m $\times$ 1.5 m) containing individuals of three cool-season perennial grasses native to woodland and prairie habitats of eastern North America \citep{shaw2011guide}: \emph{Agrostis hyemalis}, \emph{Elymus virginicus}, and \emph{Poa autumnalis} (subfamily Pooideae).  
+At each site, we established eight plots (1.5 m $\times$ 1.5 m), with each plot containing 18 individuals of a single species. We used three cool-season perennial grasses native to woodland and prairie habitats of eastern North America \citep{shaw2011guide}: \emph{Agrostis hyemalis}, \emph{Elymus virginicus}, and \emph{Poa autumnalis} (subfamily Pooideae).  
 These species are capable of both self-pollination and outcrossing \citep{church1958artificial}.  
 They typically host seed-transmitted fungal endophytes.
 %however, \emph{Poa autumnalis} may also acquire endophytes via horizontal transmission \citep{gundel2020simulated}.
@@ -235,7 +237,7 @@ We used the number of spikelets from these three tillers to estimate the average
 \begin{figure}[H]
 \centering
 \includegraphics[width=1\textwidth]{clim_map1.pdf}
-\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) Agrostis hyemalis, B) Elymus virginicus, and C) Poa autumnalis. Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
+\caption{Distribution of common garden sites along the longitudinal aridity gradient in the central and southern Great Plains for: A) \emph{Agrostis hyemalis} (AGHY), B)  \emph{Elymus virginicus} (ELVI), and C)  \emph{Poa autumnalis} (POAU). Red dots indicate the locations of source populations, while grey dots represent GBIF occurrence records for each species within the study area. D) Relationship between the distance from the range center and longitude for each species.}
 \label{fig:site}
 \end{figure}
 
@@ -254,21 +256,21 @@ Each model included normally distributed random effects to account for site-to-s
 + \beta_{\text{herb} \times \text{P}}^{\text{sp}}\,\text{herb} \cdot P \\
 &\quad + \beta_{\text{P}^2}^{\text{sp}} P^2 + \beta_{\text{endo} \times \text{P}^2}^{\text{sp}}\,\text{endo} \cdot P^2 
 + \phi^{\text{sp}} + \omega^{\text{sp}} + \rho^{\text{sp}} \\
+%\text{Model 2:} \quad 
+%\mu &= \beta_{0}^{\text{sp}} + \beta_{\text{SPEI}}^{\text{sp}}\,\text{SPEI} + \beta_{\text{endo}}^{\text{sp}}\,\text{endo} + \beta_{\text{herb}}^{\text{sp}}\,\text{herb} \\
+%&\quad + \beta_{\text{endo} \times \text{SPEI}}^{\text{sp}}\,\text{endo} \cdot \text{SPEI} 
+%+ \beta_{\text{herb} \times \text{endo}}^{\text{sp}}\,\text{herb} \cdot \text{endo} 
+%+ \beta_{\text{herb} \times \text{SPEI}}^{\text{sp}}\,\text{herb} \cdot \text{SPEI} \\
+%&\quad + \beta_{\text{SPEI}^2}^{\text{sp}} \text{SPEI}^2 
+%+ \beta_{\text{endo} \times \text{SPEI}^2}^{\text{sp}}\,\text{endo} \cdot \text{SPEI}^2 
+%+ \phi^{\text{sp}} + \omega^{\text{sp}} + \rho^{\text{sp}} \\
 \text{Model 2:} \quad 
-\mu &= \beta_{0}^{\text{sp}} + \beta_{\text{SPEI}}^{\text{sp}}\,\text{SPEI} + \beta_{\text{endo}}^{\text{sp}}\,\text{endo} + \beta_{\text{herb}}^{\text{sp}}\,\text{herb} \\
-&\quad + \beta_{\text{endo} \times \text{SPEI}}^{\text{sp}}\,\text{endo} \cdot \text{SPEI} 
-+ \beta_{\text{herb} \times \text{endo}}^{\text{sp}}\,\text{herb} \cdot \text{endo} 
-+ \beta_{\text{herb} \times \text{SPEI}}^{\text{sp}}\,\text{herb} \cdot \text{SPEI} \\
-&\quad + \beta_{\text{SPEI}^2}^{\text{sp}} \text{SPEI}^2 
-+ \beta_{\text{endo} \times \text{SPEI}^2}^{\text{sp}}\,\text{endo} \cdot \text{SPEI}^2 
-+ \phi^{\text{sp}} + \omega^{\text{sp}} + \rho^{\text{sp}} \\
-\text{Model 3:} \quad 
 \mu &= \beta_{0}^{\text{sp}} + \beta_{\text{GD}}^{\text{sp}}\,\text{GD} + \beta_{\text{endo}}^{\text{sp}}\,\text{endo} + \beta_{\text{herb}}^{\text{sp}}\,\text{herb} \\
 &\quad + \beta_{\text{endo} \times \text{GD}}^{\text{sp}}\,\text{endo} \cdot \text{GD} 
 + \beta_{\text{herb} \times \text{endo}}^{\text{sp}}\,\text{herb} \cdot \text{endo} 
 + \beta_{\text{herb} \times \text{GD}}^{\text{sp}}\,\text{herb} \cdot \text{GD} \\
 &\quad + \phi^{\text{sp}} + \omega^{\text{sp}} + \rho^{\text{sp}} \\
-\text{Model 4:} \quad 
+\text{Model 3:} \quad 
 \mu &= \beta_{0}^{\text{sp}} + \beta_{\text{MD}}^{\text{sp}}\,\text{MD} + \beta_{\text{endo}}^{\text{sp}}\,\text{endo} + \beta_{\text{herb}}^{\text{sp}}\,\text{herb} \\
 &\quad + \beta_{\text{endo} \times \text{MD}}^{\text{sp}}\,\text{endo} \cdot \text{MD} 
 + \beta_{\text{herb} \times \text{endo}}^{\text{sp}}\,\text{herb} \cdot \text{endo} 
@@ -277,7 +279,9 @@ Each model included normally distributed random effects to account for site-to-s
 \end{aligned}
 \end{equation}
 
-\noindent where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, \( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, \( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte status (absence or present), and \( \text{herb} \) represents Herbivory (fenced and unfenced). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
+\noindent where \( sp \in \{1, 2, 3\} \) represents the species index, \( P \) denotes Precipitation, 
+%\( \text{SPEI} \) is the Standardized Precipitation Evapotranspiration Index, 
+\( \text{GD} \) refers to distance from geographic center, and \( \text{MD} \) stands for mahalanobis distance, \( \text{endo} \) indicates Endophyte status (absence or present), and \( \text{herb} \) represents Herbivory (fenced and unfenced). The terms \( \phi^{(sp)} \), \( \omega^{(sp)} \), and \( \rho^{(sp)} \) are plot-level, population-level, and site-level random effects, respectively, for species \( sp \).
 
 Survival was modeled using a Bernoulli distribution, growth with a Gaussian distribution, flowering with a negative binomial distribution, and fertility (number of spikelets) also with a negative binomial distribution.
 To assess the goodness-of-fit of the models, we performed posterior predictive checks \citep{gelman2000diagnostic, berkhof2000posterior}.  
@@ -305,41 +309,31 @@ All models were implemented in R \citep{RCoreTeam} using Stan via the RStan inte
 % If you remove this section, you will need to add it back in to your
 % final files after acceptance.
 \section*{Results}
-%\begin{table}[H]
-%\caption{Candidate models of  \emph{E. virginicus} vital rates (growth, flowering, spikelet and survival).}
-%\label{Table:models}
-%\bigskip{}
-%\centering
-%\begin{tabular}{llll}\hline
-%			    Vital rate   &      Model   &     $\Delta$elpd  &  $\Delta$se     \\ \hline
-%			 \textbf{Survival} &    \textbf{model3}   &     \textbf{0.0} &     \textbf{ 0.0}    \\
-%			Survival &     model2  & -0.5 &   0.5       \\
-%			Survival &   model4    & -0.9    &   0.9\\
-%			Survival & model1 & -2.2 & 1.9  \\
-%		     \textbf{Growth} &   \textbf{model2}&  \textbf{0.0} &  \textbf{0.0} \\
-%		    Growth & model4 & 0.0 &  0.8 \\
-%		    Growth & model3 & -0.3 &  0.4\\
-%		    Growth  &  model1& -0.4 & 0.4\\
-%		     \textbf{Flowering} &   \textbf{model2}&  \textbf{0.0}  &  \textbf{0.0}  \\
-%		    Flowering & model4 & -4.3 &  1.0\\
-%		    Flowering & model3 & -6.5 &  1.4\\
-%		     Flowering & model3 & -6.5 &  1.4\\
-%		    		     \textbf{Spiket} &   \textbf{model2}&  \textbf{0.0} &  \textbf{0.0}  \\
-%		    Spiket & model3 & -0.5 &  0.6\\
-%		    Spiket & model1 & -0.7&  1.2\\
-%		    Spiket  &  model4 & -1.2 & 1.2\\\hline			    				 			     			     
-%\end{tabular}
-%\end{table}
-%
-%\begin{figure}[H]
-%\includegraphics[width=1\textwidth]{Posterior_mean.pdf}
-%\caption{Posterior mean estimates for each vital rate. 
-%(a) Daily temperature, estimated from average hourly data collected by  HOBO data loggers. 
-%(b) Daily  soil moisture, estimated  from average hourly data  collected by  HOBO data loggers. 
-%}
-%\label{fig:climate}
-%\end{figure}
-%
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{PrSurival_ppt.pdf}
+\caption{XXX 
+}
+\label{fig:climate}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{Growth_geo_distance.pdf}
+\caption{XXX 
+}
+\label{fig:climate}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{Flow_geo_distance.pdf}
+\caption{XXX 
+}
+\label{fig:climate}
+\end{figure}
+
 %\begin{figure}[H]
 %\includegraphics[width=0.9\textwidth]{Fig_temp_mean.pdf}
 %\caption{Variation in vital rates across a temperature gradient.

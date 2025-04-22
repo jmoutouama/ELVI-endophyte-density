@@ -134,7 +134,7 @@ demography_climate_distance %>%
   subset(tiller_t > 0) %>%
   dplyr::select(
     Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
-    tiller_t, surv1, sum_ppt, mean_pet, mean_spei, distance
+    tiller_t, surv1, sum_ppt, mean_pet, mean_spei, distance,geo_distance
   ) %>%
   na.omit() %>%
   mutate(
@@ -151,7 +151,8 @@ demography_climate_distance %>%
     ppt = log(sum_ppt),
     pet = log(mean_pet),
     spei = mean_spei,
-    distance = log(distance)
+    distance = log(distance),
+    geo_distance=log(geo_distance)
   ) -> demography_climate_distance_surv
 
 ### Separate each variable to use the same model stan
@@ -508,13 +509,132 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
   )
 dev.off()
 
+### Distance from geographic center
+demography_surv_geo_distance <- list(
+  nSpp = demography_climate_distance_surv$Species %>% n_distinct(),
+  nSite = demography_climate_distance_surv$Site %>% n_distinct(),
+  nPop = demography_climate_distance_surv$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_surv$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_surv$Species,
+  site = demography_climate_distance_surv$Site,
+  pop = demography_climate_distance_surv$Population,
+  plot = demography_climate_distance_surv$Plot,
+  clim = as.vector(demography_climate_distance_surv$geo_distance),
+  endo = demography_climate_distance_surv$Endo,
+  herb = demography_climate_distance_surv$Herbivory,
+  size = demography_climate_distance_surv$log_size_t0,
+  y = demography_climate_distance_surv$surv_t1,
+  N = nrow(demography_climate_distance_surv)
+)
+
+fit_surv_geo_distance<-readRDS(url("https://www.dropbox.com/scl/fi/ah7h4cn9l9p6gwl3cl0aw/fit_surv_geo_distance.rds?rlkey=dypxz2231pwle7p8mb534uqwr&dl=1"))
+
+predictions_distance <- expand.grid(clim = seq(min(demography_surv_geo_distance$clim), max(demography_surv_geo_distance$clim), length.out = 30), endo = c(0, 1), herb = c(0, 1) , species =  1:3 )
+# Extract posterior samples
+posterior_samples_distance <- rstan::extract(fit_surv_geo_distance)
+# Apply the function to generate predictions for all combinations
+n_posterior_samples_distance <- length(posterior_samples_distance$b0)  # Number of posterior samples 
+# Initialize a matrix to hold predictions for each posterior sample
+pred_probs_matrix_distance <- matrix(NA, nrow = nrow(predictions_distance), ncol = n_posterior_samples_distance)
+# Function to calculate predictions based on the posterior samples
+get_predictions_distance <- function(clim, endo, herb, species_index, posterior_samples_distance) {
+  b0 <- posterior_samples_distance$b0[, species_index]
+  bendo <- posterior_samples_distance$bendo[, species_index]
+  bherb <- posterior_samples_distance$bherb[, species_index]
+  bclim <- posterior_samples_distance$bclim[, species_index]
+  bendoclim <- posterior_samples_distance$bendoclim[, species_index]
+  bendoherb <- posterior_samples_distance$bendoherb[, species_index]
+  # Predicted survival (logit scale)
+  logit_preds <- b0 +
+    bendo * endo +
+    bclim * clim +
+    bherb * herb +
+    bendoclim * clim * endo +
+    bendoherb * endo * herb 
+  # Convert logit to probability using logistic function
+  pred_probs <- 1 / (1 + exp(-logit_preds))
+  return(pred_probs)
+}
+
+# Generate predictions for each combination of climate, endophyte, herbivory, and species
+for (i in 1:nrow(predictions_distance)) {
+  pred_probs_matrix_distance[i, ] <- get_predictions_distance(
+    predictions_distance$clim[i], 
+    predictions_distance$endo[i], 
+    predictions_distance$herb[i], 
+    predictions_distance$species[i], 
+    posterior_samples_distance
+  )
+}
+
+# Convert the matrix into a data frame with the correct structure
+pred_probs_distance <- as.data.frame(pred_probs_matrix_distance)
+colnames(pred_probs_distance) <- paste("Posterior_Sample", 1:n_posterior_samples_distance)
+
+# Add the `predictions` columns (clim_s, endo_s, herb_s, species)
+pred_probs_distance <- cbind(predictions_distance, pred_probs_distance)
+
+# Reshape the data frame so we have long format for ggplot
+pred_probs_long_distance <- gather(pred_probs_distance, key = "Posterior_Sample", value = "Pred_Survival", -clim, -endo, -herb, -species)
+
+# Calculate credible intervals (90% and 95%) and mean survival probability
+cred_intervals_distance <- pred_probs_long_distance %>%
+  group_by(species, endo, herb,clim) %>%
+  summarise(
+    lower_90 = quantile(Pred_Survival, 0.05),
+    upper_90 = quantile(Pred_Survival, 0.95),
+    lower_95 = quantile(Pred_Survival, 0.025),
+    upper_95 = quantile(Pred_Survival, 0.975),
+    median = quantile(Pred_Survival, 0.5),
+    mean = mean(Pred_Survival)  # Calculate the mean survival probability
+  ) %>%
+  ungroup()
+
+# observed_data should have columns: clim_s, endo_s, herb_s, species, y_s (observed survival)
+observed_geo_distance <- data.frame(
+  clim = demography_surv_geo_distance$clim,  #  climate data
+  endo = demography_surv_geo_distance$endo,  #  endophyte status data
+  herb = demography_surv_geo_distance$herb,  #  herbivory status data
+  species = demography_surv_geo_distance$Spp,  #  species data
+  y = demography_surv_geo_distance$y  # Observed survival
+)
+
+# Plot the results with credible intervals, mean survival, and observed points using ggplot2
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/PrSurival_distance.pdf", useDingbats = F, height = 9, width = 7)
+ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo))) +
+  #geom_line(aes(y = median), linetype = "solid", size = 1) +  # Plot the median survival probability
+  geom_line(aes(y = mean), linetype = "solid", size = 1) +  # Plot the mean survival probability (dashed line)
+  geom_ribbon(aes(ymin = lower_90, ymax = upper_90, fill = factor(endo)), alpha = 0.3, color = NA) +  # Credible interval
+  geom_point(data = observed_geo_distance, aes(x = exp(clim), y = y, color = factor(endo)), size = 3) +  # Observed data points
+  facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
+  labs(
+    x = "Distance from geographc center",
+    y = "Predicted survival probability",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
+  theme_bw() +
+  theme(
+    legend.position = c(0.9, 0.8),
+    legend.title = element_text(size = 10), # Reduce legend title size
+    legend.text = element_text(size = 12), # Adjust legend text size
+    axis.title = element_text(size = 13), # Increase axis title size
+    axis.text = element_text(size = 10), # Increase axis label size
+    strip.text = element_text(size = 13)
+  )
+dev.off()
+
+
 # Growth----
 ## Read and format survival data to build the model
 demography_climate_distance %>%
   subset(tiller_t > 0 & tiller_t1 > 0) %>%
   dplyr::select(
     Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
-    tiller_t, grow, sum_ppt, mean_pet, mean_spei, distance
+    tiller_t, grow, sum_ppt, mean_pet, mean_spei, distance,geo_distance
   ) %>%
   na.omit() %>%
   mutate(
@@ -531,7 +651,8 @@ demography_climate_distance %>%
     ppt = log(sum_ppt),
     pet = log(mean_pet),
     spei = mean_spei,
-    distance = log(distance)
+    distance = log(distance),
+    geo_distance=log(geo_distance)
   ) -> demography_climate_distance_grow
 
 ## Separate each variable to use the same model stan
@@ -879,12 +1000,135 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
   )
 dev.off()
 
+
+### Distance from geographic center
+demography_grow_geo_distance <- list(
+  nSpp= demography_climate_distance_grow$Species %>% n_distinct(),
+  nSite = demography_climate_distance_grow$Site %>% n_distinct(),
+  nPop = demography_climate_distance_grow$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_grow$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_grow$Species,
+  site = demography_climate_distance_grow$Site,
+  pop = demography_climate_distance_grow$Population,
+  plot = demography_climate_distance_grow$site_species_plot,
+  clim = as.vector(demography_climate_distance_grow$geo_distance),
+  endo = demography_climate_distance_grow$Endo,
+  herb = demography_climate_distance_grow$Herbivory,
+  size = demography_climate_distance_grow$log_size_t0,
+  y = demography_climate_distance_grow$grow,
+  N = nrow(demography_climate_distance_grow)
+)
+
+fit_grow_geo_distance <- readRDS(url("https://www.dropbox.com/scl/fi/m3r1hjc7sv3xvuvue79tz/fit_grow_geo_distance.rds?rlkey=5rj6htaf8fovv2ve8qz0f6hvg&dl=1"))
+
+predictions_distance <- expand.grid(clim = seq(min(demography_grow_geo_distance$clim), max(demography_grow_geo_distance$clim), length.out = 30), endo = c(0, 1), herb = c(0, 1) , species =  1:3 )
+# Extract posterior samples
+posterior_samples_distance <- rstan::extract(fit_grow_geo_distance)
+# Apply the function to generate predictions for all combinations
+n_posterior_samples_distance <- length(posterior_samples_distance$b0)  # Number of posterior samples 
+# Initialize a matrix to hold predictions for each posterior sample
+pred_probg_matrix_distance <- matrix(NA, nrow = nrow(predictions_distance), ncol = n_posterior_samples_distance)
+# Function to calculate predictions based on the posterior samples
+get_predictions_distance <- function(clim, endo, herb, species_index, posterior_samples_distance) {
+  b0 <- posterior_samples_distance$b0[, species_index]
+  bendo <- posterior_samples_distance$bendo[, species_index]
+  bherb <- posterior_samples_distance$bherb[, species_index]
+  bclim <- posterior_samples_distance$bclim[, species_index]
+  bendoclim <- posterior_samples_distance$bendoclim[, species_index]
+  bendoherb <- posterior_samples_distance$bendoherb[, species_index]
+  # Predicted survival
+  predg <- b0 +
+    bendo * endo +
+    bclim * clim +
+    bherb * herb +
+    bendoclim * clim * endo +
+    bendoherb * endo * herb 
+  # Convert logit to probability using logistic function
+  pred_probg <-predg
+  return(pred_probg)
+}
+
+# Generate predictions for each combination of climate, endophyte, herbivory, and species
+for (i in 1:nrow(predictions_distance)) {
+  pred_probg_matrix_distance[i, ] <- get_predictions_distance(
+    predictions_distance$clim[i], 
+    predictions_distance$endo[i], 
+    predictions_distance$herb[i], 
+    predictions_distance$species[i], 
+    posterior_samples_distance
+  )
+}
+
+# Convert the matrix into a data frame with the correct structure
+pred_probg_distance <- as.data.frame(pred_probg_matrix_distance)
+colnames(pred_probg_distance) <- paste("Posterior_Sample", 1:n_posterior_samples_distance)
+
+# Add the `predictions` columns (clim_s, endo_s, herb_s, species)
+pred_probg_distance <- cbind(predictions_distance, pred_probg_distance)
+
+# Reshape the data frame so we have long format for ggplot
+pred_probg_long_distance <- gather(pred_probg_distance, key = "Posterior_Sample", value = "Pred_Growth", -clim, -endo, -herb, -species)
+
+# Calculate credible intervals (90% and 95%) and mean growth
+cred_intervals_distance <- pred_probg_long_distance %>%
+  group_by(species, endo, herb,clim) %>%
+  summarise(
+    lower_90 = quantile(Pred_Growth, 0.05),
+    upper_90 = quantile(Pred_Growth, 0.95),
+    lower_95 = quantile(Pred_Growth, 0.025),
+    upper_95 = quantile(Pred_Growth, 0.975),
+    median = quantile(Pred_Growth, 0.5),
+    mean = mean(Pred_Growth)  # Calculate the mean survival probability
+  ) %>%
+  ungroup()
+
+sum(is.na(cred_intervals_distance))
+sum(is.na(observed_distance))
+# observed_data should have columns: clim, endo, herb, species, y (observed survival)
+observed_distance <- data.frame(
+  clim = demography_grow_geo_distance$clim,  #  climate data
+  endo = demography_grow_geo_distance$endo,  #  endophyte status data
+  herb = demography_grow_geo_distance$herb,  #  herbivory status data
+  species = demography_grow_geo_distance$Spp,  #  species data
+  y = demography_grow_geo_distance$y  # Observed survival
+)
+
+# Plot the results with credible intervals, mean survival, and observed points using ggplot2
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Growth_geo_distance.pdf", useDingbats = F, height = 9, width = 7)
+ggplot(cred_intervals_distance, aes(x = clim, y = mean, color = factor(endo))) +
+  #geom_line(aes(y = median), linetype = "solid", size = 1) +  # Plot the median survival probability
+  geom_line(aes(y = mean), linetype = "solid", size = 1) +  # Plot the mean survival probability (dashed line)
+  geom_ribbon(aes(ymin = lower_90, ymax = upper_90, fill = factor(endo)), alpha = 0.3, color = NA) +  # Credible interval
+  geom_point(data = observed_distance, aes(x = clim, y = y, color = factor(endo)), size = 3) +  # Observed data points
+  facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
+  labs(
+    x = "Distance from geographic center(log scale) ",
+    y = "Predicted relative growth",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
+  theme_bw() +
+  theme(
+    legend.position = c(0.35, 0.23),
+    legend.title = element_text(size = 10), # Reduce legend title size
+    legend.text = element_text(size = 12), # Adjust legend text size
+    axis.title = element_text(size = 13), # Increase axis title size
+    axis.text = element_text(size = 10), # Increase axis label size
+    strip.text = element_text(size = 13)
+  )
+dev.off()
+
+
+
 # Flowering----
 demography_climate_distance %>%
   subset(tiller_t1 > 0) %>%
   dplyr::select(
     Species, Population, Site, Plot, site_species_plot, Endo, Herbivory,
-    tiller_t, inf_t1, sum_ppt, mean_pet, mean_spei, distance
+    tiller_t, inf_t1, sum_ppt, mean_pet, mean_spei, distance,geo_distance
   ) %>%
   na.omit() %>%
   mutate(
@@ -901,7 +1145,8 @@ demography_climate_distance %>%
     ppt = log(sum_ppt),
     pet = log(mean_pet),
     spei = mean_spei,
-    distance = log(distance)
+    distance = log(distance),
+    geo_distance=log(geo_distance)
   ) -> demography_climate_distance_flow
 
 ## Separate each variable to use the same model stan
@@ -1255,6 +1500,129 @@ ggplot(cred_intervals_distance, aes(x = exp(clim), y = mean, color = factor(endo
     strip.text = element_text(size = 13)
   )
 dev.off()
+
+
+### Distance from geographic center
+demography_flow_geo_distance <- list(
+  nSpp = demography_climate_distance_flow$Species %>% n_distinct(),
+  nSite = demography_climate_distance_flow$Site %>% n_distinct(),
+  nPop = demography_climate_distance_flow$Population %>% n_distinct(),
+  nPlot = demography_climate_distance_flow$site_species_plot %>% n_distinct(),
+  Spp = demography_climate_distance_flow$Species,
+  site = demography_climate_distance_flow$Site,
+  pop = demography_climate_distance_flow$Population,
+  plot = demography_climate_distance_flow$site_species_plot,
+  clim = as.vector(demography_climate_distance_flow$geo_distance),
+  endo = demography_climate_distance_flow$Endo,
+  herb = demography_climate_distance_flow$Herbivory,
+  size = demography_climate_distance_flow$log_size_t0,
+  y = demography_climate_distance_flow$flow_t1,
+  N = nrow(demography_climate_distance_flow)
+)
+
+fit_flow_geo_distance <- readRDS(url("https://www.dropbox.com/scl/fi/b2dez0gz22p3m2ke1zs7f/fit_flow_geo_distance.rds?rlkey=9fuwynap20617l1rqffjz62wd&dl=1"))
+
+predictions_distance <- expand.grid(clim = seq(min(demography_flow_geo_distance$clim), max(demography_flow_geo_distance$clim), length.out = 30), endo = c(0, 1), herb = c(0, 1) , species =  1:3 )
+# Extract posterior samples
+posterior_samples_distance <- rstan::extract(fit_flow_geo_distance)
+# Apply the function to generate predictions for all combinations
+n_posterior_samples_distance <- length(posterior_samples_distance$b0)  # Number of posterior samples 
+# Initialize a matrix to hold predictions for each posterior sample
+pred_probf_matrix_distance <- matrix(NA, nrow = nrow(predictions_distance), ncol = n_posterior_samples_distance)
+# Function to calculate predictions based on the posterior samples
+get_predictions_distance <- function(clim, endo, herb, species_index, posterior_samples_distance) {
+  b0 <- posterior_samples_distance$b0[, species_index]
+  bendo <- posterior_samples_distance$bendo[, species_index]
+  bherb <- posterior_samples_distance$bherb[, species_index]
+  bclim <- posterior_samples_distance$bclim[, species_index]
+  bendoclim <- posterior_samples_distance$bendoclim[, species_index]
+  bendoherb <- posterior_samples_distance$bendoherb[, species_index]
+  # Predicted survival
+  predf <- b0 +
+    bendo * endo +
+    bclim * clim +
+    bherb * herb +
+    bendoclim * clim * endo +
+    bendoherb * endo * herb 
+  # Convert logit to probability using logistic function
+  pred_probf <-exp(predf)
+  return(pred_probf)
+}
+
+# Generate predictions for each combination of climate, endophyte, herbivory, and species
+for (i in 1:nrow(predictions_distance)) {
+  pred_probf_matrix_distance[i, ] <- get_predictions_distance(
+    predictions_distance$clim[i], 
+    predictions_distance$endo[i], 
+    predictions_distance$herb[i], 
+    predictions_distance$species[i], 
+    posterior_samples_distance
+  )
+}
+
+# Convert the matrix into a data frame with the correct structure
+pred_probf_distance <- as.data.frame(pred_probf_matrix_distance)
+colnames(pred_probf_distance) <- paste("Posterior_Sample", 1:n_posterior_samples_distance)
+
+# Add the `predictions` columns (clim_s, endo_s, herb_s, species)
+pred_probf_distance <- cbind(predictions_distance, pred_probf_distance)
+
+# Reshape the data frame so we have long format for ggplot
+pred_probf_long_distance <- gather(pred_probf_distance, key = "Posterior_Sample", value = "Pred_Flow", -clim, -endo, -herb, -species)
+
+# Calculate credible intervals (90% and 95%) and mean growth
+cred_intervals_distance <- pred_probf_long_distance %>%
+  group_by(species, endo, herb,clim) %>%
+  summarise(
+    lower_90 = quantile(Pred_Flow, 0.05),
+    upper_90 = quantile(Pred_Flow, 0.95),
+    lower_95 = quantile(Pred_Flow, 0.025),
+    upper_95 = quantile(Pred_Flow, 0.975),
+    median = quantile(Pred_Flow, 0.5),
+    mean = mean(Pred_Flow)  
+  ) %>%
+  ungroup()
+
+sum(is.na(cred_intervals_distance))
+sum(is.na(observed_distance))
+# observed_data should have columns: clim, endo, herb, species, y (observed survival)
+observed_distance <- data.frame(
+  clim = demography_flow_geo_distance$clim,  #  climate data
+  endo = demography_flow_geo_distance$endo,  #  endophyte status data
+  herb = demography_flow_geo_distance$herb,  #  herbivory status data
+  species = demography_flow_geo_distance$Spp,  #  species data
+  y = demography_flow_geo_distance$y  # Observed survival
+)
+
+# Plot the results with credible intervals, mean survival, and observed points using ggplot2
+pdf("/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Figure/Flow_geo_distance.pdf", useDingbats = F, height = 9, width = 7)
+ggplot(cred_intervals_distance, aes(x = clim, y = mean, color = factor(endo))) +
+  #geom_line(aes(y = median), linetype = "solid", size = 1) +  # Plot the median survival probability
+  geom_line(aes(y = mean), linetype = "solid", size = 1) +  # Plot the mean survival probability (dashed line)
+  geom_ribbon(aes(ymin = lower_90, ymax = upper_90, fill = factor(endo)), alpha = 0.3, color = NA) +  # Credible interval
+  geom_point(data = observed_distance, aes(x = clim, y = y, color = factor(endo)), size = 3) +  # Observed data points
+  facet_grid(species ~ herb, scales = "free_y", labeller = labeller(species = c("1" = "AGHY", "2" = "ELVI", "3" = "POAU"),herb = c("0" = "Unfenced", "1" = "Fenced"))) +
+  labs(
+    x = "Distance from geographic center(log scale)",
+    y = "Inflorescences",
+    color = "Endophyte",
+    fill = "Endophyte",
+    title = ""
+  ) +
+  scale_color_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change endophyte labels
+  scale_fill_manual(values = c("0" = "#00AFBB", "1" = "#FC4E07"), labels = c("E-", "E+")) + # Change fill labels
+  theme_bw() +
+  theme(
+    legend.position = c(0.35, 0.23),
+    legend.title = element_text(size = 10), # Reduce legend title size
+    legend.text = element_text(size = 12), # Adjust legend text size
+    axis.title = element_text(size = 13), # Increase axis title size
+    axis.text = element_text(size = 10), # Increase axis label size
+    strip.text = element_text(size = 13)
+  )
+dev.off()
+
+
 
 # Spikelet----
 demography_climate_distance %>%

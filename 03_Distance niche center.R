@@ -193,12 +193,12 @@ garden <- read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_s
   unique() %>% 
   arrange(latitude)
 
-garden_clim <- raster::extract(US_land_clim_stack, garden[, c("longitude", "latitude")], df = TRUE)
+garden %>% 
+  filter(Species=="AGHY")->garden_AGHY
+garden_clim <- raster::extract(US_land_clim_stack, garden_AGHY[, c("longitude", "latitude")], df = TRUE)
 garden_clim <- garden_clim[, -1]
 mhd_aghy <- stats::mahalanobis(garden_clim[, bestvarcomb_aghy], center = best_mod_aghy$centroid, cov = best_mod_aghy$covariance)
-distance_aghy <- data.frame(garden, distance = mhd_aghy)
-distance_aghy$Species <- rep("AGHY", length(mhd_aghy))
-
+distance_aghy <- data.frame(garden_AGHY, distance = mhd_aghy)
 plot(mhd_aghy ~ longitude, data=distance_aghy)
 cor.test(distance_aghy$longitude,distance_aghy$distance)
 
@@ -278,11 +278,13 @@ if(length(bestvarcomb_elvi)==3){
   rgl::rglwidget(reuse = TRUE)
 }
 
+garden %>% 
+  filter(Species== "ELVI")->garden_ELVI
+garden_clim <- raster::extract(US_land_clim_stack, garden_ELVI[, c("longitude", "latitude")], df = TRUE)
+garden_clim <- garden_clim[, -1]
 # Mahalanobis distance for common garden populations
 mhd_elvi <- stats::mahalanobis(garden_clim[, bestvarcomb_elvi], center = best_mod_elvi$centroid, cov = best_mod_elvi$covariance)
-distance_elvi <- data.frame(garden, distance = mhd_elvi)
-distance_elvi$Species <- rep("ELVI", length(mhd_elvi))
-
+distance_elvi <- data.frame(garden_ELVI, distance = mhd_elvi)
 plot(mhd_elvi ~ longitude, data = distance_elvi)
 cor.test(distance_elvi$longitude, distance_elvi$distance)
 
@@ -362,11 +364,14 @@ mProj_poa <- ntbox::ellipsoidfit(US_land_clim_stack[[bestvarcomb_poa]],
 if(length(bestvarcomb_poa)==3){
   rgl::rglwidget(reuse = TRUE)
 }
+
+garden %>% 
+  filter(Species== "POAU")->garden_POAU
+garden_clim <- raster::extract(US_land_clim_stack, garden_POAU[, c("longitude", "latitude")], df = TRUE)
+garden_clim <- garden_clim[, -1]
 # Mahalanobis distance for common garden populations
 mhd_poa <- stats::mahalanobis(garden_clim[, bestvarcomb_poa], center = best_mod_poa$centroid, cov = best_mod_poa$covariance)
-distance_poa <- data.frame(garden, distance = mhd_poa)
-distance_poa$Species <- rep("POAU", length(mhd_poa))
-
+distance_poa <- data.frame(garden_POAU, distance = mhd_poa)
 plot(mhd_poa ~ longitude, data = distance_poa)
 cor.test(distance_poa$longitude, distance_poa$distance)
 
@@ -374,7 +379,6 @@ cor.test(distance_poa$longitude, distance_poa$distance)
 distance_species <- bind_rows(distance_aghy, distance_elvi, distance_poa)
 Species.label <- c("AGHY", "ELVI", "POAU")
 names(Species.label) <- c("A. hyemalis", "E. virginicus", "P. autumnalis")
-
 
 # Load necessary package
 library(geosphere)
@@ -403,21 +407,23 @@ calculate_distance_to_centroid <- function(occurrence_data, garden_data) {
 # Assuming you have the `elvi_occ_thinned` data and `garden_clim` data
 
 # Calculate the distance from each row in garden_clim to the centroid of elvi_occ_thinned
-garden_coordinate<-garden[,1:2]
-aghy_with_distance <- calculate_distance_to_centroid(aghy_occ_thinned, garden_coordinate)
+garden_coordinate_aghy<-garden_AGHY[,2:3]
+aghy_with_distance <- calculate_distance_to_centroid(aghy_occ_thinned, garden_coordinate_aghy)
 plot(distance_to_centroid ~ longitude, data = aghy_with_distance)
 cor.test(aghy_with_distance$longitude, aghy_with_distance$distance_to_centroid)
-aghy_geo_distance<-data.frame(site_code=garden$site_code,aghy_with_distance)
+aghy_geo_distance<-data.frame(site_code=garden_AGHY$site_code,aghy_with_distance)
 aghy_geo_distance$Species <- rep("AGHY", nrow(aghy_geo_distance))
-elvi_with_distance <- calculate_distance_to_centroid(elvi_occ_thinned, garden_coordinate)
+
+elvi_with_distance <- calculate_distance_to_centroid(elvi_occ_thinned, garden_ELVI[,2:3])
 plot(distance_to_centroid ~ longitude, data = elvi_with_distance)
 cor.test(elvi_with_distance$longitude, elvi_with_distance$distance_to_centroid)
-elvi_geo_distance<-data.frame(site_code=garden$site_code,elvi_with_distance)
+elvi_geo_distance<-data.frame(site_code=garden_ELVI$site_code,elvi_with_distance)
 elvi_geo_distance$Species <- rep("ELVI", nrow(elvi_geo_distance))
-poa_with_distance <- calculate_distance_to_centroid(poa_occ_thinned, garden_coordinate)
+
+poa_with_distance <- calculate_distance_to_centroid(poa_occ_thinned, garden_POAU[,2:3])
 plot(distance_to_centroid ~ longitude, data = poa_with_distance)
 cor.test(poa_with_distance$longitude, poa_with_distance$distance_to_centroid)
-poa_geo_distance<-data.frame(site_code=garden$site_code,poa_with_distance)
+poa_geo_distance<-data.frame(site_code=garden_POAU$site_code,poa_with_distance)
 poa_geo_distance$Species <- rep("POAU", nrow(poa_geo_distance))
 geo_distance<-bind_rows(aghy_geo_distance,elvi_geo_distance,poa_geo_distance)
 
@@ -461,11 +467,17 @@ combined_plot
 distance_species<-bind_rows(distance_aghy,distance_elvi,distance_poa)
 Species.label<-c("AGHY","ELVI","POAU")
 names(Species.label)<-c("A. hyemalis","E. virginicus","P. autumnalis")
-distance_species<-readRDS(url("https://www.dropbox.com/scl/fi/kv9j0n2pbiqgrfnm5a4wn/distance_species.rds?rlkey=vni9e8tjw9enwki0mwgnllzjc&dl=1"))
+distance_species<-cbind(distance_species,geo_distance=geo_distance[,4])
+saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
+
+
+
+# distance_species<-readRDS(url("https://www.dropbox.com/scl/fi/kv9j0n2pbiqgrfnm5a4wn/distance_species.rds?rlkey=vni9e8tjw9enwki0mwgnllzjc&dl=1"))
 
 # Linear regression
 # Perform correlation tests and prepare annotation data
 str(distance_species)
+distance_species$geo_distance<-distance_species$geo_distance/1000
 stat_results <- distance_species %>%
   group_by(Species) %>%
   summarise(
@@ -510,8 +522,6 @@ ggplot(distance_species, aes(x = longitude, y = distance))+
                                     face="bold.italic"))
 dev.off()
 
-distance_species<-cbind(distance_species,geo_distance=geo_distance[,4])
-saveRDS(distance_species, '/Users/jm200/Library/CloudStorage/Dropbox/Miller Lab/github/ELVI-endophyte-density/Data/distance_species.rds')
 
 
 # Load required packages
@@ -605,15 +615,40 @@ read.csv("https://www.dropbox.com/scl/fi/1eu5lhkg5mx7roj3zd7g0/Study_site.csv?rl
   unique() %>% 
   arrange(latitude)->garden_map ## common garden population
 read.csv("https://www.dropbox.com/scl/fi/go448bqe9z6meisgkd6g9/source_pop.csv?rlkey=oeutzzf4lgo616zeam06tul8t&dl=1", stringsAsFactors = F) %>% 
-  dplyr::select(latitude,longitude) %>% 
   unique() %>% 
   arrange(latitude)->source_map ## source populations
 
-sp::coordinates(garden_map) <- ~ longitude + latitude
-sp::coordinates(source_map) <- ~ longitude + latitude
+garden_map %>% 
+  filter(Species=="AGHY")->garden_map_aghy
+garden_map %>% 
+  filter(Species=="ELVI")->garden_map_elvi
+garden_map %>% 
+  filter(Species=="POAU")->garden_map_poau
+
+source_map %>% 
+  filter(Species=="AGHY")->source_map_aghy
+source_map %>% 
+  filter(Species=="ELVI")->source_map_elvi
+source_map %>% 
+  filter(Species=="POAU")->source_map_poau
+
+sp::coordinates(garden_map_aghy) <- ~ longitude + latitude
+sp::coordinates(garden_map_elvi) <- ~ longitude + latitude
+sp::coordinates(garden_map_poau) <- ~ longitude + latitude
+
+sp::coordinates(source_map_aghy) <- ~ longitude + latitude
+sp::coordinates(source_map_elvi) <- ~ longitude + latitude
+sp::coordinates(source_map_poau) <- ~ longitude + latitude
+
 CRS1 <- CRS("+init=epsg:4326") # WGS 84
-crs(garden_map) <- CRS1
-crs(source_map) <- CRS1
+crs(garden_map_aghy) <- CRS1
+crs(garden_map_elvi) <- CRS1
+crs(garden_map_poau) <- CRS1
+
+crs(source_map_aghy) <- CRS1
+crs(source_map_elvi) <- CRS1
+crs(source_map_poau) <- CRS1
+
 cuts = round(seq(0, 1, length.out=10),2)
 
 library(viridis)
