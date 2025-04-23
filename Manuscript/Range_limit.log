@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  22 APR 2025 11:58
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.6.9)  23 APR 2025 12:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1207,7 +1207,7 @@ mtt12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/mathpazo/fplmr
 ></usr/local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/
 local/texlive/2023/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/local/t
 exlive/2023/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Range_limit.pdf (21 pages, 392864 bytes).
+Output written on Range_limit.pdf (21 pages, 392821 bytes).
 PDF statistics:
  399 PDF objects out of 1000 (max. 8388607)
  332 compressed objects within 4 object streams
