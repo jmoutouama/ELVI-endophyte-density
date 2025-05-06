@@ -1,17 +1,19 @@
-This is BibTeX, Version 0.99d (TeX Live 2023)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Range_limit.aux
+Reallocating 'name_of_file' (item size: 1) to 8 items.
 The style file: apalike.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: References.bib
-Repeated entry---line 50 of file References.bib
+Repeated entry---line 99 of file References.bib
  : @article{gundel2020simulated
  :                             ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 72 of file References.bib
+Repeated entry---line 143 of file References.bib
  : @article{donald2021context
  :                           ,
 I'm skipping whatever remains of this entry
-Repeated entry---line 551 of file References.bib
+Repeated entry---line 1101 of file References.bib
  : @article{yule2013costs
  :                       ,
 I'm skipping whatever remains of this entry
